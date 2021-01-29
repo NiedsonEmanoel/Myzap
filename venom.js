@@ -18,7 +18,7 @@ venom
 
       var imageBuffer = response;
       require('fs').writeFile(
-        'out.png',
+        'img/out.png',
         imageBuffer['data'],
         'binary',
         function (err) {

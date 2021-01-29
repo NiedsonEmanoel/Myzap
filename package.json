@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google-cloud/dialogflow": "^3.3.0",
+    "uuid": "^8.3.2",
     "venom-bot": "^2.2.3"
   }
 }
