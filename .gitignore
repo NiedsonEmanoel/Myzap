@@ -102,3 +102,12 @@ dist
 
 # TernJS port file
 .tern-port
+
+#modules
+node_modules/
+
+#tokens
+tokens/
+
+#json
+/niedson.json
