@@ -52,12 +52,19 @@ function start(client) {
       }
 
       else if (machineLearningRequest.IntentName == 'Interação') {
-        
+        console.log(message.from);
+        await client.sendText(message.from, machineLearningRequest.Response).then((result) => {
+          console.log('Result: ', result); //return object success
+        });
       }
 
       else {
-
+        machineLearningRequest = await dFlow.sendDialogFlow("fallback");
+        await client.sendText(message.from, machineLearningRequest.Response).then((result) => {
+          console.log('Result: ', result); //return object success
+        });
       }
+
     }
   });
 }
