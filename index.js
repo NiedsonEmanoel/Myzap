@@ -1,6 +1,6 @@
 const venom = require('venom-bot');
-const dFlow = require('./dialogflow-rq');
 const fs = require('fs');
+const dFlow = require('./dialogflow-rq');
 
 venom
   .create(
@@ -43,8 +43,8 @@ function start(client) {
   client.onMessage(async (message) => {
     if (message.isGroupMsg == false) {
       var machineLearningRequest = await dFlow.sendDialogFlow(message.body);
-
-      if (machineLearningRequest.IntentName == 'Welcome') {
+      /*Mapeiamento por Intent: Evita ter que criar IF's para situações como Oi, oi, OI, Oie e suas variações*/
+      if (machineLearningRequest.IntentName == 'oi') {
         console.log(message.from);
         await client.sendText(message.from, machineLearningRequest.Response).then((result) => {
           console.log('Result: ', result); //return object success
@@ -58,8 +58,7 @@ function start(client) {
         });
       }
 
-      else {
-        machineLearningRequest = await dFlow.sendDialogFlow("fallback");
+      else { // não entendi - fallback
         await client.sendText(message.from, machineLearningRequest.Response).then((result) => {
           console.log('Result: ', result); //return object success
         });
