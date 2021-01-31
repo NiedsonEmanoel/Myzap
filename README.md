@@ -35,11 +35,11 @@ Clique em criar chave, nova chave, escolha o formato JSON e faça o download par
 
 ![](/assets/6.png)
 
-> Guarde essa chave em um local seguro pois ela é a autenticadora do seu projeto e em mãos erradas pode lhe trazer grandes dores de cabeça.
-> 
->Logo após esse processo de download do arquivo JSON crie uma nova variável de ambiente chamada `GOOGLE_APPLICATION_CREDENTIALS` e como valor dessa variável defina o seu **arquivo JSON**.
->
->Faça Log-Off no seu sistema logo após definir as variáveis de ambiente.
+Guarde essa chave em um local seguro pois ela é a autenticadora do seu projeto e em mãos erradas pode lhe trazer grandes dores de cabeça.
+
+Logo após esse processo de download do arquivo JSON crie uma nova variável de ambiente chamada `GOOGLE_APPLICATION_CREDENTIALS` e como valor dessa variável defina o seu **arquivo JSON**.
+
+Faça Log-Off no seu sistema logo após definir as variáveis de ambiente.
 
 ![](/assets/7.png)
 
