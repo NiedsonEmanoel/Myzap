@@ -2,6 +2,27 @@
 >Integramos a biblioteca Venom ao DialogFlow, permitindo assim uma conversação mais rica no ChatBot.
 
 ![](https://camo.githubusercontent.com/df610fa85dd4f78da335757a27a5f57c528a058047d26055f4604f631d8b8a8d/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f76656e6f6d2d626f742e7376673f636f6c6f723d677265656e)
+
+## Instalação do Projeto
+Para resolver as dependências rode o seguinte comando:
+```sh
+npm install
+```
+Aguarde um pouco enquanto ele baixa as bibliotecas e assim que ele terminar rode o comando para finalmente dar play em seu projeto:
+```sh
+npm start
+```
+
+Vai aparecer em sua janela de comando um código QRescaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
+
+![](/assets/8.png)
+
+Terminal do Venom
+
+![](/assets/9.gif)
+
+ChatBot respondendo as mensagens, via responses do DialogFlow.
+
 ## Conhecendo o DialogFlow
  O DialogFlow (antigo api.ai) é uma plataforma de criação de chatbots da Google com foco no processamento de linguagem natural. O processamento de linguagem natural é utilizado por diversos recursos de inteligência artificial, o seu objetivo é entender a frase e formar a melhor resposta possível para aquela frase. Ele está dividido em diversas fases. Normalização, Remoção de numerais, Remoção de Stopwords, Correção ortográfica, Stemização e Lematização. Essas etapas fazem, basicamente, a quebra da frase, para que seja possível compreender os significados e assim saber em que contexto devemos encaixar o sentido da frase.
 ## Criando nosso Agente
@@ -48,25 +69,6 @@ Ao fim desse processo nosso PC já estará apto para criar a integração com o 
 ## O que é o Venom?
 O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsApp abrindo por debaixo dos panos o WhatsApp Web. Uma vez que é realizada a autenticação via QR Code diretamente do terminal, você conseguirá manipular via código JavaScript toda e qualquer interação disponível no WhatsApp Web, mais especificamente pelo Node.js.
 
-## Instalação do Projeto
-Para resolver as dependências rode o seguinte comando:
-```sh
-npm install
-```
-Aguarde um pouco enquanto ele baixa as bibliotecas e assim que ele terminar rode o comando para finalmente dar play em seu projeto:
-```sh
-npm start
-```
-
-Vai aparecer em sua janela de comando um código QRescaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
-
-![](/assets/8.png)
-
-Terminal do Venom
-
-![](/assets/9.gif)
-
-ChatBot respondendo as mensagens, via responses do DialogFlow.
 ## Conclusão
 O uso da API Oficial do WhatsApp é quase insustentável e o venom cumpre bem o seu papel em permitir a manipulação do WhatsApp via código.
 Se aliando a essa biblioteca temos o DialogFlow que é um serviço da Google poderoso para a criação desses agentes automatizados e utilizar ele junto com o venom nos permite uma liberdade maior do projeto, pois o nosso bot passa a ignorar erros ortográficos e se algum trecho foi escrito em maiúsculo ou não.
