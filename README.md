@@ -62,7 +62,7 @@ Vai aparecer em sua janela de comando um código QRescaneie ele com seu WhatsApp
 
 ![](/assets/8.png)
 
-Basicamente todos os recursos disponíveis no WhatsApp Web nós conseguimos manipular via código. Desde o envio e download de arquivos até a criação e interação de grupos!
+Terminal do Venom
 
 ![](/assets/9.gif)
 
