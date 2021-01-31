@@ -45,4 +45,42 @@ Faça Log-Off no seu sistema logo após definir as variáveis de ambiente.
 
 Ao fim desse processo nosso PC já estará apto para criar a integração com o WhatsApp que será feita com a biblioteca venom. Funcionará da seguinte forma: O usuário interage com o chat configurado no venom, ele envia a mensagem para o dialogflow processar qual a intent, e com a intent nós podemos personalizar o código da maneira como quisermos.
 
+## O que é o Venom?
+O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsApp abrindo por debaixo dos panos o WhatsApp Web. Uma vez que é realizada a autenticação via QR Code diretamente do terminal, você conseguirá manipular via código JavaScript toda e qualquer interação disponível no WhatsApp Web, mais especificamente pelo Node.js.
+
+## Instalação do Projeto
+Para resolver as dependências rode o seguinte comando:
+```sh
+npm install
+```
+Aguarde um pouco enquanto ele baixa as bibliotecas e assim que ele terminar rode o comando para finalmente dar play em seu projeto:
+```sh
+npm start
+```
+
+Vai aparecer em sua janela de comando um código QRescaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
+
+![](/assets/8.png)
+
+Basicamente todos os recursos disponíveis no WhatsApp Web nós conseguimos manipular via código. Desde o envio e download de arquivos até a criação e interação de grupos!
+
+![](/assets/9.gif)
+
+ChatBot respondendo as mensagens, via responses do DialogFlow.
+
+## Sobre o projeto
+### Arquivos mais importantes do projeto:
+> **[index.js](index.js)**
+>  
+>Arquivo mais importante do projeto e onde podemos configurar as nossas intents e o que fazer logo após ser feita a identificação.
+Nesse caso após a identificação o bot responde com as respostas definidas no DialogFlow, mas você é livre para personalizar como quiser.
+
+> **[dialogflow-rq.js](dialogflow-rq.js)**
+>
+>Arquivo que faz a integração do Venom com o DialogFlow, ele faz um request via API e lhe devolve a Intent, Parameters e as Respostas do DialogFlow.
+
+>**[package.json](package.json)**
+>
+>Arquivo que o node usa para identificar seu projeto, resolver depedências e executar scripts, você pode alterar, mas não retire essas dependências elas são essenciais para a plena execução do projeto.
+
 
