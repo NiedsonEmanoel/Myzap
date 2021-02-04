@@ -67,7 +67,7 @@ O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsAp
 O uso da API Oficial do WhatsApp é quase insustentável e o venom cumpre bem o seu papel em permitir a manipulação do WhatsApp via código.
 Se aliando a essa biblioteca temos o DialogFlow que é um serviço da Google poderoso para a criação desses agentes automatizados e utilizar ele junto com o venom nos permite uma liberdade maior do projeto, pois o nosso bot passa a ignorar erros ortográficos e se algum trecho foi escrito em maiúsculo ou não.
 Ao invés de perdemos tempo e poluirmos o codigo com testes condicionais para verificar se foi escrito por Ex: `OI` ou `Oi` ou `oi`, podemos ser mais objetivos e definirmos todas essas expressões como uma única Intent.
-
+#
 ## F.A.Q
 ### Arquivos mais importantes do projeto:
 > **[index.js](index.js)**
@@ -78,14 +78,14 @@ Ao invés de perdemos tempo e poluirmos o codigo com testes condicionais para ve
 >**[package.json](package.json)**
 >
 >Arquivo que o node usa para identificar seu projeto, resolver depedências e executar scripts, você pode alterar, mas não retire essas dependências elas são essenciais para a plena execução do projeto.
-
+#
 ## Sobre o autor [META]
 Niedson Emanoel – Twitter: [@niedsonemanoel](https://twitter.com/niedsonemanoel) – [niedsonemanoel@gmail.com](mailto:niedsonemanoel@gmail.com)
 
 Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
 [https://github.com/NiedsonEmanoel](https://github.com/NiedsonEmanoel/)
-
+#
 ## Contribua
 
 1. Faça o _fork_ do projeto (<https://github.com/NiedsonEmanoel/venon-dialogflow/fork>)
