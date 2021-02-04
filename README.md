@@ -1,5 +1,5 @@
-# Venon-DialogFlow
->Integramos a biblioteca Venom ao DialogFlow, permitindo assim uma conversação mais rica no ChatBot.
+# Myzap-Flow
+>Integramos a biblioteca Venom ao DialogFlow, permitindo com que você traga seu ChatBot para o WhatsApp
 
 ![](https://camo.githubusercontent.com/df610fa85dd4f78da335757a27a5f57c528a058047d26055f4604f631d8b8a8d/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f76656e6f6d2d626f742e7376673f636f6c6f723d677265656e)
 
@@ -13,34 +13,21 @@ Aguarde um pouco enquanto ele baixa as bibliotecas e assim que ele terminar rode
 npm start
 ```
 
-Vai aparecer em sua janela de comando um código QRescaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
+Vai aparecer em sua janela de comando um código QR escaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
 
 ![](/assets/8.png)
-
 Terminal do Venom
+#
 
 ![](/assets/9.gif)
-
 ChatBot respondendo as mensagens, via responses do DialogFlow.
+#
 
 ## Conhecendo o DialogFlow
  O DialogFlow (antigo api.ai) é uma plataforma de criação de chatbots da Google com foco no processamento de linguagem natural. O processamento de linguagem natural é utilizado por diversos recursos de inteligência artificial, o seu objetivo é entender a frase e formar a melhor resposta possível para aquela frase. Ele está dividido em diversas fases. Normalização, Remoção de numerais, Remoção de Stopwords, Correção ortográfica, Stemização e Lematização. Essas etapas fazem, basicamente, a quebra da frase, para que seja possível compreender os significados e assim saber em que contexto devemos encaixar o sentido da frase.
-## Criando nosso Agente
- Após criarmos a conta no Dialogflow, vamos criar nosso agent, que é o bot que irá responder as mensagens, aconselho criarem em português, pois em inglês têm diversas respostas prontas e isso pode conflitar com as respostas que iremos criar.
-
-![](/assets/1.png)
-
-Os agentes do DialogFlow possuem diversas funcionalidades, porém como nessa ocasião estaremos apenas usando o Processamento de Linguagem do DialogFlow, vamos utilizar somente as intents.
-* Intents: **As intents, são as intenções que você tem de como responder uma determinada frase, entre na aba Intents no menu do lado esquerdo e há um botão na parte central superior para criar uma nova intent.**
-
-![](/assets/2.png)
- >Vermelho: Frases para acionar a intent.
->
- >Preto: Respostas da Intent
->
- >Preste atenção ao nome que você deu a sua intent (Nesse caso **“oi”**), ele será utilizado no mapeamento das intents quando estivermos integrando o DialogFlow ao WhatsApp.
-
- Logo após configurarmos todos os nossos intents, vá até as configurações do DialogFlow, guarde o nome do projeto e clique no nome dele para acessarmos o painel do GCP.
+ #
+## Configurando o Myzap-Flow
+ Vá até as configurações do DialogFlow, guarde o nome do projeto e clique no nome dele para acessarmos o painel do GCP.
 
  ![](/assets/3.png)
 
@@ -58,13 +45,12 @@ Clique em criar chave, nova chave, escolha o formato JSON e faça o download par
 
 Guarde essa chave em um local seguro pois ela é a autenticadora do seu projeto e em mãos erradas pode lhe trazer grandes dores de cabeça.
 
-Logo após esse processo de download do arquivo JSON crie uma nova variável de ambiente chamada `GOOGLE_APPLICATION_CREDENTIALS` e como valor dessa variável defina o seu **arquivo JSON**.
+Logo após baixar a chave JSON abra o arquivo **[index.js](index.js)** e altere as duas variáveis de cabeçalho `GCP_PROJECT_NAME` com o nome do seu projeto Google e `JSON_LOCATION` com a localização do JSON.
 
-Faça Log-Off no seu sistema logo após definir as variáveis de ambiente.
 
-![](/assets/7.png)
-
-Ao fim desse processo nosso PC já estará apto para criar a integração com o WhatsApp que será feita com a biblioteca venom. Funcionará da seguinte forma: O usuário interage com o chat configurado no venom, ele envia a mensagem para o dialogflow processar qual a intent, e com a intent nós podemos personalizar o código da maneira como quisermos.
+Ao fim desse processo nosso servidor já estará apto para criar a integração com o WhatsApp que será feita com a biblioteca venom. 
+#
+#
 
 ## O que é o Venom?
 O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsApp abrindo por debaixo dos panos o WhatsApp Web. Uma vez que é realizada a autenticação via QR Code diretamente do terminal, você conseguirá manipular via código JavaScript toda e qualquer interação disponível no WhatsApp Web, mais especificamente pelo Node.js.
@@ -78,12 +64,8 @@ Ao invés de perdemos tempo e poluirmos o codigo com testes condicionais para ve
 ### Arquivos mais importantes do projeto:
 > **[index.js](index.js)**
 >  
->Arquivo mais importante do projeto e onde podemos configurar as nossas intents e o que fazer logo após ser feita a identificação.
-Nesse caso após a identificação o bot responde com as respostas definidas no DialogFlow, mas você é livre para personalizar como quiser.
+>Arquivo mais importante do projeto e onde podemos configurar a localização do nosso `JSON` e o nome do projeto
 
-> **[dialogflow-rq.js](dialogflow-rq.js)**
->
->Arquivo que faz a integração do Venom com o DialogFlow, ele faz um request via API e lhe devolve a Intent, Parameters e as Respostas do DialogFlow.
 
 >**[package.json](package.json)**
 >
