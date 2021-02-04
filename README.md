@@ -62,7 +62,7 @@ Ao fim desse processo nosso servidor já estará apto para criar a integração 
 
 ## O que é o Venom?
 O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsApp abrindo por debaixo dos panos o WhatsApp Web. Uma vez que é realizada a autenticação via QR Code diretamente do terminal, você conseguirá manipular via código JavaScript toda e qualquer interação disponível no WhatsApp Web, mais especificamente pelo Node.js.
-
+#
 ## Conclusão
 O uso da API Oficial do WhatsApp é quase insustentável e o venom cumpre bem o seu papel em permitir a manipulação do WhatsApp via código.
 Se aliando a essa biblioteca temos o DialogFlow que é um serviço da Google poderoso para a criação desses agentes automatizados e utilizar ele junto com o venom nos permite uma liberdade maior do projeto, pois o nosso bot passa a ignorar erros ortográficos e se algum trecho foi escrito em maiúsculo ou não.
