@@ -1,10 +1,13 @@
+const GCP_PROJECT_NAME = 'secret-chat-71aeb';
+const JSON_LOCATION = './niedson.json';
+
 const venom = require('venom-bot');
 const dialogflow = require('@google-cloud/dialogflow');
 const fs = require('fs');
 const express = require('express');
 let app = express();
 
-const sessionClient = new dialogflow.SessionsClient({keyFilename: "./niedson.json"}); //YOUR JSON FILE HERE
+const sessionClient = new dialogflow.SessionsClient({keyFilename: JSON_LOCATION}); //YOUR JSON FILE HERE
 
 app.listen(80,()=>{});
 
@@ -173,7 +176,7 @@ function start(client) {
     client.onMessage(async message => {
     fs.unlink('qr/out.png', ()=>{});
       if(message.isGroupMsg == false){
-          let dialogFlowRequest = await executeQueries("secret-chat-71aeb", message.from, [message.body], 'pt-BR');
+          let dialogFlowRequest = await executeQueries(GCP_PROJECT_NAME, message.from, [message.body], 'pt-BR');
           let intent = dialogFlowRequest.intent.displayName;
           await client.sendText(message.from, dialogFlowRequest.fulfillmentText);
       }
