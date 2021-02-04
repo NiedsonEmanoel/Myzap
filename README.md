@@ -16,10 +16,14 @@ npm start
 Vai aparecer em sua janela de comando um código QR escaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
 
 ![](/assets/8.png)
+
+
 Terminal do Venom
 #
 
 ![](/assets/9.gif)
+
+
 ChatBot respondendo as mensagens, via responses do DialogFlow.
 #
 
@@ -30,18 +34,22 @@ ChatBot respondendo as mensagens, via responses do DialogFlow.
  Vá até as configurações do DialogFlow, guarde o nome do projeto e clique no nome dele para acessarmos o painel do GCP.
 
  ![](/assets/3.png)
+#
 
  Entre no GCP e vá até APIs e serviços e logo após vá em credenciais.
   
 ![](/assets/4.png)
+#
 
 Vá em contas de serviço e clique no primeiro e-mail que aparecer.
 
 ![](/assets/5.png)
+#
 
 Clique em criar chave, nova chave, escolha o formato JSON e faça o download para seu computador.
 
 ![](/assets/6.png)
+#
 
 Guarde essa chave em um local seguro pois ela é a autenticadora do seu projeto e em mãos erradas pode lhe trazer grandes dores de cabeça.
 
@@ -50,7 +58,7 @@ Logo após baixar a chave JSON abra o arquivo **[index.js](index.js)** e altere 
 
 Ao fim desse processo nosso servidor já estará apto para criar a integração com o WhatsApp que será feita com a biblioteca venom. 
 #
-#
+
 
 ## O que é o Venom?
 O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsApp abrindo por debaixo dos panos o WhatsApp Web. Uma vez que é realizada a autenticação via QR Code diretamente do terminal, você conseguirá manipular via código JavaScript toda e qualquer interação disponível no WhatsApp Web, mais especificamente pelo Node.js.
