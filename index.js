@@ -1,5 +1,5 @@
-const GCP_PROJECT_NAME = 'secret-chat-71aeb';
-const JSON_LOCATION = './niedson.json';
+const GCP_PROJECT_NAME = 'secret-chat-71aeb'; // NOME DO PROJETO
+const JSON_LOCATION = './niedson.json'; // LOCAL DO SEU JSON
 
 const venom = require('venom-bot');
 const dialogflow = require('@google-cloud/dialogflow');
@@ -7,7 +7,7 @@ const fs = require('fs');
 const express = require('express');
 let app = express();
 
-const sessionClient = new dialogflow.SessionsClient({keyFilename: JSON_LOCATION}); //YOUR JSON FILE HERE
+const sessionClient = new dialogflow.SessionsClient({keyFilename: JSON_LOCATION}); 
 
 app.listen(80,()=>{});
 
