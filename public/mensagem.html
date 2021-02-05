@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+*{margin:0;padding: 0;box-sizing: border-box;}
+body{
+    background-color: #5f7c8a;
+}
+
+form {
+    background-color: white;
+    max-width: 500px;
+    width: 70;
+    padding: 20px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+form h3{
+    text-align: center;
+    color: #5f7c8a;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+form input[type=number],
+form input[type=text],
+form input[type=password]{
+    width: 100%;
+    height: 45px;
+    border: 1px solid #ccc;
+    padding-left: 10pxs;
+    margin: 2% 0;
+    padding-left: 10px;
+}
+
+form input[type=submit]{
+    width: 100%;
+    height: 30px;
+    cursor: pointer;
+    background: #5f7c8a;
+    color: white;
+    border: 0;
+    border-radius: 20px;
+}
+
+form input[type=submit]:hover{
+    background-color: #4a5f6a;
+    padding-left: 1px;
+}
+form input[type=text]:focus{
+    outline: 0;
+}
+form input[type=number]:focus{
+    outline: 0;
+}
+form input[type=password]:focus{
+    outline: 0;
+}
+</style>
+<body>
+    <img src="/nmso.png">
+    <form method="post" action="/mensagem">
+        <h3>Enviar Mensagem</h3>
+        <input type="number" id="numero" name="numero" placeholder="Digite o número..."/>
+        <input type="text" id="message" name="message" placeholder="Digite a mensagem..."/>
+        <input type="password" id="pass" name="password" placeholder="Digite a senha..."/>
+        <input type="submit" value="Enviar"/>    
+    </form>
+    <script>
+        let numero = document.getElementById('numero');
+        numero.addEventListener('focus',()=>{
+            numero.style.borderColor = "#4A5F6A"
+        });
+        numero.addEventListener('blur',()=>{
+            numero.style.borderColor = "#ccc"
+        });
+
+        let message = document.getElementById('message');
+
+        message.addEventListener('focus',()=>{
+            message.style.borderColor = "#4A5F6A";
+        });
+        message.addEventListener('blur',()=>{
+            message.style.borderColor = "#ccc";
+        });
+
+        let password = document.getElementById('pass');
+        password.addEventListener('focus', ()=>{password.style.borderColor = '#4A5F6A';}); 
+        password.addEventListener('blur', ()=>{password.style.borderColor = '#ccc';});    
+    </script>
+</body>
+</html>
+

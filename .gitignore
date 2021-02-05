@@ -112,7 +112,3 @@ tokens/
 #json
 /niedson.json
 /package-lock.json
-
-#img
-qr/
-img/
