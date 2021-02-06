@@ -3,46 +3,20 @@ const JSON_LOCATION = './niedson.json'; // LOCAL DO SEU JSON
 
 const venom = require('venom-bot');
 const dialogflow = require('@google-cloud/dialogflow');
-const fs = require('fs');
 const express = require('express');
 let app = express();
 const sessionClient = new dialogflow.SessionsClient({keyFilename: JSON_LOCATION}); 
+const assets = require('./js/assets');
 const dialogflowWebHook = require('./js/dialogflowWebHook');
 
 app.listen(80,()=>{});
 app.use(express.urlencoded());
 app.use(express.json());
-
 app.use('/dialogflow', dialogflowWebHook);
-app.get("/qrcode", (req, res, next) => {
-  fs.readFile("assets/qr-out.png", (err, data) => {
-    if(err) {
-      fs.readFile("assets/out.png", (err, data) => {
-        if(err){
-          res.json("Unavaliable");
-        }
-        else{
-        res.writeHead(200, {'Content-Type': 'image/png'});
-        res.end(data);
-      }  
-      });
-    }else{
-      res.writeHead(200, {'Content-Type': 'image/png'});
-      res.end(data);
-    }
-  });
+app.use('/assets', assets)
+app.use(function(req, res, next){
+  res.sendfile(__dirname +'/public/404.html');
 });
-
-app.get("/nmso.png", (req, res, next) => {
-  fs.readFile("assets/nmweb.png", (err, data) => {
-    if(err) {}  
-    else{
-      res.writeHead(200, {'Content-Type': 'image/png'});
-      res.end(data);
-    }
-  });
-});
-
 app.get("/", (req, res, next) => {
   res.sendFile(__dirname +"/public/index.html", ()=>{});
 });
@@ -147,13 +121,27 @@ venom
 
 function start(client) {
   console.log("Myzap-Flow");
-  fs.unlink('assets/qr-out.png', ()=>{return});
+  require('fs').unlink('assets/qr-out.png', ()=>{return});
   app.get("/mensagem", (req, res)=>{
     res.sendFile(__dirname +"/public/mensagem.html", ()=>{});
-  })
+  });
+
   app.post("/mensagem", async (req, res, next) =>{
     try {
-      await sleep(500);
+      await sleep(250);
+      if((req.body.numero == '')||(req.body.message == '')||(req.body.password != "10-20-30")){
+        res.sendfile(__dirname +'/public/mensagem-error.html');
+      }else{
+        await client.sendText(req.body.numero+'@c.us', req.body.message);
+      }
+    } catch(erro) {
+      res.sendfile(__dirname +'/public/mensagem-error.html');
+    }
+  });
+
+  app.post("api/mensagem", async (req, res, next) =>{
+    try {
+      await sleep(250);
       await client.sendText(req.body.numero+'@c.us', req.body.message); // host/mensagem?message=MENSAGEM&numero=555555
       let status, subStatus;
       if((req.body.numero == '')||(req.body.message == '')||(req.body.password != "10-20-30")){
@@ -189,8 +177,8 @@ function start(client) {
   });
 
     client.onMessage(async message => {
-    fs.unlink('assets/qr-out.png', ()=>{});
-      if(message.isGroupMsg == false){
+      require('fs').unlink('assets/qr-out.png', ()=>{});
+      if((message.isGroupMsg == false)&&(message.isMedia == false)){
         console.log(message);
           let dialogFlowRequest = await executeQueries(GCP_PROJECT_NAME, message.from, [message.body], 'pt-BR');
           let intent = dialogFlowRequest.intent.displayName;
