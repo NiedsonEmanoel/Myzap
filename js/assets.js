@@ -31,4 +31,14 @@ router.get("/qrcode.png", (req, res, next) => {
     });
   });
 
+  router.get("/favicon.ico", (req, res) => {
+    fs.readFile("assets/fav.ico", (err, data) => {
+      if(err) {}  
+      else{
+        res.writeHead(200, {'Content-Type': 'image/png'});
+        res.end(data);
+      }
+    });
+  });
+  
 module.exports = router;
