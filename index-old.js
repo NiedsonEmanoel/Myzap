@@ -228,6 +228,38 @@ function start(client) {
   });
 
   client.onMessage(async message => {
+    async function sendMidiaFromDialogflow() {
+      const readFile = await util.promisify(require('fs').readFile);
+      const sessionPath =  sessionClient.projectAgentSessionPath(projectId, sessionId);
+      const inputAudio = await readFile(`./${file}`, 'base64');
+      const request = {
+          session: sessionPath,
+          queryInput: {
+              audioConfig: {
+                  sampleRateHertz: '16000',
+                  audioEncoding: 'AUDIO_ENCODING_OGG_OPUS',
+                  languageCode: 'pt-BR',
+              },
+          },
+          inputAudio: await inputAudio,
+      },
+          responses = await sessionClient.detectIntent(request);
+      console.log('Detected intent:');
+      const result = await responses[0].queryResult;
+      console.log(`  Query: ${result.queryText}`);
+      console.log(`  Response: ${result.fulfillmentText}`);
+  
+      if (result.fulfillmentText) {
+          console.log(`  Intent: ${result.intent.displayName}`);
+          client.sendText(message.from, result.fulfillmentText)
+      }
+      else {
+          console.log(`  No intent matched.`);
+      }
+      require('fs').unlink(file, ()=>{});
+      client.sendSeen(message.from);
+  }
+
     if (ignoreContact.includes(message.from)) {
       if (firstIgnore.includes(message.from)) {
         client.sendText(message.from, `${message.sender.shortName}, estamos com todos os atendentes ocupados nesse momento, mas logo logo iremos lhe atender!\nEnquanto isso, conte-me mais sobre o que você deseja.`);
@@ -239,6 +271,19 @@ function start(client) {
       } else { return; }
     } else {
       if (message.isGroupMsg == false) {
+        if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
+          const buffer = await client.decryptFile(message).then(console.log('Descriptografado')).catch((erro)=>{console.log(erro)});
+          var telefone = ((String(`${message.from}`).split('@')[0]).substr(2));
+          let date_ob = new Date();
+          let date = ("0" + date_ob.getDate()).slice(-2);
+          let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+          let year = date_ob.getFullYear();
+          let miliseconds = date_ob.getMilliseconds();
+          const fileName = `${telefone}` + "-" + `${year}` + `${month}` + `${date}` + "-" + `${miliseconds}`
+          file = `${fileName}.${mime.extension(message.mimetype)}`;
+          await require('fs').writeFile(file, buffer, 'base64', (err) => {if(err){console.log(err)} console.log('Audio Recebido')});
+        //  sendMidiaFromDialogflow();
+        }else{
           let dialogFlowRequest = await executeQueries(GCP_PROJECT_NAME, message.from, [message.body], 'pt-BR');
           let intent = dialogFlowRequest.intent.displayName;
 
@@ -249,6 +294,7 @@ function start(client) {
           } else {
             await client.sendText(message.from, dialogFlowRequest.fulfillmentText);
           }
+        }
       }
     }
   }
