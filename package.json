@@ -15,6 +15,7 @@
     "@google-cloud/dialogflow": "^3.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "https": "^1.0.0",
     "mime": "^2.5.0",
     "uuid": "^8.3.2",
     "venom-bot": "^2.2.3"
