@@ -1,8 +1,7 @@
 const GCP_PROJECT_NAME = 'rob-petro-pwg9'; // NOME DO PROJETO
 const JSON_LOCATION = './niedson.json'; // LOCAL DO SEU JSON
-var privateKey = require('fs').readFileSync('./certificate.key');
-var certificate = require('fs').readFileSync('./certificate.crt');
-const PORT = 3000;
+const isHTTPS = true;
+const PORT = 443;
 
 const MyZapFlow = require('venom-bot');
 const dialogflow = require('@google-cloud/dialogflow');
@@ -10,8 +9,9 @@ const express = require('express');
 const mime = require('mime-types');
 let app = express();
 const https = require('https');
-const server = https.createServer({key: privateKey, cert: certificate}, app);
-server.listen(PORT, ()=>{});
+let server;
+let privateKey;
+let certificate;
 const projectId = GCP_PROJECT_NAME;
 const util = require('util');
 const uuid = require('uuid');
@@ -20,6 +20,15 @@ const sessionClient = new dialogflow.SessionsClient({ keyFilename: JSON_LOCATION
 let ignoreContact = [];
 var file;
 let firstIgnore = [];
+
+if(isHTTPS === true){
+  privateKey = require('fs').readFileSync('./certificate.key');
+  certificate = require('fs').readFileSync('./certificate.crt');
+  server = https.createServer({key: privateKey, cert: certificate}, app);
+  server.listen(PORT, ()=>{});
+}else{
+  app.listen(PORT, ()=>{});
+}
 
 app.use(express.urlencoded({ limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
@@ -314,3 +323,7 @@ function start(client) {
   }
   );
 }
+
+app.use((res, req, next)=>{
+  req.sendFile(__dirname + '/public/404.html');
+});

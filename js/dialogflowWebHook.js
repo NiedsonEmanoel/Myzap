@@ -4,6 +4,7 @@ router.use(express.urlencoded());
 router.use(express.json());
 
 router.post("/", (request, response)=>{
+  console.log(request.body);
   var intentName = request.body.queryResult.intent.displayName;
   if (intentName == "Soma") {
     var soma = request.body.queryResult.parameters['num1'] +
