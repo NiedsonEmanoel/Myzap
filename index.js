@@ -255,7 +255,7 @@ function start(client) {
             languageCode: 'pt-BR',
           },
         },
-        inputAudio: await inputAudio,
+        inputAudio: inputAudio,
       },
         responses = await sessionClient.detectIntent(request);
       console.log('Detected intent:');
