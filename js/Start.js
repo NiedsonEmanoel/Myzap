@@ -5,6 +5,20 @@ const functions = require('./util');
 let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE);
 
 module.exports = function Start(client) {
+    /*let ignoreContact = [];
+var file;
+let firstIgnore = [];*/
+
+/*if (ignoreContact.includes(message.from)) {
+      if (firstIgnore.includes(message.from)) {
+        client.sendText(message.from, `${message.sender.shortName}, estamos com todos os atendentes ocupados nesse momento, mas logo logo iremos lhe atender!\nEnquanto isso, conte-me mais sobre o que você deseja.`);
+        for (numero in firstIgnore) {
+          if (firstIgnore[numero] == message.from) {
+            firstIgnore = firstIgnore.splice((numero + 1), 1);
+          }
+        }
+      } else { return; }
+    } else {*/
     client.onMessage(async(message)=>{
         if(message.isGroupMsg === false){
             if(message.type === 'chat'){
