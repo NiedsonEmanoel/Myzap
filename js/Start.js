@@ -6,7 +6,6 @@ let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCA
 
 module.exports = function Start(client) {
     /*let ignoreContact = [];
-var file;
 let firstIgnore = [];*/
 
 /*if (ignoreContact.includes(message.from)) {
