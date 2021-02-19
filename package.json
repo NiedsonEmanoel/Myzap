@@ -1,23 +1,38 @@
 {
-  "name": "venon-dialogflow",
-  "description": "",
-  "version": "0.0.1",
-  "private": true,
-  "license": "Apache Version 2.0",
-  "author": "Niedson",
-  "engines": {
-    "node": "12"
-  },
+  "name": "myzap",
+  "version": "2.3.7",
+  "description": "O Myzap realiza a integração do WhatsApp com o DialogFlow",
+  "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "start": "node index",
+    "test": "node index",
+    "prepare-linux": "cp .env-example .env && npm install",
+    "prepare-windows": "copy .env-example .env && npm install"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiedsonEmanoel/MyZAP.git"
+  },
+  "keywords": [
+    "DialogFlow",
+    "Bot",
+    "venom",
+    "WhatsApp"
+  ],
+  "author": "Niedson Emanoel <contato@niedsonemanoel.com.br>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NiedsonEmanoel/MyZAP/issues"
+  },
+  "homepage": "https://github.com/NiedsonEmanoel/MyZAP#readme",
   "dependencies": {
     "@google-cloud/dialogflow": "^3.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "https": "^1.0.0",
     "mime": "^2.5.0",
     "uuid": "^8.3.2",
-    "venom-bot": "^2.2.3"
+    "venom-bot": "^2.2.4"
   }
 }

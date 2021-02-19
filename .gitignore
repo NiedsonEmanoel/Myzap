@@ -103,15 +103,12 @@ dist
 # TernJS port file
 .tern-port
 
-#modules
-node_modules/
-
-#tokens
+#Venom-Ignore
 tokens/
 
-#json
-/niedson.json
-/package-lock.json
+#Certificate
+*.crt
+*.key
 
-/*.key
-/*.crt
+#MyJSON
+niedson.json
