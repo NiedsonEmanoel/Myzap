@@ -38,7 +38,7 @@ venom.create(
     }
 ).then((client)=>{
     console.clear();
-    client.sendPttFromBase64
+  
     fs.unlink('./js/routes/public/assets/qrcode.png', ()=>{return});
     app.post("/mensagem", async (req, res) => {
         await functions.sleep(250);

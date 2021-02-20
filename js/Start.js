@@ -10,6 +10,7 @@ module.exports = function Start(client) {
     let firstIgnore = [];
 
     client.onMessage(async (message) => {
+        client.sendSeen(message.from);
         if (ignoreContact.includes(message.from)) {
             if (firstIgnore.includes(message.from)) {
                 client.sendText(message.from, `${message.sender.name}, estamos com todos os atendentes ocupados nesse momento, mas logo logo iremos lhe atender!\nEnquanto isso, conte-me mais sobre o que você deseja.`);
