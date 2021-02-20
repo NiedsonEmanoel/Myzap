@@ -3,33 +3,31 @@ const fs = require('fs');
 const dflowInterface = require('./dialogflow');
 const functions = require('./util');
 const mime = require('mime');
+const preferences = require('./preferences');
 let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE);
 
 module.exports = function Start(client) {
-    let ignoreContact = [];
-    let firstIgnore = [];
 
     client.onMessage(async (message) => {
         client.sendSeen(message.from);
-        if (ignoreContact.includes(message.from)) {
-            if (firstIgnore.includes(message.from)) {
-                client.sendText(message.from, `${message.sender.name}, estamos com todos os atendentes ocupados nesse momento, mas logo logo iremos lhe atender!\nEnquanto isso, conte-me mais sobre o que você deseja.`);
-                for (numero in firstIgnore) {
-                    if (firstIgnore[numero] == message.from) {
-                        firstIgnore = firstIgnore.splice((numero + 1), 1);
-                    }
-                }
+
+        if (preferences.ignoreContact.includes(message.from)) {
+            if (preferences.firstIgnore.includes(message.from)) {
+                client.sendText(message.from, `${message.sender.shortName}, estamos com todos os atendentes ocupados nesse momento, mas logo logo iremos lhe atender!`);
+                client.sendText(message.from, 'Enquanto isso, conte-me mais sobre o que você deseja.');
+                preferences.remFirstIgnore(message.from);
             } else { return; }
         } else {
+
             if (message.isGroupMsg === false) {
                 if (message.type === 'chat') {
                     let response = await bot.sendText(message.body);
                     if (response.fulfillmentText) {
                         await client.sendText(message.from, response.fulfillmentText);
-                        console.log('\nMensagem recebida:\nNúmero: ' + message.from + '\n Mensagem: ' + message.body + '\nResposta: ' + response.fulfillmentText);
+                        console.log('\nMensagem recebida:\n Número: ' + message.from + '\n Mensagem: ' + message.body + '\n Resposta: ' + response.fulfillmentText);
                     } else {
                         await client.sendText(message.from, functions.fallbackResponses());
-                        console.log('\nMensagem recebida:\nNúmero: ' + message.from + '\n Mensagem: ' + message.body + '\nResposta: Fallback');
+                        console.log('\nMensagem recebida:\n Número: ' + message.from + '\n Mensagem: ' + message.body + '\n Resposta: Fallback');
                     }
                 } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
                     console.log('\nÁudio recebido:');
@@ -53,7 +51,7 @@ module.exports = function Start(client) {
                                 base64File = `data:${filemime};base64,${base64File}`;
 
                                 await client.sendText(message.from, response.queryResult.fulfillmentText);
-                                await client.sendFileFromBase64(message.from, base64File, 'Resposta em áudio - '+message.sender.shortName);
+                                await client.sendFileFromBase64(message.from, base64File, 'Resposta em áudio - ' + message.sender.shortName);
 
                                 fs.unlink(dirn, () => { console.log('cache limpo') });
                             } catch (e) {

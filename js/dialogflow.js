@@ -34,7 +34,7 @@ module.exports = class {
         return this.#sessionID;
     }
 
-    async detectIntent(query, contexts) {
+    async detectIntentwAudio(query, contexts) {
         const sessionPath = this.#sessionClient.projectAgentSessionPath(
             this.#projectID,
             this.#sessionID
@@ -50,6 +50,32 @@ module.exports = class {
             },
             outputAudioConfig: {
                 audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
+            },
+        };
+
+        if (contexts && contexts.length > 0) {
+            request.queryParams = {
+                contexts: contexts,
+            };
+        }
+
+        const responses = await this.#sessionClient.detectIntent(request);
+        return responses[0];
+    }
+
+    async detectIntent(query, contexts) {
+        const sessionPath = this.#sessionClient.projectAgentSessionPath(
+            this.#projectID,
+            this.#sessionID
+        );
+
+        const request = {
+            session: sessionPath,
+            queryInput: {
+                text: {
+                    text: query,
+                    languageCode: this.#languageCode,
+                },
             },
         };
 
@@ -81,7 +107,7 @@ module.exports = class {
         let context;
         let intentResponse;
         try {
-            intentResponse = await this.detectIntent(
+            intentResponse = await this.detectIntentwAudio(
                 query,
                 context,
             );
