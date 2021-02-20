@@ -43,7 +43,7 @@ module.exports = function Start(client) {
 
                     try {
                         if (response.queryResult.fulfillmentText) {
-                            let filen = functions.writeSS(message.from);
+                            let filen = functions.writeMP3(message.from);
                             let dirn = __dirname + '/routes/temp/' + filen;
                             fs.writeFileSync(dirn, response.outputAudio, () => { });
 

@@ -39,7 +39,7 @@ module.exports = {
         return file;
     },
 
-    writeSS(from){
+    writeMP3(from){
         let date_ob = new Date();
         let date = ("0" + date_ob.getDate()).slice(-2);
 
