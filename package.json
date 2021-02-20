@@ -31,8 +31,9 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
-    "mime": "^2.5.0",
+    "mime": "^2.5.2",
+    "mime-types": "^2.1.29",
     "uuid": "^8.3.2",
-    "venom-bot": "^2.2.4"
+    "venom-bot": "https://github.com/orkestral/venom/releases/download/nightly/venom-bot-nightly.tgz"
   }
 }

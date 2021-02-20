@@ -48,6 +48,9 @@ module.exports = class {
                     languageCode: this.#languageCode,
                 },
             },
+            outputAudioConfig: {
+                audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
+            },
         };
 
         if (contexts && contexts.length > 0) {
@@ -74,6 +77,20 @@ module.exports = class {
         }
     }
 
+    async sendTextResponseAudio(query) {
+        let context;
+        let intentResponse;
+        try {
+            intentResponse = await this.detectIntent(
+                query,
+                context,
+            );
+            return intentResponse;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async sendAudio(dir, deleteAtEnd) {
         const readFile = util.promisify(fs.readFile);
         const sessionPath = this.#sessionClient.projectAgentSessionPath(this.#projectID, this.#sessionID);
@@ -89,10 +106,13 @@ module.exports = class {
                 },
             },
             inputAudio: inputAudio,
+            outputAudioConfig: {
+                audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
+            },
         };
 
         let responses = await this.#sessionClient.detectIntent(request);
-        if (deleteAtEnd == true) {fs.unlink(dir, ()=>{});}
+        if (deleteAtEnd == true) { fs.unlink(dir, () => { }); }
 
         const result = responses[0].queryResult;
         console.log(`  Query: ${result.queryText}`);
@@ -100,7 +120,7 @@ module.exports = class {
 
         if (result.fulfillmentText) {
             console.log(`  Intent: ${result.intent.displayName}`);
-            return result;
+            return responses[0];
         }
         else {
             console.log(result);

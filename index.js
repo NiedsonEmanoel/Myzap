@@ -38,9 +38,8 @@ venom.create(
     }
 ).then((client)=>{
     console.clear();
-
+    client.sendPttFromBase64
     fs.unlink('./js/routes/public/assets/qrcode.png', ()=>{return});
-    
     app.post("/mensagem", async (req, res) => {
         await functions.sleep(250);
         let valid = functions.isMsgValid(req.body.message, req.body.numero, req.body.password)
@@ -66,6 +65,5 @@ venom.create(
           res.sendFile(__dirname + '/js/routes/public/mensagem-error.html');
         }
       });
-
     Start(client);
 }).catch((e)=>console.log('Error: '+e));
