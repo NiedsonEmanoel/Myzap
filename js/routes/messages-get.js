@@ -10,6 +10,4 @@ router.get('/doc', (req, res)=>{
     res.sendFile(dirName+'/file-message.html');
 })
 
-
-console.log(z)
 module.exports = router;
