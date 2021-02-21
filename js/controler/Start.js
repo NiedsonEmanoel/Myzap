@@ -11,6 +11,7 @@ module.exports = function Start(client) {
 
     client.onMessage(async (message) => {
         client.sendSeen(message.from);
+        let intent;
 
         if (preferences.ignoreContact.includes(message.from)) {
             if (preferences.firstIgnore.includes(message.from)) {
@@ -24,6 +25,7 @@ module.exports = function Start(client) {
                     let response = await bot.sendText(message.body);
                     if (response.fulfillmentText) {
                         await client.sendText(message.from, response.fulfillmentText);
+                        intent = response.intent.displayName;
                         console.log('\nMensagem recebida:\n Número: ' + message.from + '\n Mensagem: ' + message.body + '\n Resposta: ' + response.fulfillmentText);
                     } else {
                         await client.sendText(message.from, functions.fallbackResponses());
@@ -41,6 +43,7 @@ module.exports = function Start(client) {
 
                     try {
                         if (response.queryResult.fulfillmentText) {
+                            intent = response.queryResult.intent.displayName;
                             let filen = functions.writeMP3(message.from);
                             let dirn = __dirname + '/model/temp/' + filen;
                             fs.writeFileSync(dirn, response.outputAudio, () => { });
@@ -62,6 +65,10 @@ module.exports = function Start(client) {
                         await client.sendText(message.from, functions.fallbackResponses());
                     }
                 }
+            }
+            if (intent == process.env.INTENT_SAC) {
+                preferences.addIgnore(message.from);
+                console.log('Adicionado a fila de espera.')
             }
         }
     });
