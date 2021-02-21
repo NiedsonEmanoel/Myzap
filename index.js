@@ -46,24 +46,24 @@ venom.create(
         let valid = functions.isMsgValid(req.body.message, req.body.numero, req.body.password)
             if(valid === true){
                 await client.sendText(req.body.numero + '@c.us', req.body.message);
-                res.sendFile(__dirname+'/js/routes/public/mensagem-ok.html');
+                res.sendFile(__dirname+'/js/view/public/mensagem-ok.html');
             }else{
-                res.sendFile(__dirname+'/js/routes/public/mensagem-error.html');
+                res.sendFile(__dirname+'/js/view/public/mensagem-error.html');
             }
     });
 
     app.post("/mensagem/doc", async (req, res) => {
         console.log(req.body._64data)
         try {
-          if ((req.body.numero == '') || (req.body.mensagem == '') || (req.body.senha != "10-20-30") || (req.body._64data == '')) {
-            res.sendFile(__dirname + '/js/routes/public/mensagem-error.html');
+          if ((req.body.numero == '') || (req.body.mensagem == '') || (req.body.senha != process.env.PASS_API) || (req.body._64data == '')) {
+            res.sendFile(__dirname + '/js/view/public/mensagem-error.html');
           } else {
             await client.sendFileFromBase64(req.body.numero + '@c.us', req.body._64data, req.body.extension, req.body.mensagem);
-            res.sendFile(__dirname + '/js/routes/public/mensagem-ok.html');
+            res.sendFile(__dirname + '/js/view/public/mensagem-ok.html');
           }
         } catch (erro) {
             console.log(erro);
-          res.sendFile(__dirname + '/js/routes/public/mensagem-error.html');
+          res.sendFile(__dirname + '/js/view/public/mensagem-error.html');
         }
       });
       
