@@ -62,7 +62,6 @@ venom.create(
             res.sendFile(__dirname + '/js/view/public/mensagem-ok.html');
           }
         } catch (erro) {
-            console.log(erro);
           res.sendFile(__dirname + '/js/view/public/mensagem-error.html');
         }
       });
