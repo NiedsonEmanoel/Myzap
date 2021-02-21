@@ -28,7 +28,7 @@ venom.create(
     (base64QR)=>{
         let matches = base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
         let buffer = new Buffer.from(matches[2], 'base64');
-        fs.writeFile('./js/routes/public/assets/qrcode.png', buffer, ()=>{});
+        fs.writeFile('./js/view/assets/qrcode.png', buffer, ()=>{});
     },
     undefined, {
         disableWelcome: true,
@@ -39,7 +39,7 @@ venom.create(
 ).then((client)=>{
     console.clear();
   
-    fs.unlink('./js/routes/public/assets/qrcode.png', ()=>{return});
+    fs.unlink('./js/view/assets/qrcode.png', ()=>{return});
 
     app.post("/mensagem", async (req, res) => {
         await functions.sleep(250);
