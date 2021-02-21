@@ -1,9 +1,10 @@
 "use strict";
 const fs = require('fs');
-const dflowInterface = require('./dialogflow');
-const functions = require('./util');
+const dflowInterface = require('../model/dialogflow');
+const functions = require('../model/util');
 const mime = require('mime');
-const preferences = require('./preferences');
+const preferences = require('../model/preferences');
+
 let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE);
 
 module.exports = function Start(client) {
@@ -18,7 +19,6 @@ module.exports = function Start(client) {
                 preferences.remFirstIgnore(message.from);
             } else { return; }
         } else {
-
             if (message.isGroupMsg === false) {
                 if (message.type === 'chat') {
                     let response = await bot.sendText(message.body);
@@ -34,7 +34,7 @@ module.exports = function Start(client) {
 
                     const buffer = await client.decryptFile(message);
                     let file = functions.writeName(message.from, message.mimetype);
-                    let dir = __dirname + '/routes/temp/' + file;
+                    let dir = __dirname + '/model/temp/' + file;
 
                     fs.writeFile(dir, buffer, 'base64', () => { });
                     let response = await bot.sendAudio(dir, true);
@@ -42,7 +42,7 @@ module.exports = function Start(client) {
                     try {
                         if (response.queryResult.fulfillmentText) {
                             let filen = functions.writeMP3(message.from);
-                            let dirn = __dirname + '/routes/temp/' + filen;
+                            let dirn = __dirname + '/model/temp/' + filen;
                             fs.writeFileSync(dirn, response.outputAudio, () => { });
 
                             try {

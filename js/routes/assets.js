@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-const dirName = __dirname+'/public/assets';
+const dirName = __dirname+'/assets';
 
 router.get("/qrcode.png", (req, res) => {
     fs.readFile(dirName+'/qrcode.png', (err, data)=>{

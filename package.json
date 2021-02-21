@@ -35,5 +35,8 @@
     "mime-types": "^2.1.29",
     "uuid": "^8.3.2",
     "venom-bot": "https://github.com/orkestral/venom/releases/download/nightly/venom-bot-nightly.tgz"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

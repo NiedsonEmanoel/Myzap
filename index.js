@@ -1,8 +1,8 @@
 "use strict";
 require('dotenv').config();
-const Start = require('./js/Start');
+const Start = require('./js/controler/Start');
 const venom = require('venom-bot');
-const functions = require('./js/util');
+const functions = require('./js/model/util');
 const fs = require('fs');
 const express = require('express');
 
