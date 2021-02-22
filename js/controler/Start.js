@@ -36,7 +36,7 @@ module.exports = function Start(client) {
 
                     const buffer = await client.decryptFile(message);
                     let file = functions.writeName(message.from, message.mimetype);
-                    let dir = __dirname + '/model/temp/' + file;
+                    let dir = __dirname + '/temp/' + file;
 
                     fs.writeFile(dir, buffer, 'base64', () => { });
                     let response = await bot.sendAudio(dir, true);
@@ -45,7 +45,7 @@ module.exports = function Start(client) {
                         if (response.queryResult.fulfillmentText) {
                             intent = response.queryResult.intent.displayName;
                             let filen = functions.writeMP3(message.from);
-                            let dirn = __dirname + '/model/temp/' + filen;
+                            let dirn = __dirname + '/temp/' + filen;
                             fs.writeFileSync(dirn, response.outputAudio, () => { });
 
                             try {

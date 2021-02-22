@@ -5,6 +5,8 @@ const venom = require('venom-bot');
 const functions = require('./js/model/util');
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
 let app = express();
 
@@ -18,10 +20,10 @@ switch(process.env.useHTTPS){
     default:
         app.listen(process.env.PORT, ()=>{});
 }
-
-app.use(express.urlencoded({ limit: '50mb' }));
-app.use(express.json({ limit: '50mb' }));
-app.use('/', require('./js/routes/midlewares'));
+app.use(morgan());
+app.use(bodyParser.urlencoded({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use('/', require('./js/routes/app'));
 
 venom.create(
     'MyZAP',
@@ -43,13 +45,30 @@ venom.create(
 
     app.post("/mensagem", async (req, res) => {
         await functions.sleep(250);
-        let valid = functions.isMsgValid(req.body.message, req.body.numero, req.body.password)
+        let valid = functions.isMsgValid(req.body.message, req.body.numero, req.body.password);
+        if(req.body.form === 'yes'){
             if(valid === true){
                 await client.sendText(req.body.numero + '@c.us', req.body.message);
                 res.sendFile(__dirname+'/js/view/public/mensagem-ok.html');
             }else{
                 res.sendFile(__dirname+'/js/view/public/mensagem-error.html');
             }
+        }else {
+          if(valid === true){
+            await client.sendText(req.body.numero + '@c.us', req.body.message);
+            res.status(200).send({
+              "numero":req.body.numero,
+              "message":req.body.message,
+              "status":"OK"
+            });
+        }else{
+          res.status(401).send({
+            "numero":req.body.numero,
+            "message":req.body.message,
+            "status":"Error"
+          });
+        }
+        }
     });
 
     app.post("/mensagem/doc", async (req, res) => {

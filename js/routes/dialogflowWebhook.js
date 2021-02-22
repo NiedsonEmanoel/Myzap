@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-router.use(express.urlencoded());
-router.use(express.json());
 
 router.post("/", async(request, response) => {
+    try{
     let intentName = await request.body.queryResult.intent.displayName;
     // Teste Webhook
     if (intentName == "teste") {
@@ -24,6 +23,16 @@ router.post("/", async(request, response) => {
             fulfillmentText: `A conversão de Celsius para Kelvin é: ${kelvin}`,
         });
     }
+}catch(e){
+    response.status(500).send({
+        "Status": "Error",
+        "Error": e
+    });
+}
+});
+
+router.get('/', (req, res)=>{
+    res.sendFile(__dirname.replace('\\js\\routes', '\\js\\view')+'/public/webhook.html');
 });
 
 module.exports = router;
