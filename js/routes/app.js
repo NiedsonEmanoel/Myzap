@@ -8,4 +8,5 @@ router.get('/', (req, res)=>{
 router.use('/dialogflow', require('./dialogflowWebhook'));
 router.use('/mensagem', require('./messages-get'));
 router.use('/assets', require('./assets'));
+router.use('/listaatendimento', require('./listaatendimento'));
 module.exports = router;

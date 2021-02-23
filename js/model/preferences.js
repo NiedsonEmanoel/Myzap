@@ -3,8 +3,8 @@ module.exports = class {
     static firstIgnore = [];
 
     static remFirstIgnore(from){
-        for (let numero in this.firstIgnore) {
-            if (this.firstIgnore[numero] == from) {
+        for (let numeros in this.firstIgnore) {
+            if (this.firstIgnore[numeros] == from) {
                 this.firstIgnore = this.firstIgnore.splice((numero + 1), 1);
                 console.log('First ignore removed from ' +from)
             }

@@ -11,11 +11,11 @@ module.exports = class {
     #languageCode;
     #sessionID;
 
-    constructor(ProjectID, JSON_LOCATION, languageCode) {
+    constructor(ProjectID, JSON_LOCATION, languageCode, session) {
         this.#sessionClient = new dialogflow.SessionsClient({ keyFilename: JSON_LOCATION });
         this.#projectID = ProjectID;
         this.#languageCode = languageCode;
-        this.#sessionID = uuid.v4();
+        this.#sessionID = session;
     }
 
     get sessionClient() {

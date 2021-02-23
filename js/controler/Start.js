@@ -4,16 +4,19 @@ const dflowInterface = require('../model/dialogflow');
 const functions = require('../model/util');
 const mime = require('mime');
 const preferences = require('../model/preferences');
+const { ignoreContact } = require('../model/preferences');
 
 let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE);
 
 module.exports = function Start(client) {
 
     client.onMessage(async (message) => {
+        let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
         client.sendSeen(message.from);
         let intent;
 
         if (preferences.ignoreContact.includes(message.from)) {
+            console.log(ignoreContact);
             if (preferences.firstIgnore.includes(message.from)) {
                 client.sendText(message.from, `${message.sender.shortName}, estamos com todos os atendentes ocupados nesse momento, mas logo logo iremos lhe atender!`);
                 client.sendText(message.from, 'Enquanto isso, conte-me mais sobre o que você deseja.');
