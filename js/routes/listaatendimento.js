@@ -52,7 +52,7 @@ Router.delete('/', (req, res)=>{
     preferences.firstIgnore = [];
 
     res.status(200).send({
-        "mensagem":"Lista de contatos em atendimento zerada.";
+        "mensagem":"Lista de contatos em atendimento zerada."
     });
 });
 
