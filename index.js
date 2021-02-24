@@ -54,7 +54,6 @@ venom.create(
     }
 ).then((client)=>{
     console.clear();
-  
     fs.unlink('./js/view/assets/qrcode.png', ()=>{return});
 
     app.post("/mensagem", async (req, res) => {
@@ -99,5 +98,5 @@ venom.create(
         }
       });
       
-    Start(client);
+   Start(client);
 }).catch((e)=>console.log('Error: '+e));
