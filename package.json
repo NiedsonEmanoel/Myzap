@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "test": "jest",
+    "test": "cd tests/ & jest",
     "prepare-linux": "cp .env-example .env && npm install",
     "prepare-windows": "copy .env-example .env && npm install"
   },

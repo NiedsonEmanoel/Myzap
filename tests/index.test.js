@@ -1,7 +1,7 @@
-const messageValid = require('./js/model/util').isMsgValid;
-const Fallback = require('./js/model/util').fallbackResponses;
-const writeName = require('./js/model/util').writeName;
-const preferences = require('./js/model/preferences');
+const messageValid = require('../js/model/util').isMsgValid;
+const Fallback = require('../js/model/util').fallbackResponses;
+const writeName = require('../js/model/util').writeName;
+const preferences = require('../js/model/preferences');
 
 test('A lista de ignorados está iniciada?', ()=>{
     expect(preferences.ignoreContact !== undefined).toBeTruthy();
