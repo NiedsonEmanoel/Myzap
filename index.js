@@ -23,8 +23,8 @@ switch(process.env.useHTTPS){
 }
 
 let limiter = new RateLimit({
-  windowMs: 1*60*1000, // 1 minute
-  max: 15
+  windowMs: 10*1000, // 10 seconds
+  max: 25
 });
 
 app.use(limiter);
