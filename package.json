@@ -1,13 +1,13 @@
 {
   "name": "myzap",
-  "version": "2.3.7",
+  "version": "2.3.9",
   "description": "O Myzap realiza a integração do WhatsApp com o DialogFlow",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
+    "start": "npm test & node index",
     "test": "cd tests/ & jest",
-    "prepare-linux": "cp .env-example .env && npm install",
-    "prepare-windows": "copy .env-example .env && npm install"
+    "prepare-linux": "cp .env-example .env & npm install",
+    "prepare-windows": "copy .env-example .env & npm install"
   },
   "repository": {
     "type": "git",
@@ -33,11 +33,12 @@
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "jest": "^26.6.3",
+    "jsonwebtoken": "^8.5.1",
     "mime": "^2.5.2",
     "mime-types": "^2.1.29",
     "morgan": "^1.10.0",
     "uuid": "^8.3.2",
-    "venom-bot": "^2.2.6"
+    "venom-bot": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7",

@@ -20,10 +20,12 @@ switch(process.env.useHTTPS){
     default:
         app.listen(process.env.PORT, ()=>{});
 }
+
 app.use(morgan());
 app.use(bodyParser.urlencoded({ limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/', require('./js/routes/app'));
+
 app.use((req, res, next)=>{
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -51,11 +53,11 @@ venom.create(
         useChrome: true,
         browserArgs: ['--no-sandbox'],
         autoClose: false
-    }
+    } //npm install venom-bot@3.0.0
 ).then((client)=>{
     console.clear();
     fs.unlink('./js/view/assets/qrcode.png', ()=>{return});
-
+client.sendFile()
     app.post("/mensagem", async (req, res) => {
         await functions.sleep(250);
         let valid = functions.isMsgValid(req.body.message, req.body.numero, req.body.password);
@@ -83,7 +85,7 @@ venom.create(
         }
         }
     });
-
+    
     app.post("/mensagem/doc", async (req, res) => {
         console.log(req.body._64data)
         try {
@@ -97,6 +99,5 @@ venom.create(
           res.sendFile(__dirname + '/js/view/public/mensagem-error.html');
         }
       });
-      
    Start(client);
 }).catch((e)=>console.log('Error: '+e));
