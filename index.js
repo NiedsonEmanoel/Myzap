@@ -7,6 +7,8 @@ const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const RateLimit = require('express-rate-limit');
+
 
 let app = express();
 
@@ -21,6 +23,12 @@ switch(process.env.useHTTPS){
         app.listen(process.env.PORT, ()=>{});
 }
 
+let limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
+
+app.use(limiter);
 app.use(morgan());
 app.use(bodyParser.urlencoded({ limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
