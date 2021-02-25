@@ -60,7 +60,7 @@ venom.create(
         useChrome: true,
         browserArgs: ['--no-sandbox'],
         autoClose: false
-    } //npm install venom-bot@3.0.0
+    } 
 ).then((client)=>{
     console.clear();
     fs.unlink('./js/view/assets/qrcode.png', ()=>{return});
