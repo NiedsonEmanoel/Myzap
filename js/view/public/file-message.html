@@ -208,6 +208,7 @@
       let file = document.getElementById('file').files[0];
       let name = file.name;
       let numero = document.getElementById('numero');
+      let number = new String(numero.value).replace(/\s/g, '');
       let mensagem = document.getElementById('mensagem');
       let senha = document.getElementById('senha');
       getBase64(file).then(
@@ -217,11 +218,13 @@
                                                     <input type="hidden" name="mensagem" value="${mensagem.value}">
                                                     <input type="hidden" name="extension" value="${name}">
                                                     <input type="hidden" name="senha" value="${senha.value}">
-                                                    <input type="hidden" name="numero" value="${numero.value}">
+                                                    <input type="hidden" name="numero" value="${number}">
                                                 </form>`;
           document.getElementById("dynForm").submit();
         }
-      );
+      ).catch((e) => {
+        alert('Erro!');
+      });
     }
     let botao = document.getElementById('botao');
     botao.addEventListener('click', send);

@@ -2,19 +2,19 @@
 const fs = require('fs');
 const dflowInterface = require('../model/dialogflow');
 const functions = require('../model/util');
-const mime = require('mime');
 const preferences = require('../model/preferences');
 
 module.exports = function Start(client) {
     let last_msg = '';
+
     client.onMessage(async (message) => {
         if (last_msg === message.id) {
             last_msg = '';
-            console.log('Duplicata evitada');
+            console.log('Duplicata evitada.');
             return;
         }
         last_msg = message.id;
-        
+
         let bot = new dflowInterface(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
         client.sendSeen(message.from);
         let intent;
@@ -50,28 +50,21 @@ module.exports = function Start(client) {
                 let file = functions.writeName(message.from, message.mimetype);
                 let dir = __dirname + '/temp/' + file;
 
-                fs.writeFile(dir, buffer, 'base64', () => {});
+                fs.writeFile(dir, buffer, 'base64', () => { });
                 let response = await bot.sendAudio(dir, true);
 
                 try {
+                    let aux;
                     if (response.queryResult.fulfillmentText) {
                         intent = response.queryResult.intent.displayName;
                         let filen = functions.writeMP3(message.from);
                         let dirn = __dirname + '/temp/' + filen;
                         fs.writeFileSync(dirn, response.outputAudio, () => { });
-
-                        try {
-                            let base64File = fs.readFileSync(dirn, { encoding: 'base64' });
-                            const filemime = mime.getType(dirn);
-                            base64File = `data:${filemime};base64,${base64File}`;
-
-                            await client.sendText(message.from, response.queryResult.fulfillmentText);
-                            await client.sendFileFromBase64(message.from, base64File, 'Resposta'); // o ideal era utilizar o sendPttFromBase64 - atualmente não funciona -
-
+                        await client.sendText(message.from, response.queryResult.fulfillmentText);
+                        functions.getBase64(dirn).then(data=>{
+                            client.sendFileFromBase64(message.from, data, 'response.mp3', 'oi');
                             fs.unlink(dirn, () => { console.log('cache limpo') });
-                        } catch (e) {
-                            console.log(e);
-                        }
+                        });
                     }
                 } catch {
                     await client.sendText(message.from, functions.fallbackResponses());
@@ -82,6 +75,5 @@ module.exports = function Start(client) {
             preferences.addIgnore(message.from, message.sender.name, message.sender.profilePicThumbObj.img);
             console.log('Adicionado a fila de espera.')
         }
-
     });
 }

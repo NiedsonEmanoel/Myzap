@@ -1,11 +1,25 @@
 "use-strict";
 const mime = require('mime-types');
+const FileAPI = require('./Libs/File/FileInterface');
+
+let File = FileAPI.File;
+let FileReader = FileAPI.FileReader;
+
 module.exports = {
     sleep(ms) {
         return new Promise((resolve) => {
             setTimeout(resolve, ms);
         });
     },
+
+     getBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(new File(file));
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      },
 
     fallbackResponses() {
         let response = [

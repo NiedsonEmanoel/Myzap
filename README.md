@@ -13,5 +13,4 @@
 </p>
 
 <p align="center"><b>Updates pausados até 03/03/2021</br>Updates paused until 03/03/2021<b></p>
-
 <h1></h1>
