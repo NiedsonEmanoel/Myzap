@@ -6,7 +6,6 @@ const preferences = require('../model/preferences');
 
 module.exports = function Start(client) {
     let last_msg = '';
-
     client.onMessage(async (message) => {
         if (last_msg === message.id) {
             last_msg = '';
@@ -61,10 +60,12 @@ module.exports = function Start(client) {
                         let dirn = __dirname + '/temp/' + filen;
                         fs.writeFileSync(dirn, response.outputAudio, () => { });
                         await client.sendText(message.from, response.queryResult.fulfillmentText);
+                        client.sendVoice(message.from, dirn);
+
                         functions.getBase64(dirn).then(data=>{
-                            client.sendFileFromBase64(message.from, data, 'response.mp3', 'oi');
                             fs.unlink(dirn, () => { console.log('cache limpo') });
                         });
+                        
                     }
                 } catch {
                     await client.sendText(message.from, functions.fallbackResponses());
