@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const preferences = require('../model/preferences');
 const Router = express.Router();

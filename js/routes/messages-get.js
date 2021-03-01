@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const router = express.Router();
 const dirName = __dirname.replace(`\\js\\routes`, '\\js\\view\\public');

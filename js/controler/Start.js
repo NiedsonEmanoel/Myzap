@@ -1,3 +1,4 @@
+"use strict";
 const fs = require('fs');
 const dflowInterface = require('../model/dialogflow');
 const functions = require('../model/util');
