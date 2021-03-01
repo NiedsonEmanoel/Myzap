@@ -63,7 +63,6 @@ venom.create(
 ).then((client) => {
   console.clear();
   fs.unlink('./js/view/assets/qrcode.png', () => { return });
-  client.sendFile()
   app.post("/mensagem", async (req, res) => {
     await functions.sleep(250);
     let valid = functions.isMsgValid(req.body.message, req.body.numero, req.body.password);
