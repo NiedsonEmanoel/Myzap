@@ -1,4 +1,3 @@
-"use-strict";
 const mime = require('mime-types');
 const FileAPI = require('./Libs/File/FileInterface');
 

@@ -1,6 +1,4 @@
-"use strict";
 const dialogflow = require('@google-cloud/dialogflow');
-const uuid = require('uuid');
 const util = require('util');
 const functions = require('./util');
 const fs = require('fs');

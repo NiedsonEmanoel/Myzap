@@ -1,4 +1,3 @@
-"use strict";
 const fs = require('fs');
 const dflowInterface = require('../model/dialogflow');
 const functions = require('../model/util');
@@ -6,7 +5,7 @@ const preferences = require('../model/preferences');
 
 module.exports = function Start(client) {
     let last_msg = '';
-    client.onMessage(async (message) => {
+    client.onMessage(async(message) => {
         if (last_msg === message.id) {
             last_msg = '';
             console.log('Duplicata evitada.');
@@ -49,7 +48,7 @@ module.exports = function Start(client) {
                 let file = functions.writeName(message.from, message.mimetype);
                 let dir = __dirname + '/temp/' + file;
 
-                fs.writeFile(dir, buffer, 'base64', () => { });
+                fs.writeFile(dir, buffer, 'base64', () => {});
                 let response = await bot.sendAudio(dir, true);
 
                 try {
@@ -58,14 +57,14 @@ module.exports = function Start(client) {
                         intent = response.queryResult.intent.displayName;
                         let filen = functions.writeMP3(message.from);
                         let dirn = __dirname + '/temp/' + filen;
-                        fs.writeFileSync(dirn, response.outputAudio, () => { });
+                        fs.writeFileSync(dirn, response.outputAudio, () => {});
                         await client.sendText(message.from, response.queryResult.fulfillmentText);
                         client.sendVoice(message.from, dirn);
 
-                        functions.getBase64(dirn).then(data=>{
+                        functions.getBase64(dirn).then(data => {
                             fs.unlink(dirn, () => { console.log('cache limpo') });
                         });
-                        
+
                     }
                 } catch {
                     await client.sendText(message.from, functions.fallbackResponses());

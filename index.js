@@ -1,4 +1,3 @@
-"use strict";
 require('dotenv').config();
 const Start = require('./js/controler/Start');
 const venom = require('venom-bot');
