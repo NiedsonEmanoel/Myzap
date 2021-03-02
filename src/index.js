@@ -1,8 +1,8 @@
 "use strict";
 require('dotenv').config();
-const Start = require('./js/controler/Start');
+const Start = require('./controler/Start');
 const venom = require('venom-bot');
-const functions = require('./js/model/util');
+const functions = require('./model/util');
 const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
@@ -29,9 +29,13 @@ let limiter = new RateLimit({
 
 app.use(limiter);
 app.use(morgan());
+
+//Parsers 
 app.use(bodyParser.urlencoded({ limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
-app.use('/', require('./js/routes/app'));
+
+//Rotas Principais
+app.use('/', require('./routes/app'));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -53,7 +57,7 @@ venom.create(
   (base64QR) => {
     let matches = base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     let buffer = new Buffer.from(matches[2], 'base64');
-    fs.writeFile('./js/view/assets/qrcode.png', buffer, () => { });
+    fs.writeFile('./view/assets/qrcode.png', buffer, () => { });
   },
   undefined, {
   disableWelcome: true,
@@ -63,7 +67,7 @@ venom.create(
 }
 ).then((client) => {
   console.clear();
-  fs.unlink('./js/view/assets/qrcode.png', () => { return });
+  fs.unlink('./view/assets/qrcode.png', () => { return });
 
   app.post("/mensagem", async (req, res) => {
     await functions.sleep(250);
