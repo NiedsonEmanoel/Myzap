@@ -49,7 +49,7 @@ module.exports = class {
     }
 
     async execMessages(message) {
-        console.info('Mensagem recebida!');
+        console.info('\nMensagem recebida!');
         let intent;
         try {
             let bot = new dialogflow(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
@@ -76,57 +76,54 @@ module.exports = class {
                     await this.Client.sendText(message.from, auxFunctions.Fallback());
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: Fallback');
                 }
-            } else if (message.hasMedia === true) {
-                console.info('Type: ' + message.type);
-                if (message.type === 'audio' || message.type === 'ptt') {
-                    //Descriptografa o áudio
-                    const Buffer = await this.Client.decryptFile(message);
+            } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
+                //Descriptografa o áudio
+                const Buffer = await this.Client.decryptFile(message);
 
-                    //Da um nome para o audio recebido com base no horário
-                    let nameAudio = auxFunctions.WriteFileMime(message.from, message.mimetype);
+                //Da um nome para o audio recebido com base no horário
+                let nameAudio = auxFunctions.WriteFileMime(message.from, message.mimetype);
 
-                    //Path do arquivo /src/Controlers/Temp/nomeaudio .ogg || .oga
-                    let dir = path.join(__dirname, '/Temp', nameAudio);
+                //Path do arquivo /src/Controlers/Temp/nomeaudio .ogg || .oga
+                let dir = path.join(__dirname, '/Temp', nameAudio);
 
-                    //Escrita síncrona :(
-                    fs.writeFileSync(dir, Buffer, 'base64', () => { });
+                //Escrita síncrona :(
+                fs.writeFileSync(dir, Buffer, 'base64', () => { });
 
-                    //Envia o áudio para o dialogFlow e apaga ao fim.
-                    let response = await bot.detectAudio(dir, true);
+                //Envia o áudio para o dialogFlow e apaga ao fim.
+                let response = await bot.detectAudio(dir, true);
 
-                    try {
-                        //O dialogFlow respondeu alguma coisa?
-                        if (response.queryResult.fulfillmentText) {
-                            //Pega o nome da intent
-                            intent = response.queryResult.intent.displayName;
+                try {
+                    //O dialogFlow respondeu alguma coisa?
+                    if (response.queryResult.fulfillmentText) {
+                        //Pega o nome da intent
+                        intent = response.queryResult.intent.displayName;
 
-                            //Da um nome para o audio de resposta do DialogFlow .mp3
-                            let nameAudioResponse = auxFunctions.WriteFileEXT(message.from, '.mp3');
+                        //Da um nome para o audio de resposta do DialogFlow .mp3
+                        let nameAudioResponse = auxFunctions.WriteFileEXT(message.from, 'mp3');
 
-                            //Path do arquivo /src/controllers/temp/nome.mp3
-                            let dirResponse = path.join(__dirname, '/Temp', nameAudioResponse);
+                        //Path do arquivo /src/controllers/temp/nome.mp3
+                        let dirResponse = path.join(__dirname, '/Temp', nameAudioResponse);
 
-                            //Escrita síncrona :(
-                            fs.writeFileSync(dirResponse, response.outputAudio, () => { });
+                        //Escrita síncrona :(
+                        fs.writeFileSync(dirResponse, response.outputAudio, () => { });
 
-                            //Resposta com texto padrão.
-                            this.Client.sendText(message.from, response.queryResult.fulfillmentText);
+                        //Resposta com texto padrão.
+                        await this.Client.sendText(message.from, response.queryResult.fulfillmentText);
 
-                            //Enviar o audio do DialogFlow para o WhatsApp
-                            this.Client.sendVoice(message.from, dirResponse).then(() => {
-                                console.info('Mensagem enviada');
-                            }).catch((e) => {
-                                console.error('Problemas no áudio');
-                            }).finally(() => {
-                                //Apagar no final
-                                fs.unlink(dirResponse, () => { console.info('Cache limpo') });
-                            });
-                        }
-                    } catch (e) {
-                        //DialogFlow não entendeu o áudio e não respondeu nada, retorna 'não entendi' manualmente.
-                        this.Client.sendText(message.from, auxFunctions.Fallback());
-                        console.info('Fallback');
+                        //Enviar o audio do DialogFlow para o WhatsApp
+                        await this.Client.sendVoice(message.from, dirResponse).then(() => {
+                            console.info('Mensagem enviada');
+                        }).catch((e) => {
+                            console.error('Problemas no áudio');
+                        }).finally(() => {
+                            //Apagar no final
+                            fs.unlink(dirResponse, () => { console.info('Cache limpo') });
+                        });
                     }
+                } catch (e) {
+                    //DialogFlow não entendeu o áudio e não respondeu nada, retorna 'não entendi' manualmente.
+                    this.Client.sendText(message.from, auxFunctions.Fallback());
+                    console.info('Fallback');
                 }
             }
         } catch (e) {
