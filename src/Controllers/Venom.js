@@ -111,7 +111,7 @@ module.exports = class {
                         await this.Client.sendText(message.from, response.queryResult.fulfillmentText);
 
                         //Enviar o audio do DialogFlow para o WhatsApp
-                        await this.Client.sendVoice(message.from, dirResponse).then(() => {
+                        this.Client.sendVoice(message.from, dirResponse).then(() => {
                             console.info('Mensagem enviada');
                         }).catch((e) => {
                             console.error('Problemas no áudio');
