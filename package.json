@@ -4,10 +4,10 @@
     "description": "O Myzap realiza a integração do WhatsApp com o DialogFlow",
     "main": "index.js",
     "scripts": {
-        "start": "node index",
-        "test": "cd tests/ & jest",
-        "prepare-linux": "cp .env-example .env & npm install",
-        "prepare-windows": "copy .env-example .env & npm install"
+        "start": "cd src/ & node index",
+        "test": "cd src/ & cd tests/ & jest",
+        "prepare-linux": "cd src/ & cp .env-example .env & npm install",
+        "prepare-windows": "cd src/ & copy .env-example .env & npm install"
     },
     "repository": {
         "type": "git",
