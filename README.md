@@ -1,3 +1,4 @@
+<p align ="center">Nm Soft</p>
 <h1></h1>
 <p align="center">
     <img src="src/Controllers/Temp/myzap.png" width="250">
