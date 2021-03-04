@@ -34,8 +34,10 @@ venomApi.use(morgan());
 restApi.use(morgan());
 
 //Parser
-venomApi.use(bodyParser.urlencoded({ limit: '50mb' }));
-venomApi.use(bodyParser.json({ limit: '50mb' }));
+venomApi.use(bodyParser.urlencoded({ limit: '20mb' }));
+venomApi.use(bodyParser.json({ limit: '20mb' }));
+restApi.use(bodyParser.urlencoded());
+restApi.use(bodyParser.json());
 
 (function () {
     console.clear();
