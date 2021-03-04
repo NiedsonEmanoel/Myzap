@@ -5,7 +5,6 @@ const auxFunctions = require('../Models/functions');
 const fs = require('fs');
 
 module.exports = class {
-    Client
     #qrCODE
     #onStartCallback
     #onStatusSessionCallback
@@ -37,9 +36,9 @@ module.exports = class {
     }
 
     async initVenom(sessionName, configs) {
-        this.Client = await venom.create(sessionName, (Base64QR => {
+        this.Client = await venom.create('MyZAP', (Base64QR => {
             this.#qrCODE = Base64QR;
-        }), this.#onStatusSessionCallback, configs).catch(e => {
+        }), this.#onStatusSessionCallback, { disableWelcome: true, autoClose: 0, updatesLog: false }).catch(e => {
             console.error('Erro ao iniciar o venom ' + e);
             process.exit(1);
         });
