@@ -35,10 +35,10 @@ module.exports = class {
         }
     }
 
-    async initVenom(sessionName, configs) {
+    async initVenom() {
         this.Client = await venom.create('MyZAP', (Base64QR => {
             this.#qrCODE = Base64QR;
-        }), this.#onStatusSessionCallback, { disableWelcome: true, autoClose: 0, updatesLog: false }).catch(e => {
+        }), this.#onStatusSessionCallback, { disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true }).catch(e => {
             console.error('Erro ao iniciar o venom ' + e);
             process.exit(1);
         });
@@ -66,7 +66,7 @@ module.exports = class {
                 if (response.fulfillmentText) {
                     //Devolve a resposta do DialogFlow
                     await this.Client.reply(message.from, response.fulfillmentText, message.id.toString());
-                    
+
                     //Pega o nome da intent
                     intent = response.intent.displayName;
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: ' + response.fulfillmentText);
@@ -108,7 +108,7 @@ module.exports = class {
                         fs.writeFileSync(dirResponse, response.outputAudio, () => { });
 
                         //Resposta com texto padrão.
-                        await this.Client.sendText(message.from, response.queryResult.fulfillmentText);
+                        await this.Client.reply(message.from, response.queryResult.fulfillmentText, message.id.toString());
 
                         //Enviar o audio do DialogFlow para o WhatsApp
                         this.Client.sendVoice(message.from, dirResponse).then(() => {
@@ -122,7 +122,7 @@ module.exports = class {
                     }
                 } catch (e) {
                     //DialogFlow não entendeu o áudio e não respondeu nada, retorna 'não entendi' manualmente.
-                    this.Client.sendText(message.from, auxFunctions.Fallback());
+                    await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Fallback');
                 }
             }
