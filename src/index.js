@@ -1,9 +1,16 @@
 "use strict";
+//.env
 require('dotenv').config();
-const Venom = require('./Controllers/Venom');
+
+//Libs
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+
+//Controlers
+const Venom = require('./Controllers/Venom');
+
+//Models
 const limiter = require('./Models/limiter');
 const cors = require('./Models/cors');
 
@@ -25,6 +32,10 @@ restApi.use(limiter);
 //Logger
 venomApi.use(morgan());
 restApi.use(morgan());
+
+//Parser
+venomApi.use(bodyParser.urlencoded({ limit: '50mb' }));
+venomApi.use(bodyParser.json({ limit: '50mb' }));
 
 (function () {
     console.clear();
@@ -65,10 +76,6 @@ restApi.use(morgan());
 }());
 
 WhatsApp.initVenom().then(() => {
-    //Parsers 
-    venomApi.use(bodyParser.urlencoded({ limit: '50mb' }));
-    venomApi.use(bodyParser.json({ limit: '50mb' }));
-
     venomApi.get('/', async (req, res) => {
         let chats = await WhatsApp.Client.getAllChatsNewMsg();
         res.status(200).send({ chats });
@@ -76,6 +83,10 @@ WhatsApp.initVenom().then(() => {
 
     venomApi.get('/:chatNumber', async (req, res) => {
 
+    });
+
+    venomApi.post('/', async (req, res) => {
+        
     });
 }).catch((error) => {
     console.error(error);
