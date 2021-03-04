@@ -5,6 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const limiter = require('./Models/limiter');
+const cors = require('./Models/cors');
 
 //Instância do Venom-Dflow
 const WhatsApp = new Venom();
@@ -13,6 +14,10 @@ const WhatsApp = new Venom();
 const venomApi = express();
 const restApi = express();
 
+//Cors
+venomApi.use(cors);
+restApi.use(cors);
+
 //Proteção de DDOS
 venomApi.use(limiter);
 restApi.use(limiter);
@@ -20,7 +25,6 @@ restApi.use(limiter);
 //Logger
 venomApi.use(morgan());
 restApi.use(morgan());
-
 
 (function () {
     console.clear();
