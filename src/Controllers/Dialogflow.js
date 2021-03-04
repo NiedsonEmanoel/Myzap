@@ -1,7 +1,7 @@
 "use strict";
 const dialogflow = require('@google-cloud/dialogflow');
 const util = require('util');
-const functions = require('./util');
+const fallbackResponses = require('../Models/Utils/fallbackResponses');
 const fs = require('fs');
 
 module.exports = class {
@@ -116,7 +116,7 @@ module.exports = class {
         }
     }
 
-    async sendAudio(dir, deleteAtEnd) {
+    async detectAudio(dir, deleteAtEnd) {
         const readFile = util.promisify(fs.readFile);
         const sessionPath = this.#sessionClient.projectAgentSessionPath(this.#projectID, this.#sessionID);
         const inputAudio = await readFile(dir, 'base64');
@@ -149,7 +149,7 @@ module.exports = class {
         }
         else {
             console.log(result);
-            return functions.fallbackResponses();
+            return fallbackResponses();
         }
     }
 }
