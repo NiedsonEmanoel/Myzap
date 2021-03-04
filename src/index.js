@@ -80,15 +80,23 @@ restApi.use(bodyParser.json());
 WhatsApp.initVenom().then(() => {
     venomApi.get('/', async (req, res) => {
         let chats = await WhatsApp.Client.getAllChatsNewMsg();
-        res.status(200).send({ chats });
+        res.status(200).send({
+            chats,
+            "message": "success"
+        });
     });
 
-    venomApi.get('/:chatNumber', async (req, res) => {
-
+    venomApi.get('/valid', async (req, res) => {
+        let number = req.query.number + '@c.us';
+        const profile = await WhatsApp.Client.getNumberProfile(number);
+        res.status(200).send({
+            profile,
+            "message": "success"
+        });
     });
 
     venomApi.post('/', async (req, res) => {
-        
+
     });
 }).catch((error) => {
     console.error(error);
