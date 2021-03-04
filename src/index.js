@@ -1,10 +1,18 @@
 "use strict";
+//.env
 require('dotenv').config();
-const Venom = require('./Controllers/Venom');
+
+//Libs
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+
+//Controlers
+const Venom = require('./Controllers/Venom');
+
+//Models
 const limiter = require('./Models/limiter');
+const cors = require('./Models/cors');
 
 //Instância do Venom-Dflow
 const WhatsApp = new Venom();
@@ -12,6 +20,10 @@ const WhatsApp = new Venom();
 //Apps do Express
 const venomApi = express();
 const restApi = express();
+
+//Cors
+venomApi.use(cors);
+restApi.use(cors);
 
 //Proteção de DDOS
 venomApi.use(limiter);
@@ -21,6 +33,11 @@ restApi.use(limiter);
 venomApi.use(morgan());
 restApi.use(morgan());
 
+//Parser
+venomApi.use(bodyParser.urlencoded({ limit: '20mb' }));
+venomApi.use(bodyParser.json({ limit: '20mb' }));
+restApi.use(bodyParser.urlencoded());
+restApi.use(bodyParser.json());
 
 (function () {
     console.clear();
@@ -61,16 +78,24 @@ restApi.use(morgan());
 }());
 
 WhatsApp.initVenom().then(() => {
-    //Parsers 
-    venomApi.use(bodyParser.urlencoded({ limit: '50mb' }));
-    venomApi.use(bodyParser.json({ limit: '50mb' }));
-
     venomApi.get('/', async (req, res) => {
         let chats = await WhatsApp.Client.getAllChatsNewMsg();
-        res.status(200).send({ chats });
+        res.status(200).send({
+            chats,
+            "message": "success"
+        });
     });
 
-    venomApi.get('/:chatNumber', async (req, res) => {
+    venomApi.get('/valid', async (req, res) => {
+        let number = req.query.number + '@c.us';
+        const profile = await WhatsApp.Client.getNumberProfile(number);
+        res.status(200).send({
+            profile,
+            "message": "success"
+        });
+    });
+
+    venomApi.post('/', async (req, res) => {
 
     });
 }).catch((error) => {

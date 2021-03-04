@@ -65,14 +65,15 @@ module.exports = class {
                 //Obteve resposta do DialogFlow?
                 if (response.fulfillmentText) {
                     //Devolve a resposta do DialogFlow
-                    await this.Client.sendText(message.from, response.fulfillmentText);
-
+                    await this.Client.reply(message.from, response.fulfillmentText, message.id.toString());
+                    
                     //Pega o nome da intent
                     intent = response.intent.displayName;
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: ' + response.fulfillmentText);
                 } else {
                     //Da uma resposta de não entendi, nenhum match feito.
-                    await this.Client.sendText(message.from, auxFunctions.Fallback());
+                    /** */
+                    await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: Fallback');
                 }
             } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
