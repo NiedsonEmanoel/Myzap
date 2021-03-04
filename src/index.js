@@ -7,6 +7,9 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
+//App - route
+let app = require('./Routes/app');
+
 //Controlers
 const Venom = require('./Controllers/Venom');
 
@@ -14,12 +17,18 @@ const Venom = require('./Controllers/Venom');
 const limiter = require('./Models/limiter');
 const cors = require('./Models/cors');
 
+//Midlewares
+const venomAuth = require('./Middlewares/venomAuth');
+
 //Instância do Venom-Dflow
 const WhatsApp = new Venom();
 
 //Apps do Express
 const venomApi = express();
 const restApi = express();
+
+//Routes
+restApi.use(app);
 
 //Cors
 venomApi.use(cors);
@@ -75,15 +84,34 @@ restApi.use(bodyParser.json());
             console.info(`Servidor HTTP da API do WhatsApp rodando em: http://localhost:${process.env.wpPORT}/`);
             console.info(`Servidor HTTP da RestAPI rodando em: http://localhost:${process.env.PORT}/`);
     }
+    console.log();
 }());
 
 WhatsApp.initVenom().then(() => {
+    venomApi.use(venomAuth);
+
     venomApi.get('/', async (req, res) => {
-        let chats = await WhatsApp.Client.getAllChatsNewMsg();
+        let Chats = await WhatsApp.Client.getAllChatsNewMsg();
+        let chats = [];
+
+        for(let key in Chats){
+            if(Chats[key].id.server == 'c.us'){
+                chats.push(Chats[key]);
+            }
+        }
+
         res.status(200).send({
             chats,
             "message": "success"
         });
+    });
+
+    venomApi.get('/:id', async (req, res) => {
+        const Messages = await WhatsApp.Client.getAllChatsGroups(/*req.params.id + '@c.us'*/);
+        res.status(200).send({
+            Messages,
+            "message": "success"
+        })
     });
 
     venomApi.get('/valid', async (req, res) => {
@@ -96,8 +124,10 @@ WhatsApp.initVenom().then(() => {
     });
 
     venomApi.post('/', async (req, res) => {
+        let userReq = req.body;
 
     });
+
 }).catch((error) => {
     console.error(error);
 });
