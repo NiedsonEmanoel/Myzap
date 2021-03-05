@@ -106,14 +106,6 @@ WhatsApp.initVenom().then(() => {
         });
     });
 
-    venomApi.get('/:id', async (req, res) => {
-        const Messages = await WhatsApp.Client.getAllChatsGroups(/*req.params.id + '@c.us'*/);
-        res.status(200).send({
-            Messages,
-            "message": "success"
-        })
-    });
-
     venomApi.get('/valid', async (req, res) => {
         let number = req.query.number + '@c.us';
         const profile = await WhatsApp.Client.getNumberProfile(number);
@@ -148,6 +140,29 @@ WhatsApp.initVenom().then(() => {
             "to": arrNumbers,
             "message": "success"
         });
+    });
+
+    venomApi.post('/doc', async(req, res) => {
+        //WhatsApp.Client.sendFileFromBase64(to, base64, filename, message);
+        let numbers = new String(req.body.numbers);
+        numbers = numbers.replace(/\s/g, '');
+
+        let arrNumbers = numbers.split(',');
+        let base64 = req.body.base64;
+        let name = req.body.filename;
+        let messages = req.body.message
+
+        for(let key in arrNumbers){
+            await WhatsApp.Client.sendFileFromBase64(arrNumbers[key]+'@c.us', base64, name, messages);
+        }
+
+        res.status(200).send({
+            name,
+            messages,
+            'to': arrNumbers,
+            "message":"success"
+        });
+
     });
 
 }).catch((error) => {
