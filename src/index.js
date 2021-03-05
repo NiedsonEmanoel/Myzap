@@ -125,17 +125,26 @@ WhatsApp.initVenom().then(() => {
 
     venomApi.post('/', async (req, res) => {
         let numbers = new String(req.body.numbers);
+        let messages = new String(req.body.message);
+
         numbers = numbers.replace(/\s/g, '');
 
         let arrNumbers = numbers.split(',');
-        let messages = req.body.message;
+        let arrMessages = messages.split('/:end:/');
 
         for (let key in arrNumbers) {
-            await WhatsApp.Client.sendText(arrNumbers[key] + '@c.us', messages);
+            for (let keyM in arrMessages) {
+                await WhatsApp.Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
+            }
         }
 
+        /*{
+            "numbers":"558754756985, 5598652135",
+            "message": "Eae gente, tudo bem com vocês?/:end:/Hoje é isso./:end:/Tudo Beleza."
+        }*/
+
         res.status(200).send({
-            messages,
+            "messages": arrMessages,
             "to": arrNumbers,
             "message": "success"
         });
