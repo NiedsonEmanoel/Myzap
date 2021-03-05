@@ -42,7 +42,6 @@ module.exports = class {
             console.error('Erro ao iniciar o venom ' + e);
             process.exit(1);
         });
-
         this.onStart(this.Client);
         this.Client.onMessage(async (message) => await this.execMessages(message));
     }

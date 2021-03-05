@@ -94,8 +94,8 @@ WhatsApp.initVenom().then(() => {
         let Chats = await WhatsApp.Client.getAllChatsNewMsg();
         let chats = [];
 
-        for(let key in Chats){
-            if(Chats[key].id.server == 'c.us'){
+        for (let key in Chats) {
+            if (Chats[key].id.server == 'c.us') {
                 chats.push(Chats[key]);
             }
         }
@@ -124,8 +124,30 @@ WhatsApp.initVenom().then(() => {
     });
 
     venomApi.post('/', async (req, res) => {
-        let userReq = req.body;
+        let numbers = new String(req.body.numbers);
+        let messages = new String(req.body.message);
 
+        numbers = numbers.replace(/\s/g, '');
+
+        let arrNumbers = numbers.split(',');
+        let arrMessages = messages.split('/:end:/');
+
+        for (let key in arrNumbers) {
+            for (let keyM in arrMessages) {
+                await WhatsApp.Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
+            }
+        }
+
+        /*{
+            "numbers":"558754756985, 5598652135",
+            "message": "Eae gente, tudo bem com vocês?/:end:/Hoje é isso./:end:/Tudo Beleza."
+        }*/
+
+        res.status(200).send({
+            "messages": arrMessages,
+            "to": arrNumbers,
+            "message": "success"
+        });
     });
 
 }).catch((error) => {
