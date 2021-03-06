@@ -63,4 +63,8 @@ module.exports = class {
             }
         }
     }
+
+    static getVec() {
+        return this.#inAttendace;
+    }
 }

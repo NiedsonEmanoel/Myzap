@@ -2,6 +2,7 @@ const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
 const tempDB = require('../Databases/tempData');
+const list = require('../Models/Utils/generateList');
 const auxFunctions = require('../Models/functions');
 const fs = require('fs');
 
@@ -87,7 +88,9 @@ module.exports = class {
 
             //Aborta se a mensagem vier do próprio número
             if (message.from == this.#myself.number) {
-                console.log('Mensagem abortada\n');
+                if(message.body === '/lista'){
+                    this.Client.sendText(message.from, list());
+                }
                 return;
             }
 
