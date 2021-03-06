@@ -1,6 +1,7 @@
 const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
+const tempDB = require('../Databases/tempData');
 const auxFunctions = require('../Models/functions');
 const fs = require('fs');
 
@@ -9,6 +10,7 @@ module.exports = class {
     #onStartCallback
     #onStatusSessionCallback
     #onMessageCallback
+    #myself
     #onStateChange
 
     async onStart(callback) {
@@ -42,8 +44,34 @@ module.exports = class {
             console.error('Erro ao iniciar o venom ' + e);
             process.exit(1);
         });
-        this.onStart(this.Client);
-        this.Client.onMessage(async (message) => await this.execMessages(message));
+        const device = await this.Client.getHostDevice();
+
+        this.#myself = {
+            "number": device.wid._serialized,
+            "name": device.pushname,
+            "phone": device.phone.device_model,
+            "waVersion": device.phone.wa_version
+        }
+
+        let modelMessage = require('../Models/initialMessage');
+
+        await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
+        await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[1]).then(console.log('- [INITIAL_MESSAGE][1]: Sent'));
+        await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[2]).then(() => {
+            console.info('- [INITIAL_MESSAGE][2]: Sent');
+
+            console.info('- [SYSTEM]: STARTING');
+
+            this.onStart(this.Client);
+
+            console.info('- [SYSTEM]: ACTIVE');
+
+            this.Client.onAnyMessage(async (message) => await this.execMessages(message));
+        }).catch(e => {
+            console.log('Error ' + e);
+        });
+
+
     }
 
     async execMessages(message) {
@@ -52,8 +80,26 @@ module.exports = class {
         try {
             let bot = new dialogflow(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
 
+            //Abortadores 
+
             //Aborta se a mensagem vier de um grupo
             if (message.isGroupMsg === true) { console.log('Mensagem abortada\n'); return; }
+
+            //Aborta se a mensagem vier do próprio número
+            if (message.from == this.#myself.number) {
+                console.log('Mensagem abortada\n');
+                return;
+            }
+
+            //Aborta se vier de um cliente em atendimento
+            if(tempDB.containsByNumber(message.from)){
+                tempDB.addMessage(message.from, message.body);
+                if(tempDB.isFirst(message.from)){
+                    await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
+                    return;
+                }
+                return;
+            }
 
             if (message.type === 'chat') {
                 console.info('Type: Text');
@@ -124,6 +170,14 @@ module.exports = class {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Fallback');
                 }
+            }
+            //É a intent de atendimento ao cliente?
+            if (intent === process.env.INTENT_SAC) {
+                console.log('Intent mapeada');
+                //Adiciona no array temporário --
+                tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
+                //Avisa ao dispositivo -- versão standalone próprio número.
+                this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
             }
         } catch (e) {
             console.error('Error ' + e);
