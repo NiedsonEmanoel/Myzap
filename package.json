@@ -1,6 +1,6 @@
 {
     "name": "myzap",
-    "version": "4.0.1",
+    "version": "4.0.7",
     "description": "O Myzap realiza a integração do WhatsApp com o DialogFlow",
     "main": "index.js",
     "scripts": {

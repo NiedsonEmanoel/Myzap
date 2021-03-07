@@ -1,6 +1,9 @@
 "use strict";
+const path = require('path');
+const pathEnv = path.resolve(__dirname, '.env');
+
 //.env
-require('dotenv').config();
+require('dotenv').config({path: pathEnv});
 
 //Libs
 const express = require('express');
@@ -84,7 +87,6 @@ restApi.use(bodyParser.json());
             console.info(`Servidor HTTP da API do WhatsApp rodando em: http://localhost:${process.env.wpPORT}/`);
             console.info(`Servidor HTTP da RestAPI rodando em: http://localhost:${process.env.PORT}/`);
     }
-    console.log();
 }());
 
 WhatsApp.initVenom().then(() => {
