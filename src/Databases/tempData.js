@@ -1,5 +1,6 @@
 module.exports = class {
     static #inAttendace = [];
+    static #first = [];
 
     static addAttendace(name, number, photo) {
         const now = new Date();
@@ -7,13 +8,13 @@ module.exports = class {
             "name": name,
             "number": number,
             "photoUrl": photo,
-            "first": true,
             "requestDate": now,
             "messagesClient": {
                 "content": [],
                 "date": []
             }
         }
+        this.#first.push(number);
         this.#inAttendace.push(user);
     }
 
@@ -49,18 +50,10 @@ module.exports = class {
     }
 
     static isFirst(number) {
-        for(let key in this.#inAttendace){
-            if(this.#inAttendace[key].number == number){
-                if(this.#inAttendace[key].first === true){
-                    this.#inAttendace[key].first = false;
-                    return true;
-                }else{
-                    return false;
-                }
-            }else{
-                console.log('Numero não está na lista de atendimento');
-                return false;       
-            }
+        if(this.#first.includes(number)){
+            let index = this.#first.indexOf(number);
+            this.#first = this.#first.splice(index+1, 1)
+            return true;
         }
     }
 

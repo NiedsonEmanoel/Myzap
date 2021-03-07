@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
     if (!reqAuth) {
         return res.status(401).send({ error: "Token não informado." });
     }
-    if(reqAuth === process.env.TOKENVenom) {
+    if(reqAuth === process.env.TOKENDialogflow) {
         return next();
     }else{
         return res.status(401).send({ error: "Token inválido"});
