@@ -57,9 +57,8 @@ module.exports = class {
         let modelMessage = require('../Models/initialMessage');
 
         await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
-        await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[1]).then(console.log('- [INITIAL_MESSAGE][1]: Sent'));
-        await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[2]).then(() => {
-            console.info('- [INITIAL_MESSAGE][2]: Sent');
+      
+        console.info('- [INITIAL_MESSAGE][2]: Sent');
 
             console.info('- [SYSTEM]: STARTING');
 
@@ -68,10 +67,6 @@ module.exports = class {
             console.info('- [SYSTEM]: ACTIVE');
 
             this.Client.onAnyMessage(async (message) => await this.execMessages(message));
-        }).catch(e => {
-            console.log('Error ' + e);
-        });
-
 
     }
 
