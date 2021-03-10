@@ -4,7 +4,10 @@ const Router = express.Router();
 
 Router.get('/', Venom.receberChatsNovos);
 Router.get('/valid', Venom.verificarNumero);
-Router.get('/battery', Venom.nivelBateria);
+
+Router.get('/device', Venom.inputDeviceInfo)
+Router.get('/device/battery', Venom.nivelBateria);
+
 Router.post('/mensagem', Venom.enviarMensagens);
 Router.post('/mensagem.doc', Venom.enviarArquivoBase64);
 

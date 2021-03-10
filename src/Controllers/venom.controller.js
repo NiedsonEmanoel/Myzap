@@ -62,8 +62,17 @@ module.exports = {
         });
     },
 
+    async inputDeviceInfo(req, res){
+        let info = await WhatsApp.Client.getHostDevice();
+
+        res.status(200).send({
+            "device": info,
+            "message": "success"
+        });
+    },
+
     async nivelBateria(req, res){
-        let level = WhatsApp.Client.getBatteryLevel();
+        let level = await WhatsApp.Client.getBatteryLevel();
         res.status(200).send({
             "level": level,
             "message": "success"
@@ -82,7 +91,7 @@ module.exports = {
         for (let key in arrNumbers) {
             await WhatsApp.Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, messages);
         }
-
+        
         res.status(200).send({
             name,
             messages,
