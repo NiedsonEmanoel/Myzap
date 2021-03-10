@@ -6,7 +6,6 @@ const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
 module.exports = class {
-    #qrCODE
     #onStartCallback
     #onStatusSessionCallback
     #onMessageCallback
