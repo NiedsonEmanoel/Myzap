@@ -82,7 +82,7 @@ module.exports = class {
             "waVersion": device.phone.wa_version
         }
 
-        if (process.env.SEND_NO_PISHING !== 'NO') {
+        if (process.env.SEND_NO_PISHING !== '0') {
             await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
         }
 
