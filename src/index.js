@@ -17,8 +17,7 @@ let app = require('./Routes/app');
 const Venom = require('./Controllers/Classes/Venom');
 
 //Models
-const limiter = require('./Models/limiter');
-const cors = require('./Models/cors');
+const functions = require('./Functions/functions');
 
 //Midlewares
 const venomAuth = require('./Middlewares/venomAuth');
@@ -34,12 +33,12 @@ const restApi = express();
 restApi.use(app);
 
 //Cors
-venomApi.use(cors);
-restApi.use(cors);
+venomApi.use(functions.Cors);
+restApi.use(functions.Cors);
 
 //Proteção de DDOS
-venomApi.use(limiter);
-restApi.use(limiter);
+venomApi.use(functions.Limiter);
+restApi.use(functions.Limiter);
 
 //Logger
 venomApi.use(morgan());

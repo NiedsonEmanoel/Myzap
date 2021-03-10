@@ -1,6 +1,6 @@
-const writeName = require('../Models/Utils/writeFileName').writeFileName;
-const Fallback = require('../Models/Utils/fallbackResponses');
-const Greeting = require('../Models/Utils/greetings');
+const writeName = require('../Functions/exports/writeFileName').writeFileName;
+const Fallback = require('../Functions/exports/fallbackResponses');
+const Greeting = require('../Functions/exports/greetings');
 
 test('Os nomes estão sendo escritos?', () => {
     expect(writeName('55877565', 'mp3')).toBeDefined();

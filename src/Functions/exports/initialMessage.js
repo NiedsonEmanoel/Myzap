@@ -1,4 +1,4 @@
-let versionFlow = require('../../package.json');
+let versionFlow = require('../../../package.json');
 module.exports = function(myself) {
     let text = [];
     text[0] = `Olá *${myself.name}*, seu WhatsApp versão _${myself.waVersion}_ está *atualmente conectado em uma plataforma de automação*, ou seja, seu dispositivo está funcionando como um *chatbot*.`

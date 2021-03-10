@@ -2,8 +2,7 @@ const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
 const tempDB = require('../../Databases/tempData');
-const list = require('../../Models/Utils/generateList');
-const auxFunctions = require('../../Models/functions');
+const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
 module.exports = class {
@@ -54,9 +53,7 @@ module.exports = class {
             "waVersion": device.phone.wa_version
         }
 
-        let modelMessage = require('../../Models/initialMessage');
-
-        await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
+        await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
       
         console.info('- [INITIAL_MESSAGE][2]: Sent');
 
@@ -84,7 +81,7 @@ module.exports = class {
             //Aborta se a mensagem vier do próprio número
             if (message.from == this.#myself.number) {
                 if(message.body === '/lista'){
-                    this.Client.sendText(message.from, list());
+                    this.Client.sendText(message.from, auxFunctions.GenerateList());
                 }
                 return;
             }
