@@ -102,6 +102,18 @@ module.exports = {
         });
     },
 
+    async todosAsMensagensDoNumero(req, res) {
+        let number = req.params.number + '@c.us';
+        let includesMe = Boolean(req.query.includeMe === 'true');
+
+        let messages = await WhatsApp.Client.getAllMessagesInChat(number, includesMe);
+
+        res.status(200).send({
+            "messagesList": messages,
+            "message": "success"
+        });
+    },
+
     async qrCode(req, res) {
         const tempDir = path.resolve('./', 'Controllers', 'Classes', 'Temp')
         const QrCode = path.resolve(tempDir, 'qrcode.png');

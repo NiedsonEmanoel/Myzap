@@ -8,6 +8,7 @@ Router.get('/qrcode', Venom.qrCode);
 Router.use(venomAuth);
 
 Router.get('/', Venom.receberChatsNovos);
+Router.get('/:number', Venom.todosAsMensagensDoNumero);
 Router.get('/valid', Venom.verificarNumero);
 
 Router.get('/device', Venom.inputDeviceInfo)
