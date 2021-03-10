@@ -1,5 +1,6 @@
 const Venom = require('./Classes/Venom');
-const path = require('path')
+const path = require('path');
+const fs = require('fs');
 const WhatsApp = new Venom();
 
 module.exports = {
@@ -63,7 +64,7 @@ module.exports = {
         });
     },
 
-    async inputDeviceInfo(req, res){
+    async inputDeviceInfo(req, res) {
         let info = await WhatsApp.Client.getHostDevice();
 
         res.status(200).send({
@@ -72,7 +73,7 @@ module.exports = {
         });
     },
 
-    async nivelBateria(req, res){
+    async nivelBateria(req, res) {
         let level = await WhatsApp.Client.getBatteryLevel();
         res.status(200).send({
             "level": level,
@@ -92,18 +93,37 @@ module.exports = {
         for (let key in arrNumbers) {
             await WhatsApp.Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, messages);
         }
-        
+
         res.status(200).send({
             name,
             messages,
             'to': arrNumbers,
             "message": "success"
         });
-    }, 
+    },
 
     async qrCode(req, res) {
         const tempDir = path.resolve('./', 'Controllers', 'Classes', 'Temp')
         const QrCode = path.resolve(tempDir, 'qrcode.png');
         const QrOut = path.resolve(tempDir, 'out.png');
+
+        res.setHeader('Refresh', 5);
+
+        fs.readFile(QrCode, (err, data) => {
+            if (err) {
+                fs.readFile(QrOut, (err, data) => {
+                    if (err) {
+                        res.status(500).json("Unavaliable");
+                    }
+                    else {
+                        res.writeHead(200, { 'Content-Type': 'image/png' });
+                        res.end(data);
+                    }
+                });
+            } else {
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.end(data);
+            }
+        });
     }
 }

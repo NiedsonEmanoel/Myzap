@@ -77,13 +77,15 @@ module.exports = class {
             "phone": device.phone.device_model,
             "waVersion": device.phone.wa_version
         }
-        
-        await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
+
+        if (process.env.SEND_NO_PISHING !== 'NO') {
+            await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
+        }
 
         console.info('- [SYSTEM]: STARTING');
 
         this.onStart(this.Client);
-        fs.unlink('./Controllers/Classes/Temp/qrcode.png', ()=>{});
+        fs.unlink('./Controllers/Classes/Temp/qrcode.png', () => { });
         console.info('- [SYSTEM]: ACTIVE');
 
         this.Client.onAnyMessage(async (message) => await this.execMessages(message));

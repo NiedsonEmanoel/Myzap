@@ -21,22 +21,6 @@ const functions = require('./Functions/functions');
 //Apps do Express
 const restApi = express();
 
-//Routes
-restApi.use(app);
-
-//Cors
-restApi.use(functions.Cors);
-
-//Proteção de DDOS
-restApi.use(functions.Limiter);
-
-//Logger
-restApi.use(morgan());
-
-//Parser
-restApi.use(bodyParser.urlencoded({ limit: '20mb' }));
-restApi.use(bodyParser.json({ limit: '20mb' }));
-
 //Init Venom
 const WhatsApp = require('./Controllers/venom.controller');
 
@@ -74,4 +58,20 @@ const WhatsApp = require('./Controllers/venom.controller');
             restApi.listen(process.env.PORT, () => { });
             console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT}/`);
     }
+
+    //Cors
+    restApi.use(functions.Cors);
+
+    //Proteção de DDOS
+    restApi.use(functions.Limiter);
+
+    //Logger
+    restApi.use(morgan());
+
+    //Parser
+    restApi.use(bodyParser.urlencoded({ limit: '20mb' }));
+    restApi.use(bodyParser.json({ limit: '20mb' }));
+
+    //Routes
+    restApi.use(app);
 }());
