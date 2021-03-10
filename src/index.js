@@ -1,4 +1,6 @@
 "use strict";
+
+//Path .env
 const path = require('path');
 const pathEnv = path.resolve(__dirname, '.env');
 
@@ -38,13 +40,11 @@ restApi.use(bodyParser.json({ limit: '20mb' }));
 //Init Venom
 const WhatsApp = require('./Controllers/venom.controller');
 
-async function Init() {
+(async function () {
     await WhatsApp.Iniciar();
-}
+}());
 
-Init();
-
-
+//Iniciar servidor da API
 (function () {
     console.clear();
     switch (process.env.useHTTPS) {

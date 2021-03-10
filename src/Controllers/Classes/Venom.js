@@ -39,8 +39,33 @@ module.exports = class {
 
     async initVenom() {
         this.Client = await venom.create('MyZAP', (Base64QR => {
-            this.#qrCODE = Base64QR;
-        }), this.#onStatusSessionCallback, { disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true }).catch(e => {
+            let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            let buffer = new Buffer.from(matches[2], 'base64');
+            fs.writeFile('./Controllers/Classes/Temp/qrcode.png', buffer, () => { });
+        }), this.#onStatusSessionCallback, {
+            disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
+                '--js-flags="--max_old_space_size=80" --disable-web-security',
+                '--no-sandbox',
+                '--disable-web-security',
+                '--aggressive-cache-discard',
+                '--disable-cache',
+                '--disable-application-cache',
+                '--disable-offline-load-stale-cache',
+                '--disk-cache-size=0',
+                '--disable-background-networking',
+                '--disable-default-apps', '--disable-extensions',
+                '--disable-sync',
+                '--disable-translate',
+                '--hide-scrollbars',
+                '--metrics-recording-only',
+                '--mute-audio',
+                '--no-first-run',
+                '--safebrowsing-disable-auto-update',
+                '--ignore-certificate-errors',
+                '--ignore-ssl-errors',
+                '--ignore-certificate-errors-spki-list'
+            ]
+        }).catch(e => {
             console.error('Erro ao iniciar o venom ' + e);
             process.exit(1);
         });
@@ -52,23 +77,20 @@ module.exports = class {
             "phone": device.phone.device_model,
             "waVersion": device.phone.wa_version
         }
-
+        
         await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
-      
-        console.info('- [INITIAL_MESSAGE][2]: Sent');
 
-            console.info('- [SYSTEM]: STARTING');
+        console.info('- [SYSTEM]: STARTING');
 
-            this.onStart(this.Client);
+        this.onStart(this.Client);
+        fs.unlink('./Controllers/Classes/Temp/qrcode.png', ()=>{});
+        console.info('- [SYSTEM]: ACTIVE');
 
-            console.info('- [SYSTEM]: ACTIVE');
-
-            this.Client.onAnyMessage(async (message) => await this.execMessages(message));
+        this.Client.onAnyMessage(async (message) => await this.execMessages(message));
 
     }
 
     async execMessages(message) {
-        console.info('\nMensagem recebida!');
         let intent;
         try {
             let bot = new dialogflow(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
@@ -76,28 +98,35 @@ module.exports = class {
             //Abortadores 
 
             //Aborta se a mensagem vier de um grupo
-            if (message.isGroupMsg === true) { console.log('Mensagem abortada\n'); return; }
+            if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
 
             //Aborta se a mensagem vier do próprio número
             if (message.from == this.#myself.number) {
-                if(message.body === '/lista'){
+                if (message.body === '/lista') {
                     this.Client.sendText(message.from, auxFunctions.GenerateList());
                 }
                 return;
             }
 
             //Aborta se vier de um cliente em atendimento
-            if(tempDB.containsByNumber(message.from)){
+            if (tempDB.containsByNumber(message.from)) {
                 tempDB.addMessage(message.from, message.body);
-                if(tempDB.isFirst(message.from)){
+                if (tempDB.isFirst(message.from)) {
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
                     return;
                 }
                 return;
             }
 
+            console.info(`\nMensagem recebida!\nType: ${message.type}`);
+
             if (message.type === 'chat') {
-                console.info('Type: Text');
+
+                if (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 10000)) {
+                    this.Client.deleteMessage(message.from, message.id.toString(), false);
+                    console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
+                    return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
+                }
 
                 //Faz a request para o dialogFlow
                 let response = await bot.sendText(message.body);
@@ -168,7 +197,7 @@ module.exports = class {
             }
             //É a intent de atendimento ao cliente?
             if (intent === process.env.INTENT_SAC) {
-                console.log('Intent mapeada');
+                console.log('Atendimento solicitado via chat');
                 //Adiciona no array temporário --
                 tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
                 //Avisa ao dispositivo -- versão standalone próprio número.

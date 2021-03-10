@@ -10,10 +10,14 @@ module.exports = function () {
 
     vec = vec.sort(compare);
 
-    for (let key in vec) {
-        let number = new String(vec[key].number);
-        number = number.split('@', 1);
-        text += `\n*ID: ${key} - ${vec[key].name}*\n_https://api.whatsapp.com/send?phone=${number}_\n`;
+    if (vec.length === 0) {
+        text += `\n_Nenhum cliente em atendimento encontrado :(_`
+    } else {
+        for (let key in vec) {
+            let number = new String(vec[key].number);
+            number = number.split('@', 1);
+            text += `\n*ID: ${key} - ${vec[key].name}*\n_https://api.whatsapp.com/send?phone=${number}_\n`;
+        }
     }
 
     return text;
