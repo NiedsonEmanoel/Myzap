@@ -2,6 +2,7 @@
 
 //Path .env
 const path = require('path');
+const fs = require('fs');
 const pathEnv = path.resolve(__dirname, '.env');
 
 //.env
