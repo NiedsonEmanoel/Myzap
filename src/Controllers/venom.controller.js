@@ -89,6 +89,5 @@ module.exports = {
             'to': arrNumbers,
             "message": "success"
         });
-
     }
 }
