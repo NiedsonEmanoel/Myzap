@@ -32,16 +32,12 @@
     <div class="wrapper">
 
       <section>
-        <div id="title">
-          <img href="https://raw.githubusercontent.com/NiedsonEmanoel/Myzap-Flow/main/src/Controllers/Classes/Temp/myzap.png"/>
-          <h1>{{ site.title | default: site.github.repository_name }}</h1>
-          <p>{{ site.description | default: site.github.project_tagline }}</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></span>
-        </div>
 
         {{ content }}
 
+        <div id="title">
+          <span class="credits left">Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></span>
+        </div>
       </section>
 
     </div>
