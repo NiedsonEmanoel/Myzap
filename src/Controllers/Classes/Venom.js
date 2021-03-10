@@ -1,9 +1,9 @@
 const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
-const tempDB = require('../Databases/tempData');
-const list = require('../Models/Utils/generateList');
-const auxFunctions = require('../Models/functions');
+const tempDB = require('../../Databases/tempData');
+const list = require('../../Models/Utils/generateList');
+const auxFunctions = require('../../Models/functions');
 const fs = require('fs');
 
 module.exports = class {
@@ -54,7 +54,7 @@ module.exports = class {
             "waVersion": device.phone.wa_version
         }
 
-        let modelMessage = require('../Models/initialMessage');
+        let modelMessage = require('../../Models/initialMessage');
 
         await this.Client.sendText(this.#myself.number, modelMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
       

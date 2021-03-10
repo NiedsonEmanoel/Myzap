@@ -1,7 +1,7 @@
 "use strict";
 const dialogflow = require('@google-cloud/dialogflow');
 const util = require('util');
-const fallbackResponses = require('../Models/Utils/fallbackResponses');
+const fallbackResponses = require('../../Models/Utils/fallbackResponses');
 const fs = require('fs');
 
 module.exports = class {

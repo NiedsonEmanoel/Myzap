@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 let app = require('./Routes/app');
 
 //Controlers
-const Venom = require('./Controllers/Venom');
+const Venom = require('./Controllers/Classes/Venom');
 
 //Models
 const limiter = require('./Models/limiter');
