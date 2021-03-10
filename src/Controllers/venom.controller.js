@@ -1,4 +1,5 @@
 const Venom = require('./Classes/Venom');
+const path = require('path')
 const WhatsApp = new Venom();
 
 module.exports = {
@@ -98,5 +99,11 @@ module.exports = {
             'to': arrNumbers,
             "message": "success"
         });
+    }, 
+
+    async qrCode(req, res) {
+        const tempDir = path.resolve('./', 'Controllers', 'Classes', 'Temp')
+        const QrCode = path.resolve(tempDir, 'qrcode.png');
+        const QrOut = path.resolve(tempDir, 'out.png');
     }
 }
