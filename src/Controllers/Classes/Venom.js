@@ -42,7 +42,11 @@ module.exports = class {
             let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
             let buffer = new Buffer.from(matches[2], 'base64');
             fs.writeFile('./Controllers/Classes/Temp/qrcode.png', buffer, () => { });
-        }), this.#onStatusSessionCallback, {
+        }), (status) => {
+            if (status == 'qrReadSuccess') {
+                fs.unlink('./Controllers/Classes/Temp/qrcode.png', () => { });
+            }
+        }, {
             disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
                 '--js-flags="--max_old_space_size=80" --disable-web-security',
                 '--no-sandbox',
