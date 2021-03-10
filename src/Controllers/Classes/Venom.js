@@ -122,7 +122,7 @@ module.exports = class {
 
             if (message.type === 'chat') {
 
-                if (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 10000)) {
+                if (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256)) {
                     this.Client.deleteMessage(message.from, message.id.toString(), false);
                     console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
                     return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
