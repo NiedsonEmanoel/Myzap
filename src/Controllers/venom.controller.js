@@ -29,12 +29,19 @@ module.exports = {
     },
 
     async verificarNumero(req, res) {
-        let number = req.query.number + '@c.us';
+        let number = req.params.number + '@c.us';
         const profile = await WhatsApp.Client.getNumberProfile(number);
-        res.status(200).send({
-            profile,
-            "message": "success"
-        });
+        if (profile.status != 404) {
+            res.status(200).send({
+                profile,
+                "message": "success"
+            });
+        }else{
+            res.status(404).send({
+                profile,
+                "message": "success"
+            });
+        }
     },
 
     async enviarMensagens(req, res) {
