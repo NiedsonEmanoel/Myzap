@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ '/assets/css/ie.css' | relative_url }}">
     <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <title>MyZAP | Docs</title>
   </head>
   <body>
       <div id="header">
@@ -32,13 +32,16 @@
     <div class="wrapper">
 
       <section>
-        
-        {{ content }}
-        
-          <div id="title">
+        <div id="title">
+          <img href="https://raw.githubusercontent.com/NiedsonEmanoel/Myzap-Flow/main/src/Controllers/Classes/Temp/myzap.png"/>
+          <h1>{{ site.title | default: site.github.repository_name }}</h1>
+          <p>{{ site.description | default: site.github.project_tagline }}</p>
           <hr>
           <span class="credits left">Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></span>
         </div>
+
+        {{ content }}
+
       </section>
 
     </div>
