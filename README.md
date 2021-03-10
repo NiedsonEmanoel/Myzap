@@ -3,7 +3,7 @@
     <img src="src/Controllers/Classes/Temp/myzap.png" width="250">
     <h1 align="center">MyZAP-Flow</h1>
     <p align="center">MyZAP-Flow é um projeto open source que conecta o Dialogflow ao WhatsApp<br>dando suporte nativo para o reconhecimento de áudios e permite a conexão<br>com outras plataformas por meio de sua API REST.</p>
-    <p align="center" target="new_blank"><br>Documentação : <a href="https://niedsonemanoel.github.io/Myzap-Flow/">https://niedsonemanoel.github.io/Myzap-Flow</a></p>
+    <p align="center" target="_blank"><br>Documentação : <a href="https://niedsonemanoel.github.io/Myzap-Flow/">https://niedsonemanoel.github.io/Myzap-Flow</a></p>
 </p>
 <p align="center">
     <img src="https://img.shields.io/github/package-json/v/NiedsonEmanoel/myzap-flow">
