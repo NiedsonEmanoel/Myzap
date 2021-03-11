@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
     if (!reqAuth) {
         return res.status(400).send({ error: "ID não informado." });
     }
-    if ( ( (reqAuth >= 0) && (verify(req) ) ) || (reqAuth==0)) {
+    if ( ( (reqAuth >= 0) && (verify(reqAuth) ) ) || (reqAuth==0)) {
         return next();
     } else {
         return res.status(400).send({ error: "ID inválido" });

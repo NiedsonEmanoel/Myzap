@@ -5,12 +5,18 @@ let sessions = [''];
 
 module.exports = {
     async createSession(req, res) {
-        let index = sessions.length;// == 1 ? 1 : sessions.length - 1;
-        sessions.push(new Venom(index));
-        res.status(200).send({
-            "id": index,
-            "message": "success"
-        });
+        let index = sessions.length;
+        if (index >= 16) {
+            res.status(400).send({
+                "message": "Limite de sessões alcançado!"
+            });
+        } else {
+            sessions.push(new Venom(index));
+            res.status(200).send({
+                "id": index,
+                "message": "success"
+            });
+        }
     },
 
     getSessions() {
@@ -18,11 +24,11 @@ module.exports = {
         return index;
     },
 
-    async getMax(req, res){
-        let max  = sessions.length;
+    async getMax(req, res) {
+        let max = sessions.length;
         let sessionsX = [];
 
-        for(let i = 0; i<max; i++){
+        for (let i = 0; i < max; i++) {
             sessionsX.push(i);
         }
 
@@ -248,10 +254,10 @@ module.exports = {
             res.status(400).send({
                 "message": "Não é possível fechar a sessão principal."
             });
-        }else{
+        } else {
             await sessions[id].Client.close();
             res.status(200).send({
-                "id":id,
+                "id": id,
                 "message": "success"
             });
         }
