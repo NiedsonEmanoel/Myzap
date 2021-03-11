@@ -11,22 +11,22 @@ require('dotenv').config({ path: pathEnv });
 //Libs
 const express = require('express');
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
 
 //App - route
 let app = require('./Routes/app');
 
-//Models
+//Functions
 const functions = require('./Functions/functions');
 
 //Apps do Express
 const restApi = express();
 
 //Init Venom
-const WhatsApp = require('./Controllers/venom.controller');
+const WhatsApp = require('./Controllers/multisession.controller');
 
 (async function () {
-    await WhatsApp.Iniciar();
+    await WhatsApp.createInternal();
+    await WhatsApp.initilizeInternal();
 }());
 
 //Iniciar servidor da API
@@ -70,8 +70,8 @@ const WhatsApp = require('./Controllers/venom.controller');
     restApi.use(morgan());
 
     //Parser
-    restApi.use(bodyParser.urlencoded({ limit: '20mb' }));
-    restApi.use(bodyParser.json({ limit: '20mb' }));
+    restApi.use(express.urlencoded({ limit: '20mb', extended: true }));
+    restApi.use(express.json({ limit: '20mb' }));
 
     //Routes
     restApi.use(app);

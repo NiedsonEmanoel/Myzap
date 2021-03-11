@@ -6,12 +6,16 @@ const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
 module.exports = class {
-    #qrCODE
     #onStartCallback
     #onStatusSessionCallback
     #onMessageCallback
     #myself
+    #index
     #onStateChange
+
+    constructor(index){
+        this.#index = index;
+    }
 
     async onStart(callback) {
         if (callback) {
@@ -38,13 +42,13 @@ module.exports = class {
     }
 
     async initVenom() {
-        this.Client = await venom.create('MyZAP', (Base64QR => {
+        this.Client = await venom.create('MyZAP '+this.#index, (Base64QR => {
             let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
             let buffer = new Buffer.from(matches[2], 'base64');
-            fs.writeFile('./Controllers/Classes/Temp/qrcode.png', buffer, () => { });
+            fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), buffer, () => { });
         }), (status) => {
             if (status == 'qrReadSuccess') {
-                fs.unlink('./Controllers/Classes/Temp/qrcode.png', () => { });
+                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), () => { });
             }
         }, {
             disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
@@ -70,8 +74,7 @@ module.exports = class {
                 '--ignore-certificate-errors-spki-list'
             ]
         }).catch(e => {
-            console.error('Erro ao iniciar o venom ' + e);
-            process.exit(1);
+            console.error('Erro ao iniciar sessão ' + e);
         });
         const device = await this.Client.getHostDevice();
 
@@ -82,14 +85,14 @@ module.exports = class {
             "waVersion": device.phone.wa_version
         }
 
-        if (process.env.SEND_NO_PISHING !== 'NO') {
+        if (process.env.SEND_NO_PISHING !== '0') {
             await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
         }
 
         console.info('- [SYSTEM]: STARTING');
 
         this.onStart(this.Client);
-        fs.unlink('./Controllers/Classes/Temp/qrcode.png', () => { });
+        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), () => { });
         console.info('- [SYSTEM]: ACTIVE');
 
         this.Client.onAnyMessage(async (message) => await this.execMessages(message));
@@ -99,7 +102,7 @@ module.exports = class {
     async execMessages(message) {
         let intent;
         try {
-            let bot = new dialogflow(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
+            let bot = new dialogflow(process.env.GCP_PROJECT_NAME, path.resolve(process.env.JSON_LOCATION), process.env.LANGUAGE_CODE, message.from);
 
             //Abortadores 
 

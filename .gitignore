@@ -104,11 +104,11 @@ dist
 .tern-port
 
 #Venom-Ignore
-MyZAP.data.json
+*.data.json
 
 #Certificate
 *.crt
 *.key
 
 #MyJSON
-niedson.json
+src/tokens/*.json
