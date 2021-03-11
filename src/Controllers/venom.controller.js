@@ -1,7 +1,7 @@
 const Venom = require('./Classes/Venom');
 const path = require('path');
 const fs = require('fs');
-const WhatsApp = new Venom();
+const WhatsApp = new Venom(0);
 
 module.exports = {
     async Iniciar() {
@@ -36,7 +36,7 @@ module.exports = {
                 profile,
                 "message": "success"
             });
-        }else{
+        } else {
             res.status(404).send({
                 profile,
                 "message": "success"
@@ -46,7 +46,7 @@ module.exports = {
 
     async enviarMensagens(req, res) {
         let numbers = new String(req.body.numbers);
-        let messages = new String(req.body.message);
+        let messages = new String(req.body.messages);
 
         numbers = numbers.replace(/\s/g, '');
 
@@ -94,16 +94,23 @@ module.exports = {
 
         let arrNumbers = numbers.split(',');
         let base64 = req.body.base64;
-        let name = req.body.filename;
-        let messages = req.body.message
+        let name = req.body.name || 'file';
+        let message = req.body.message || '';
 
         for (let key in arrNumbers) {
-            await WhatsApp.Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, messages);
+            try {
+                await WhatsApp.Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, message);
+            } catch (e) {
+                res.status(400).send({
+                    'to': arrNumbers,
+                    "message": e.text
+                });
+            }
         }
 
         res.status(200).send({
             name,
-            messages,
+            message,
             'to': arrNumbers,
             "message": "success"
         });
@@ -144,5 +151,5 @@ module.exports = {
                 res.end(data);
             }
         });
-    }
+    },
 }

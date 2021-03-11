@@ -10,7 +10,12 @@ module.exports = class {
     #onStatusSessionCallback
     #onMessageCallback
     #myself
+    #index
     #onStateChange
+
+    constructor(index){
+        this.#index = index;
+    }
 
     async onStart(callback) {
         if (callback) {
@@ -37,13 +42,13 @@ module.exports = class {
     }
 
     async initVenom() {
-        this.Client = await venom.create('MyZAP', (Base64QR => {
+        this.Client = await venom.create('MyZAP '+this.#index, (Base64QR => {
             let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
             let buffer = new Buffer.from(matches[2], 'base64');
-            fs.writeFile('./Controllers/Classes/Temp/qrcode.png', buffer, () => { });
+            fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), buffer, () => { });
         }), (status) => {
             if (status == 'qrReadSuccess') {
-                fs.unlink('./Controllers/Classes/Temp/qrcode.png', () => { });
+                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode.png'), () => { });
             }
         }, {
             disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
@@ -98,7 +103,7 @@ module.exports = class {
     async execMessages(message) {
         let intent;
         try {
-            let bot = new dialogflow(process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE, message.from);
+            let bot = new dialogflow(process.env.GCP_PROJECT_NAME, path.resolve(process.env.JSON_LOCATION), process.env.LANGUAGE_CODE, message.from);
 
             //Abortadores 
 
