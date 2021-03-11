@@ -6,8 +6,8 @@ const trustID = require('../../../Middlewares/idPasser');
 
 Router.put('/sessions', venomAuth, Venom.createSession); // body{""}
 Router.get('/sessions', venomAuth, Venom.getMax); // []
-Router.post('/sessions', trustID, venomAuth, Venom.initializeSession); // /initialize?id=1
-Router.delete('/sessions', venomAuth, trustID, Venom.closeSession);
+Router.post('/sessions', trustID, venomAuth, Venom.initializeSession); // /sessions?id=1
+Router.delete('/sessions', venomAuth, trustID, Venom.closeSession); // /sessions?id=1
 
 Router.use(trustID);
 Router.get('/qrcode', Venom.qrCode); // /qrcode?id=1
