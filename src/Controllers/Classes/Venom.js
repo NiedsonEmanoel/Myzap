@@ -48,7 +48,7 @@ module.exports = class {
             fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), buffer, () => { });
         }), (status) => {
             if (status == 'qrReadSuccess') {
-                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode.png'), () => { });
+                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), () => { });
             }
         }, {
             disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
@@ -74,8 +74,7 @@ module.exports = class {
                 '--ignore-certificate-errors-spki-list'
             ]
         }).catch(e => {
-            console.error('Erro ao iniciar o venom ' + e);
-            process.exit(1);
+            console.error('Erro ao iniciar sessão ' + e);
         });
         const device = await this.Client.getHostDevice();
 
@@ -93,7 +92,7 @@ module.exports = class {
         console.info('- [SYSTEM]: STARTING');
 
         this.onStart(this.Client);
-        fs.unlink('./Controllers/Classes/Temp/qrcode.png', () => { });
+        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), () => { });
         console.info('- [SYSTEM]: ACTIVE');
 
         this.Client.onAnyMessage(async (message) => await this.execMessages(message));

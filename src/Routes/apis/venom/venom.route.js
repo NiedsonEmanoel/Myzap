@@ -17,7 +17,7 @@ Router.get('/', Venom.receberChatsNovos);// /?id=1
 Router.get('/:number', Venom.todosAsMensagensDoNumero); //558796574896?id=1
 Router.get('/valid', Venom.verificarNumero); // /558796574896?id=1
 Router.get('/device', Venom.inputDeviceInfo) // /device?id=1
-Router.get('/device/battery', Venom.nivelBateria); //  /device/battery?id=1
+Router.get('/device.battery', Venom.nivelBateria); //  /device/battery?id=1
 
 Router.post('/mensagem', Venom.enviarMensagens); // /mensagem?id=1 \body {"numbers": "558796574896, 558796574896", "messages": "Oi/:end:/Teste"}
 Router.post('/mensagem.doc', Venom.enviarArquivoBase64); // /mensagem.doc?id=1 \body {"numbers": "558796574896, 558796574896", "base64": "foo bar", "name":"name.ext", "message": "caption"}

@@ -2,11 +2,12 @@ const Venom = require('./Classes/Venom');
 const path = require('path');
 const fs = require('fs');
 let sessions = [''];
+let limit = new Number(process.env.SESSION_LIMIT) || 16;
 
 module.exports = {
     async createSession(req, res) {
         let index = sessions.length;
-        if (index >= 16) {
+        if (index >= limit) {
             res.status(400).send({
                 "message": "Limite de sessões alcançado!"
             });
