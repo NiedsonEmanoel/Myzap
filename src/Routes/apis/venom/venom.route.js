@@ -14,7 +14,7 @@ Router.get('/qrcode', Venom.qrCode); // /qrcode?id=1
 
 Router.use(venomAuth);
 Router.get('/', Venom.receberChatsNovos);// /?id=1
-Router.get('/:number', Venom.todosAsMensagensDoNumero); //558796574896?id=1
+Router.get('/:number', Venom.todosAsMensagensDoNumero); // /558796574896?id=1&includeMe=true
 Router.get('/valid', Venom.verificarNumero); // /558796574896?id=1
 Router.get('/device', Venom.inputDeviceInfo) // /device?id=1
 Router.get('/device.battery', Venom.nivelBateria); //  /device/battery?id=1
