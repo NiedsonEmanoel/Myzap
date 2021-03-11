@@ -2,6 +2,8 @@ const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
 const tempDB = require('../../Databases/tempData');
+const notifierHelper = require('../Classes/Notifier');
+const notifier = new notifierHelper();
 const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
@@ -13,7 +15,7 @@ module.exports = class {
     #index
     #onStateChange
 
-    constructor(index){
+    constructor(index) {
         this.#index = index;
     }
 
@@ -42,13 +44,13 @@ module.exports = class {
     }
 
     async initVenom() {
-        this.Client = await venom.create('MyZAP '+this.#index, (Base64QR => {
+        this.Client = await venom.create('MyZAP ' + this.#index, (Base64QR => {
             let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
             let buffer = new Buffer.from(matches[2], 'base64');
-            fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), buffer, () => { });
+            fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
         }), (status) => {
             if (status == 'qrReadSuccess') {
-                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), () => { });
+                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
             }
         }, {
             disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
@@ -87,13 +89,23 @@ module.exports = class {
 
         if (process.env.SEND_NO_PISHING !== '0') {
             await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
+            await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[1]).then(console.log('- [INITIAL_MESSAGE][1]: Sent'));
+            await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[2]).then(console.log('- [INITIAL_MESSAGE][2]: Sent'));
         }
 
         console.info('- [SYSTEM]: STARTING');
 
         this.onStart(this.Client);
-        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode'+this.#index+'.png'), () => { });
+        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
         console.info('- [SYSTEM]: ACTIVE');
+
+            setInterval(async() => {
+                let battery = await this.Client.getBatteryLevel();
+                if (battery <= 5) {
+                    notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                }
+            }, 1000 * 60 * 10);
+        
 
         this.Client.onAnyMessage(async (message) => await this.execMessages(message));
 
