@@ -67,7 +67,7 @@ const WhatsApp = require('./Controllers/multisession.controller');
     restApi.use(functions.Limiter);
 
     //Logger
-    restApi.use(morgan());
+    restApi.use(morgan('tiny'));
 
     //Parser
     restApi.use(express.urlencoded({ limit: '20mb', extended: true }));
