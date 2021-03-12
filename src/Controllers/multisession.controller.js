@@ -1,28 +1,23 @@
 const Venom = require('./Classes/Venom');
 const path = require('path');
 const fs = require('fs');
-let sessions = [''];
+let sessions = [];
+let started = [];
 let limit = new Number(process.env.SESSION_LIMIT) || 16;
 
 module.exports = {
-    async createSession(req, res) {
-        let index = sessions.length;
-        if (index >= limit) {
-            res.status(400).send({
-                "message": "Limite de sessões alcançado!"
-            });
-        } else {
-            sessions.push(new Venom(index));
-            res.status(200).send({
-                "id": index,
-                "message": "success"
-            });
+    async createInternal() {
+        for (let index = 0; index < limit; index++) {
+            sessions[index] = new Venom(index, process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE);
         }
     },
 
     getSessions() {
-        let index = sessions.length == 1 ? 1 : sessions.length - 1;
-        return index;
+        return started;
+    },
+
+    getLimit() {
+        return limit;
     },
 
     async getMax(req, res) {
@@ -39,12 +34,8 @@ module.exports = {
         });
     },
 
-    async createInternal() {
-        sessions[0] = new Venom(0);
-        return 0;
-    },
-
     async initilizeInternal() {
+        started.push('0');
         await sessions[0].initVenom().then(() => {
             return true;
         }).catch(() => {
@@ -61,6 +52,7 @@ module.exports = {
         }
         try {
             await sessions[id].initVenom().then(() => {
+                started.push(id);
                 res.status(200).send({
                     "id": id,
                     "message": "success"
@@ -77,6 +69,27 @@ module.exports = {
                 "id": id,
                 "message": "error",
                 "error": e
+            });
+        }
+    },
+
+    verifySession(req, res) {
+        let id = req.params.id;
+        if (!id) {
+            res.status(400).send({
+                "message": "id não informado"
+            });
+        }
+
+        if (started.includes(id)) {
+            res.status(200).send({
+                "message": "success",
+                "started" : "true"
+            });
+        }else{
+            res.status(404).send({
+                "message": "success",
+                "started" : "false"
             });
         }
     },
@@ -255,7 +268,12 @@ module.exports = {
             res.status(400).send({
                 "message": "Não é possível fechar a sessão principal."
             });
-        } else {
+        } else if (!started.includes(id)) {
+            res.status(404).send({
+                "message": "Não é possível fechar uma sessão não inicializada"
+            });
+        }
+        else {
             await sessions[id].Client.close();
             res.status(200).send({
                 "id": id,

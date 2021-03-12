@@ -112,3 +112,4 @@ dist
 
 #MyJSON
 src/tokens/*.json
+src/Views/package-lock.json

@@ -11,12 +11,18 @@ module.exports = class {
     #onStartCallback
     #onStatusSessionCallback
     #onMessageCallback
+    #GCP_PROJECT_NAME
+    #JSON_LOCATION
+    #LANGUAGE_CODE
     #myself
     #index
     #onStateChange
 
-    constructor(index) {
+    constructor(index, GCP_PROJECT_NAME, JSON_LOCATION, LANGUAGE_CODE) {
         this.#index = index;
+        this.#GCP_PROJECT_NAME = GCP_PROJECT_NAME;
+        this.#JSON_LOCATION = JSON_LOCATION;
+        this.#LANGUAGE_CODE = LANGUAGE_CODE;
     }
 
     async onStart(callback) {
@@ -114,7 +120,7 @@ module.exports = class {
     async execMessages(message) {
         let intent;
         try {
-            let bot = new dialogflow(process.env.GCP_PROJECT_NAME, path.resolve(process.env.JSON_LOCATION), process.env.LANGUAGE_CODE, message.from);
+            let bot = new dialogflow(this.#GCP_PROJECT_NAME, path.resolve(this.#JSON_LOCATION), this.#LANGUAGE_CODE, message.from);
 
             //Abortadores 
 
