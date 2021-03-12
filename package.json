@@ -5,9 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "cd src/ & node index",
-        "test": "cd src/ & cd tests/ & jest",
-        "prepare-linux": "cd src/ & cp .env-example .env & npm install",
-        "prepare-windows": "cd src/ & copy .env-example .env & npm install"
+        "test": "cd src/ & cd tests/ & jest"
     },
     "repository": {
         "type": "git",
@@ -42,6 +40,12 @@
         "uuid": "^8.3.2",
         "venom-bot": "^3.0.8"
     },
+    "nodemonConfig": {
+        "watch": ["index", "Routes/"],
+        "ext": "js",
+        "ignore": ["/*"],
+        "delay": "3000"
+      },
     "devDependencies": {
         "nodemon": "^2.0.7",
         "supertest": "^6.1.3"
