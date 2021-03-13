@@ -21,6 +21,10 @@ const functions = require('./Functions/functions');
 //Apps do Express
 const restApi = express();
 
+//MongoDB
+const mongoose = require('./Databases/Mongo');
+mongoose.connect();
+
 //Init Venom
 const WhatsApp = require('./Controllers/multisession.controller');
 
