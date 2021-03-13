@@ -7,7 +7,7 @@ app.use('/webhook', require('./webhooks/webhooks'));
 app.use('/api', require('./apis/api'));
 
 app.use(express.static(`${baseDir}`));
-app.get('/*', (req, res) => res.sendFile('index.html', { root: baseDir }));
+app.get('/*', (req, res) => res.sendFile('index.html', { root: baseDir }))
 
 app.use((req, res, next) => {
     const error = new Error('Not found');

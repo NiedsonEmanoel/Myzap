@@ -22,7 +22,7 @@ const functions = require('./Functions/functions');
 const restApi = express();
 
 //MongoDB
-const mongoose = require('./Databases/Mongo');
+const mongoose = require('./Databases/mongoHelper');
 mongoose.connect();
 
 //Init Venom

@@ -84,12 +84,12 @@ module.exports = {
         if (started.includes(id)) {
             res.status(200).send({
                 "message": "success",
-                "started" : "true"
+                "started": "true"
             });
-        }else{
+        } else {
             res.status(404).send({
                 "message": "success",
-                "started" : "false"
+                "started": "false"
             });
         }
     },
@@ -149,16 +149,33 @@ module.exports = {
                 "message": "id não informado"
             });
         }
+
         let numbers = new String(req.body.numbers);
         let messages = new String(req.body.messages);
 
         numbers = numbers.replace(/\s/g, '');
+        /*const str = '5587996755665';
+        let arr = [];
+            arr = str.split('');
+
+        console.log(str.substr(0, 4));
+            // expected output: "oz"
+
+        console.log(str.substr(5, 12));
+            // expected output: "zilla"
+
+        console.log(arr)*/
 
         let arrNumbers = numbers.split(',');
         let arrMessages = messages.split('/:end:/');
 
         for (let key in arrNumbers) {
             for (let keyM in arrMessages) {
+                if (arrNumbers[key].length == 13) {
+                    let part1 = arrNumbers[key].substr(0, 4);
+                    let part2 = arrNumbers[key].substr(5, 12)
+                    arrNumbers[key] = `${part1}${part2}`
+                }
                 await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
             }
         }
@@ -224,6 +241,11 @@ module.exports = {
 
         for (let key in arrNumbers) {
             try {
+                if (arrNumbers[key].length == 13) {
+                    let part1 = arrNumbers[key].substr(0, 4);
+                    let part2 = arrNumbers[key].substr(5, 12)
+                    arrNumbers[key] = `${part1}${part2}`
+                }
                 await sessions[id].Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, message);
             } catch (e) {
                 res.status(400).send({

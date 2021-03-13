@@ -38,14 +38,19 @@
         "morgan": "^1.10.0",
         "node-notifier": "^9.0.1",
         "uuid": "^8.3.2",
-        "venom-bot": "^3.0.8"
+        "venom-bot": "https://github.com/orkestral/venom/releases/download/nightly/venom-bot-nightly.tgz"
     },
     "nodemonConfig": {
-        "watch": ["index", "Routes/"],
+        "watch": [
+            "index",
+            "Routes/"
+        ],
         "ext": "js",
-        "ignore": ["/*"],
+        "ignore": [
+            "/*"
+        ],
         "delay": "3000"
-      },
+    },
     "devDependencies": {
         "nodemon": "^2.0.7",
         "supertest": "^6.1.3"
