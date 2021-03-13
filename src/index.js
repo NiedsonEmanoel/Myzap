@@ -21,6 +21,10 @@ const functions = require('./Functions/functions');
 //Apps do Express
 const restApi = express();
 
+//MongoDB
+const mongoose = require('./Databases/Mongo');
+mongoose.connect();
+
 //Init Venom
 const WhatsApp = require('./Controllers/multisession.controller');
 
@@ -67,7 +71,7 @@ const WhatsApp = require('./Controllers/multisession.controller');
     restApi.use(functions.Limiter);
 
     //Logger
-    restApi.use(morgan());
+    restApi.use(morgan('tiny'));
 
     //Parser
     restApi.use(express.urlencoded({ limit: '20mb', extended: true }));

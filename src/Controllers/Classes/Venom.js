@@ -227,8 +227,10 @@ module.exports = class {
                 console.log('Atendimento solicitado via chat');
                 //Adiciona no array temporário --
                 tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
+                
                 //Avisa ao dispositivo -- versão standalone próprio número.
                 this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
+                notifier.notify('Um novo cliente pediu atendimento');
             }
         } catch (e) {
             console.error('Error ' + e);
