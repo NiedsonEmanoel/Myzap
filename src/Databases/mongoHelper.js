@@ -12,7 +12,6 @@ module.exports = class {
             if(err) {
                 console.err(err);
             }else{
-                console.clear();
                 console.info('- MongoDB connected.')
             }
         });

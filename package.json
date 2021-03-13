@@ -5,7 +5,10 @@
     "main": "index.js",
     "scripts": {
         "start": "cd src/ & node index",
-        "test": "cd src/ & cd tests/ & jest"
+        "startDev": "cd src/ & nodemon index.js",
+        "reactDev": "cd src/Views & npm start",
+        "test": "cd src/ & cd tests/ & jest",
+        "dev": "concurrently \"npm run startDev\" \"npm run reactDev\""
     },
     "repository": {
         "type": "git",
@@ -40,19 +43,9 @@
         "uuid": "^8.3.2",
         "venom-bot": "https://github.com/orkestral/venom/releases/download/nightly/venom-bot-nightly.tgz"
     },
-    "nodemonConfig": {
-        "watch": [
-            "index",
-            "Routes/"
-        ],
-        "ext": "js",
-        "ignore": [
-            "/*"
-        ],
-        "delay": "3000"
-    },
     "devDependencies": {
         "nodemon": "^2.0.7",
+        "concurrently": "^6.0.0",
         "supertest": "^6.1.3"
     }
 }

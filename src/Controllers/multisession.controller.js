@@ -154,17 +154,6 @@ module.exports = {
         let messages = new String(req.body.messages);
 
         numbers = numbers.replace(/\s/g, '');
-        /*const str = '5587996755665';
-        let arr = [];
-            arr = str.split('');
-
-        console.log(str.substr(0, 4));
-            // expected output: "oz"
-
-        console.log(str.substr(5, 12));
-            // expected output: "zilla"
-
-        console.log(arr)*/
 
         let arrNumbers = numbers.split(',');
         let arrMessages = messages.split('/:end:/');
@@ -179,11 +168,6 @@ module.exports = {
                 await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
             }
         }
-
-        /*{
-            "numbers":"558754756985, 5598652135",
-            "message": "Eae gente, tudo bem com vocês?/:end:/Hoje é isso./:end:/Tudo Beleza."
-        }*/
 
         res.status(200).send({
             "id": id,

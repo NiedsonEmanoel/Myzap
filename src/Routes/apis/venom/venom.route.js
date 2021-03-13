@@ -12,7 +12,7 @@ Router.post('/sessions', venomAuth, trustID, Venom.initializeSession); // /sessi
 Router.delete('/sessions', venomAuth, trustID, Venom.closeSession); // /sessions?id=1
 
 Router.get('/chats', venomAuth, trustID, Venom.receberChatsNovos);// /?id=1
-Router.get('/chats/:number', venomAuth, trustID, Venom.todosAsMensagensDoNumero); // /558796574896?id=1&includeMe=true
+Router.get('/chats/:number', venomAuth, trustID, Venom.todosAsMensagensDoNumero); // /558796574896id=1&includeMe=true
 
 Router.get('/valid/:number', venomAuth, trustID, Venom.verificarNumero); // /558796574896?id=1
 
