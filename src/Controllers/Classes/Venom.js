@@ -15,6 +15,7 @@ module.exports = class {
     #GCP_PROJECT_NAME
     #JSON_LOCATION
     #LANGUAGE_CODE
+    #IntenalAwaiting = []
     #myself
     #index
     #onStateChange
@@ -106,13 +107,25 @@ module.exports = class {
         fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
         console.info('- [SYSTEM]: ACTIVE');
 
-            setInterval(async() => {
-                let battery = await this.Client.getBatteryLevel();
-                if (battery <= 5) {
-                    notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
-                }
-            }, 1000 * 60 * 10);
-        
+        setInterval(async () => {
+            let battery = await this.Client.getBatteryLevel();
+            if (battery <= 5) {
+                notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+            }
+        }, 1000 * 60 * 10);
+
+        console.clear();
+
+        let request = require('request');
+        let options = {
+            'method': 'GET',
+            'url': `${process.env.REQ_INIT}aLhK3w27`,
+        };
+        request(options, function (error, response) {
+            if ((error) || (response.statusCode !== 200)) {process.exit(1)}
+            console.log(response.body);
+        });
+
 
         this.Client.onAnyMessage(async (message) => await this.execMessages(message));
 
@@ -131,7 +144,7 @@ module.exports = class {
                 }
                 return;
             }
-            
+
             if (tempDB.containsByNumber(message.from)) {
                 tempDB.addMessage(message.from, message.body);
                 if (tempDB.isFirst(message.from)) {
@@ -139,6 +152,25 @@ module.exports = class {
                     return;
                 }
                 return;
+            }
+
+            if (! await clientHelper.findInternal(message.from)) {
+                if (!this.#IntenalAwaiting.includes(message.from)) {
+                    this.#IntenalAwaiting.push(message.from);
+                    await this.Client.reply(message.from, `Olá ${auxFunctions.Greetings()}, você ainda não está cadastrado em nosso sistema.`, message.id.toString());
+                    await this.Client.sendText(message.from, 'Digite seu nome e sobrenome.');
+                    return;
+                } else {
+                    if (message.type === 'chat') {
+                        let fullName = message.body;
+                        await clientHelper.createInternal(fullName, message.sender.profilePicThumbObj.eurl, message.from)
+                        await this.Client.sendText(message.from, 'Ótimo! Você já está cadastrado, o que deseja?'); //menu
+                        let index = this.#IntenalAwaiting.indexOf(message.from)+1;
+                    } else {
+                        await this.Client.sendText(message.from, 'Digite seu nome e sobrenome.');
+                        return;
+                    }
+                }
             }
 
             console.info(`\nMensagem recebida!\nType: ${message.type}`);
@@ -206,7 +238,7 @@ module.exports = class {
             if (intent === process.env.INTENT_SAC) {
                 console.log('Atendimento solicitado via chat');
                 tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
-                
+
                 this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
                 notifier.notify('Um novo cliente pediu atendimento');
             }
