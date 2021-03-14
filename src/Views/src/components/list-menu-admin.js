@@ -14,7 +14,7 @@ import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 export const mainListItems = (
   <div>
 
-    <ListItem button>
+    <ListItem button component="a" href="/admin">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>

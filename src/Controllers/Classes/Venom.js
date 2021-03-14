@@ -4,6 +4,7 @@ const path = require('path');
 const tempDB = require('../../Databases/tempData');
 const notifierHelper = require('../Classes/Notifier');
 const notifier = new notifierHelper();
+const clientHelper = require('../clients.controller');
 const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
