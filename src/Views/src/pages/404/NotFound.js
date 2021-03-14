@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import './NotFound.css'
 
 
-class Container extends React.Component {
+class Container extends Component {
     render() {
         setTimeout(() => {
-            window.location.href='/';
+            window.history.back();
         }, 7000);
         
         return (

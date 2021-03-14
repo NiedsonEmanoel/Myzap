@@ -1,0 +1,6 @@
+{
+    "ignore": [
+        "tokens/*"
+    ],
+    "delay": "500"
+}

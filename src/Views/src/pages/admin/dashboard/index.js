@@ -1,26 +1,11 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
 import MenuAdmin from '../../../components/menu-admin';
+import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit">
-        Niedson Emanoel
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {''}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 

@@ -1,39 +1,28 @@
 "use strict";
-
-//Path .env
 const path = require('path');
-const fs = require('fs');
 const pathEnv = path.resolve(__dirname, '.env');
 
 //.env
 require('dotenv').config({ path: pathEnv });
 
-//Libs
 const express = require('express');
 const morgan = require('morgan');
-
-//App - route
+const fs = require('fs');
 let app = require('./Routes/app');
-
-//Functions
 const functions = require('./Functions/functions');
 
-//Apps do Express
 const restApi = express();
 
-//MongoDB
-const mongoose = require('./Databases/Mongo');
-mongoose.connect();
+const mongoose = require('./Databases/mongoHelper');
 
-//Init Venom
 const WhatsApp = require('./Controllers/multisession.controller');
 
 (async function () {
+    await mongoose.connect();
     await WhatsApp.createInternal();
     await WhatsApp.initilizeInternal();
 }());
 
-//Iniciar servidor da API
 (function () {
     console.clear();
     switch (process.env.useHTTPS) {
@@ -64,19 +53,15 @@ const WhatsApp = require('./Controllers/multisession.controller');
             console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT}/`);
     }
 
-    //Cors
     restApi.use(functions.Cors);
 
-    //Proteção de DDOS
     restApi.use(functions.Limiter);
 
-    //Logger
     restApi.use(morgan('tiny'));
 
-    //Parser
     restApi.use(express.urlencoded({ limit: '20mb', extended: true }));
     restApi.use(express.json({ limit: '20mb' }));
 
-    //Routes
     restApi.use(app);
+
 }());
