@@ -142,21 +142,39 @@ module.exports = {
     },
 
 
-    async enviarMensagens(req, res) {
+    async enviarMensagens(req, res, next) {
         let id = req.query.id;
-        if (!id) {
-            res.status(400).send({
-                "message": "id não informado"
-            });
-        }
-
+        let worker = req.body.worker;
         let numbers = new String(req.body.numbers);
         let messages = new String(req.body.messages);
+
+        if (!numbers) {
+            const error = new Error('Number not specified');
+            error.status = 400;
+            next(error);
+        }
+
+        if (!worker) {
+            const error = new Error('Worker not specified');
+            error.status = 400;
+            next(error);
+        }
+
+        if (!messages) {
+            const error = new Error('Message not specified');
+            error.status = 400;
+            next(error);
+        }
 
         numbers = numbers.replace(/\s/g, '');
 
         let arrNumbers = numbers.split(',');
         let arrMessages = messages.split('/:end:/');
+        let visualMessage = messages.split('/:end:/');
+
+        for (let key in arrMessages) {
+            arrMessages[key] = `*${worker}:*\n\n${arrMessages[key]}`
+        }
 
         for (let key in arrNumbers) {
             for (let keyM in arrMessages) {
@@ -165,13 +183,14 @@ module.exports = {
                     let part2 = arrNumbers[key].substr(5, 12)
                     arrNumbers[key] = `${part1}${part2}`
                 }
-                await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
+                sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
             }
         }
 
         res.status(200).send({
             "id": id,
-            "messages": arrMessages,
+            "worker": worker,
+            "messages": visualMessage,
             "to": arrNumbers,
             "message": "success"
         });
@@ -208,14 +227,16 @@ module.exports = {
         });
     },
 
-    async enviarArquivoBase64(req, res) {
+    async enviarArquivoBase64(req, res, next) {
         let id = req.query.id;
-        if (!id) {
-            res.status(400).send({
-                "message": "id não informado"
-            });
-        }
         let numbers = new String(req.body.numbers);
+
+        if (!numbers) {
+            const error = new Error('Number not specified');
+            error.status = 400;
+            next(error);
+        }
+
         numbers = numbers.replace(/\s/g, '');
 
         let arrNumbers = numbers.split(',');
@@ -230,7 +251,7 @@ module.exports = {
                     let part2 = arrNumbers[key].substr(5, 12)
                     arrNumbers[key] = `${part1}${part2}`
                 }
-                await sessions[id].Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, message);
+                sessions[id].Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, message);
             } catch (e) {
                 res.status(400).send({
                     "id": id,

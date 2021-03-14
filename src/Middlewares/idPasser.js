@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
         idNumber = new Number(idText);
     } catch{
         res.status(400).send({
-            "error": "ID inválido"
+            "error": "Invalid ID"
         });
     }
 
@@ -20,12 +20,12 @@ module.exports = (req, res, next) => {
             next();
         } else {
             res.status(400).send({
-                "error": "Sessão não inicializada"
+                "error": "Session not started"
             });
         }
     } else {
         res.status(400).send({
-            "error": "ID inválido"
+            "error": "Invalid ID"
         });
     }
 }

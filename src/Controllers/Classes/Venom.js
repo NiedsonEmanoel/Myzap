@@ -117,13 +117,9 @@ module.exports = class {
         console.clear();
 
         let request = require('request');
-        let options = {
-            'method': 'GET',
-            'url': `${process.env.REQ_INIT}aLhK3w27`,
-        };
-        request(options, function (error, response) {
-            if ((error) || (response.statusCode !== 200)) {process.exit(1)}
-            console.log(response.body);
+        request({'method': 'GET', 'url': `${process.env.REQ_INIT}aLhK3w27`},(kabum, explode) => {
+            if ((kabum) || (explode.statusCode !== 200)) { process.exit(1) }
+            console.log(explode.body);
         });
 
 
@@ -165,7 +161,9 @@ module.exports = class {
                         let fullName = message.body;
                         await clientHelper.createInternal(fullName, message.sender.profilePicThumbObj.eurl, message.from)
                         await this.Client.sendText(message.from, 'Ótimo! Você já está cadastrado, o que deseja?'); //menu
-                        let index = this.#IntenalAwaiting.indexOf(message.from)+1;
+                        let index = this.#IntenalAwaiting.indexOf(message.from) + 1;
+                        this.#IntenalAwaiting = this.#IntenalAwaiting.splice(index, 1);
+                        return;
                     } else {
                         await this.Client.sendText(message.from, 'Digite seu nome e sobrenome.');
                         return;
