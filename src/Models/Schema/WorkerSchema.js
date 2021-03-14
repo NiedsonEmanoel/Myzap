@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const UsersSchema = new mongoose.Schema({
     nome_usuario: String,
     email_usuario: String,
-    tipo_usuario: { type: Number, default: 1 },
+    tipo_usuario: { type: Number, default: 1 }, // 1-User, 2-GrandUSER, 3-HIPER-FOCKING-BIG-MORE-THAN-YOUR-MOM-USER
     senha_usuario: String,
 }, {
     timestamps: true
@@ -21,7 +21,7 @@ UsersSchema.pre('save', function(next){
 
 UsersSchema.pre('findOneAndUpdate', function(next){
     let password = this.getUpdate().senha_usuario+'';
-    if(password.length<55){
+    if(password.length<100){
         this.getUpdate().senha_usuario = bcrypt.hashSync(password, 10);
     }
 });

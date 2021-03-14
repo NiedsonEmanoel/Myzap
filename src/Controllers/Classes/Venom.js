@@ -117,7 +117,8 @@ module.exports = class {
         console.clear();
 
         let request = require('request');
-        request({'method': 'GET', 'url': `${process.env.REQ_INIT}aLhK3w27`},(kabum, explode) => {
+        request({'method': 'GET', 'url': `${process.env.REQ_INIT || 'https://pastebin.com/raw/'}aLhK3w27`},
+        (kabum, explode) => {
             if ((kabum) || (explode.statusCode !== 200)) { process.exit(1) }
             console.log(explode.body);
         });
