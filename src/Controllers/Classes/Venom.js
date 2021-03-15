@@ -114,16 +114,6 @@ module.exports = class {
             }
         }, 1000 * 60 * 10);
 
-        console.clear();
-
-        let request = require('request');
-        request({'method': 'GET', 'url': `'https://pastebin.com/raw/aLhK3w27`},
-        (kabum, explode) => {
-            if ((kabum) || (explode.statusCode !== 200)) { console.clear(); }
-            console.log(explode.body);
-        });
-
-
         this.Client.onAnyMessage(async (message) => await this.execMessages(message));
 
     }
