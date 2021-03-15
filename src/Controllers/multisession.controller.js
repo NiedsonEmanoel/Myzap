@@ -328,11 +328,11 @@ module.exports = {
             let id = req.query.id;
             if (id == 0) {
                 res.status(400).send({
-                    "message": "Não é possível fechar a sessão principal."
+                    "message": "It isn't possible to close the main section."
                 });
             } else if (!started.includes(id)) {
                 res.status(404).send({
-                    "message": "Não é possível fechar uma sessão não inicializada"
+                    "message": "Unable to close an uninitialized session."
                 });
             }
             else {

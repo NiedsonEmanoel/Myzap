@@ -17,7 +17,6 @@ const mongoose = require('./Databases/mongoHelper');
 
 const WhatsApp = require('./Controllers/multisession.controller');
 
-
 (async function () {
     await mongoose.connect();
     await WhatsApp.createInternal();
@@ -48,8 +47,8 @@ const WhatsApp = require('./Controllers/multisession.controller');
 
             console.info(`Servidor HTTPS rodando em: https://localhost:${process.env.PORT}/`);
             break;
-        default:
 
+        default:
             restApi.listen(process.env.PORT, () => { });
             console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT}/`);
     }
