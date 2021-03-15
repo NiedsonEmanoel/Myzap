@@ -64,5 +64,4 @@ const WhatsApp = require('./Controllers/multisession.controller');
     restApi.use(express.json({ limit: '20mb' }));
 
     restApi.use(app);
-
 }());
