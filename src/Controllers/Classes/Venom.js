@@ -132,6 +132,12 @@ module.exports = class {
                 return;
             }
 
+            if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {
+                    this.Client.deleteMessage(message.from, message.id.toString(), false);
+                    console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
+                    return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
+            }    
+
             if (tempDB.containsByNumber(message.from)) {
                 tempDB.addMessage(message.from, message.body);
                 if (tempDB.isFirst(message.from)) {
@@ -165,49 +171,32 @@ module.exports = class {
             console.info(`\nMensagem recebida!\nType: ${message.type}`);
 
             if (message.type === 'chat') {
-
-                if (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256)) {
-                    this.Client.deleteMessage(message.from, message.id.toString(), false);
-                    console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
-                    return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
-                }
-
                 let response = await bot.sendText(message.body);
 
                 if (response.fulfillmentText) {
-
                     await this.Client.reply(message.from, response.fulfillmentText, message.id.toString());
-
                     intent = response.intent.displayName;
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: ' + response.fulfillmentText);
                 } else {
-
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: Fallback');
                 }
+
             } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
 
                 const Buffer = await this.Client.decryptFile(message);
-
                 let nameAudio = auxFunctions.WriteFileMime(message.from, message.mimetype);
-
                 let dir = path.join(__dirname, '/Temp', nameAudio);
-
                 fs.writeFileSync(dir, Buffer, 'base64', () => { });
-
                 let response = await bot.detectAudio(dir, true);
 
                 try {
+
                     if (response.queryResult.fulfillmentText) {
-
                         intent = response.queryResult.intent.displayName;
-
                         let nameAudioResponse = auxFunctions.WriteFileEXT(message.from, 'mp3');
-
                         let dirResponse = path.join(__dirname, '/Temp', nameAudioResponse);
-
                         fs.writeFileSync(dirResponse, response.outputAudio, () => { });
-
                         await this.Client.reply(message.from, response.queryResult.fulfillmentText, message.id.toString());
 
                         this.Client.sendVoice(message.from, dirResponse).then(() => {
@@ -215,21 +204,23 @@ module.exports = class {
                         }).catch((e) => {
                             console.error('Problemas no áudio');
                         }).finally(() => {
-
                             fs.unlink(dirResponse, () => { console.info('Cache limpo') });
                         });
                     }
+
                 } catch (e) {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Fallback');
                 }
             }
+
             if (intent === process.env.INTENT_SAC) {
+                
                 console.log('Atendimento solicitado via chat');
                 tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
-
                 this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
                 notifier.notify('Um novo cliente pediu atendimento');
+            
             }
         } catch (e) {
             console.error('Error ' + e);
