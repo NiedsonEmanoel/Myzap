@@ -138,20 +138,13 @@ module.exports = class {
                     return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
             }    
 
-            if (tempDB.containsByNumber(message.from)) {
-                tempDB.addMessage(message.from, message.body);
-                if (tempDB.isFirst(message.from)) {
-                    await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
-                    return;
-                }
-                return;
-            }
+            let RequestMongo = await clientHelper.findInternal(message.from);
 
-            if (! await clientHelper.findInternal(message.from)) {
+            if (! RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
                     await this.Client.reply(message.from, `Olá ${auxFunctions.Greetings()}, você ainda não está cadastrado em nosso sistema.`, message.id.toString());
-                    await this.Client.sendText(message.from, 'Digite seu nome e sobrenome.');
+                    await this.Client.sendText(message.from, 'Para podermos lhe atender com uma experiência completa, digite seu nome e sobrenome.');
                     return;
                 } else {
                     if (message.type === 'chat') {
@@ -168,7 +161,31 @@ module.exports = class {
                 }
             }
 
-            console.info(`\nMensagem recebida!\nType: ${message.type}`);
+            let User = RequestMongo.User;
+
+            if (User.inAttendace === true) {
+                /*
+                Aqui entra o código de sincronização de mensagens,
+                vou pegar da lib do telegram e salvar localmente.
+
+                *
+                *1. Criar uma pasta pra cada user
+                *2. Liberar via api
+                *3. Mandar mensagens para o mongo
+                *4. Se for mídia mandar somente o link para o mongo
+                *
+                *15/03/2021 - Niedson Emanoel 22:30
+
+                */
+                if (User.firstAttendace === true) {
+                    clientHelper.switchFirst(User);
+                    await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
+                    return;
+                }
+                return;
+            }
+
+            console.info(`\nMensagem recebida!\nType: ${message.type}\nSender: ${User.fullName}`);
 
             if (message.type === 'chat') {
                 let response = await bot.sendText(message.body);
@@ -215,9 +232,9 @@ module.exports = class {
             }
 
             if (intent === process.env.INTENT_SAC) {
-                
+
                 console.log('Atendimento solicitado via chat');
-                tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
+                await clientHelper.switchAttendance(User);
                 this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
                 notifier.notify('Um novo cliente pediu atendimento');
             
