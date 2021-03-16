@@ -6,7 +6,7 @@ const app = express.Router();
 app.use('/webhook', require('./webhooks/webhooks'));
 app.use('/api', require('./apis/api'));
 
-app.get('/files/:id', (req, res, next) => { // localhost:3000/api/files/8796755665?file=a.html
+app.get('/files/:id', (req, res, next) => { // localhost:3000/files/8796755665?file=a.html
     try {
         let { id } = req.params;
         let fileQuery = req.query.file;

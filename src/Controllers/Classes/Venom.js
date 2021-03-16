@@ -178,15 +178,17 @@ module.exports = class {
                     let chatId = message.from;
                     let dirF = path.resolve('./', 'Uploads') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
-                    let link = `http://localhost:${process.env.PORT}/api/files/${message.from}?file=${fileName}`;
+                    let link = `http://localhost:${process.env.PORT}/files/${message.from}?file=${fileName}`;
                     let dirN = dirF + '/' + fileName;
 
                     fs.mkdir(dirF, { recursive: true }, () => { });
                     const buffer = await this.Client.decryptFile(message);
                     fs.writeFile(dirN, buffer, () => { });
-
+                    
+                    await messageHelper.createMedia(type, fileName, link, author, chatId);
 
                 }
+                
                 if (User.firstAttendace === true) {
                     clientHelper.switchFirst(User);
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());

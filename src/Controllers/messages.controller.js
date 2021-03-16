@@ -16,7 +16,7 @@ module.exports = {
     async details(req, res, next) {
         try {
             let { chatId } = req.params;
-            chatId = chatId+'@c.us';
+            chatId = chatId + '@c.us';
 
             if (!chatId) {
                 const error = new Error('_ID not specified');
@@ -37,10 +37,17 @@ module.exports = {
 
     async createText(type, author, body, chatId) {
 
-        let data = {type, author, body, chatId};
+        let data = { type, author, body, chatId };
 
         Message = await Messages.create(data);
         console.log('criado')
         return;
     },
+
+    async createMedia(type, fileName, fileLink, author, chatId) {
+        let data = { type, author, fileName, fileLink, chatId };
+        Message = await Messages.create(data);
+        console.log('criado')
+        return;
+    }
 }
