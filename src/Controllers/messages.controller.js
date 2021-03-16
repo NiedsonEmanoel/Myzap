@@ -15,16 +15,16 @@ module.exports = {
 
     async details(req, res, next) {
         try {
-            let { _id } = req.params;
-            _id = _id+'@c.us';
+            let { chatId } = req.params;
+            chatId = chatId+'@c.us';
 
-            if (!_id) {
+            if (!chatId) {
                 const error = new Error('_ID not specified');
                 error.status = 400;
                 next(error);
             }
 
-            let Message = await Messages.find({ _id });
+            let Message = await Messages.find({ chatId });
 
             res.status(200).send({
                 "Message": Message,
