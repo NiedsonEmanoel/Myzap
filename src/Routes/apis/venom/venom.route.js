@@ -1,7 +1,7 @@
 const express = require('express');
 const Venom = require('../../../Controllers/multisession.controller');
 const Router = express.Router();
-const jwtPasser = require('../../../Middlewares/verify')
+const jwtPasser = require('../../../Middlewares/verify');
 const trustID_SESSION = require('../../../Middlewares/idPasserNOCREATE')
 const trustID = require('../../../Middlewares/idPasser');
 
