@@ -27,4 +27,14 @@ UsersSchema.pre('findOneAndUpdate', function (next) {
     }
 });
 
+UsersSchema.methods.isCorrectPassword = function (password, callback ){
+    bcrypt.compare(password,this.senha_usuario,function(err,same){
+        if(err){
+            callback(err);
+        }else{
+            callback(err, same);
+        }
+    })
+}
+
 module.exports = UsersSchema;

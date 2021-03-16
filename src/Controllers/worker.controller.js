@@ -104,24 +104,24 @@ module.exports = {
 
     async login(req, res) {
         const { email, senha } = req.body;
-        Usuario.findOne({ email_usuario: email }, function (err, user) {
+        Workers.findOne({ email_usuario: email }, function (err, user) {
             if (err) {
                 console.log(err);
-                res.status(200).json({ erro: "Erro no servidor. Por favor, tente novamente" });
+                res.status(500).json({ "error":err  });
             } else if (!user) {
-                res.status(200).json({ status: 2, error: 'E-mail não encontrado no banco de dados' });
+                res.status(401).json({ status: 2, "error": 'Access denied' });
             } else {
                 user.isCorrectPassword(senha, async function (err, same) {
                     if (err) {
-                        res.status(200).json({ error: "Erro no servidor. Por favor, tente novamente" });
+                        res.status(500).json({ error: err });
                     } else if (!same) {
-                        res.status(200).json({ status: 2, error: "A senha não confere" });
+                        res.status(401).json({ status: 2, error: "Access denied" });
                     } else {
                         const payload = { email };
                         const token = jwt.sign(payload, secret, {
                             expiresIn: '24h'
                         })
-                        res.cookie('token', token, { httpOnly: true });
+                        res.cookie('token', token);
                         res.status(200).json({ status: 1, auth: true, token: token, id_client: user._id, user_name: user.nome_usuario, user_type: user.tipo_usuario });
                     }
                 })
@@ -133,25 +133,25 @@ module.exports = {
     async checkToken(req, res) {
         const token = req.body.token || req.query.token || req.cookies.token || req.headers['x-access-token'] || req.headers.authorization;
         if (!token) {
-            res.json({ status: 401, msg: 'Não autorizado: Token inexistente!' });
+            res.status(401).json({ status: 401, msg: 'Access denied' });
         } else {
             jwt.verify(token, secret, function (err, decoded) {
                 if (err) {
-                    res.json({ status: 401, msg: 'Não autorizado: Token inválido!' });
+                    res.status(401).json({ status: 401, msg: 'Access denied' });
                 } else {
-                    res.json({ status: 200 })
+                    res.status(200).json({ status: 200 })
                 }
             })
         }
     },
 
     async destroyToken(req, res) {
-        const token = req.headers.token;
+        const token = req.headers.token || req.body.token || req.query.token || req.cookies.token || req.headers['x-access-token'] || req.headers.authorization;
         if (token) {
-            res.cookie('token', null, { httpOnly: true });
+            res.cookie('token', null);
         } else {
-            res.status(401).send("Logout não autorizado!")
+            res.status(401).send("Unauthorized logout!")
         }
-        res.send("Sessão finalizada com sucesso!");
+        res.send("Session ended successfully!");
     }
 }

@@ -7,6 +7,7 @@ require('dotenv').config({ path: pathEnv });
 
 const express = require('express');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser')
 const fs = require('fs');
 let app = require('./Routes/app');
 const functions = require('./Functions/functions');
@@ -61,6 +62,7 @@ const WhatsApp = require('./Controllers/multisession.controller');
 
     restApi.use(express.urlencoded({ limit: '20mb', extended: true }));
     restApi.use(express.json({ limit: '20mb' }));
-
+    restApi.use(cookieParser());
+    
     restApi.use(app);
 }());
