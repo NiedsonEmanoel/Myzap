@@ -15,6 +15,16 @@ const ClientSchema = new mongoose.Schema({
         required: true
     },
 
+    inAttendace: {
+        type: Boolean,
+        default: false
+    },
+
+    firstAttendace: {
+        type: Boolean,
+        default: true
+    }
+
 }, {
     timestamps: true
 });

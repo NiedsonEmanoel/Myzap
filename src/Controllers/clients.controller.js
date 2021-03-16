@@ -38,9 +38,18 @@ module.exports = {
         let User = await Clients.findOne({ chatId });
         try {
             let s = User.fullName;
-            return true;
+            let user = User;
+            let retur = {
+                "User": user,
+                "Exists": true
+            }
+            return retur;
         } catch {
-            return false;
+            let retur = {
+                "User": "",
+                "Exists": false
+            }
+            return retur;
         }
     },
 
@@ -53,7 +62,7 @@ module.exports = {
 
             try {
                 let s = client.fullName;
-                return res.status(400).send({ "message": "Cliente já existe" });
+                return res.status(400).send({ "message": "Client already been registered." });
             } catch {
                 data = { fullName, profileUrl, chatId };
                 user = await Clients.create(data);
@@ -117,6 +126,30 @@ module.exports = {
             });
         } catch (error) {
             next(error);
+        }
+    },
+
+    async switchAttendance(user) {
+        try {
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
+            inAttendace = inAttendace === true ? false : true;
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
+            return inAttendace;
+        } catch(e){
+            console.error(e)
+        }
+    },
+
+    async switchFirst(user) {
+        try {
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
+            firstAttendace = firstAttendace === true ? false : true;
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
+            return firstAttendace;
+        } catch(e){
+            console.error(e)
         }
     }
 }

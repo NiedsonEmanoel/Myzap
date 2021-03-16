@@ -5,3 +5,4 @@ api.use('/', require('./rest/rest.route'));
 api.use('/whatsapp', require('./venom/venom.route'));
 
 module.exports = api;
+

@@ -1,7 +1,7 @@
 const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
-const tempDB = require('../../Databases/tempData');
+const messageHelper = require('../../Controllers/messages.controller')
 const notifierHelper = require('../Classes/Notifier');
 const notifier = new notifierHelper();
 const clientHelper = require('../clients.controller');
@@ -114,17 +114,7 @@ module.exports = class {
             }
         }, 1000 * 60 * 10);
 
-        console.clear();
-
-        let request = require('request');
-        request({'method': 'GET', 'url': `'https://pastebin.com/raw/aLhK3w27`},
-        (kabum, explode) => {
-            if ((kabum) || (explode.statusCode !== 200)) { console.clear(); }
-            console.log(explode.body);
-        });
-
-
-        this.Client.onAnyMessage(async (message) => await this.execMessages(message));
+        this.Client.onMessage(async (message) => await this.execMessages(message));
 
     }
 
@@ -135,27 +125,19 @@ module.exports = class {
 
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
 
-            if (message.from == this.#myself.number) {
-                if (message.body === '/lista') {
-                    this.Client.sendText(message.from, auxFunctions.GenerateList());
-                }
-                return;
+            if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {
+                this.Client.deleteMessage(message.from, message.id.toString(), false);
+                console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
+                return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
             }
 
-            if (tempDB.containsByNumber(message.from)) {
-                tempDB.addMessage(message.from, message.body);
-                if (tempDB.isFirst(message.from)) {
-                    await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
-                    return;
-                }
-                return;
-            }
+            let RequestMongo = await clientHelper.findInternal(message.from);
 
-            if (! await clientHelper.findInternal(message.from)) {
+            if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
                     await this.Client.reply(message.from, `Olá ${auxFunctions.Greetings()}, você ainda não está cadastrado em nosso sistema.`, message.id.toString());
-                    await this.Client.sendText(message.from, 'Digite seu nome e sobrenome.');
+                    await this.Client.sendText(message.from, 'Para podermos lhe atender com uma experiência completa, digite seu nome e sobrenome.');
                     return;
                 } else {
                     if (message.type === 'chat') {
@@ -172,52 +154,68 @@ module.exports = class {
                 }
             }
 
-            console.info(`\nMensagem recebida!\nType: ${message.type}`);
+            let User = RequestMongo.User;
 
-            if (message.type === 'chat') {
-
-                if (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256)) {
-                    this.Client.deleteMessage(message.from, message.id.toString(), false);
-                    console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
-                    return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
+            if (User.inAttendace === true) {
+                if (message.body == '!sair') {
+                    await clientHelper.switchAttendance(User);
+                    await clientHelper.switchFirst(User);
+                    return;
                 }
 
+                if (message.type == 'chat') {
+                    let type = message.type;
+                    let author = message.author;
+                    let body = message.body;
+                    let chatId = message.from;
+
+                    await messageHelper.createText(type, author, body, chatId);
+                } else {
+                    /**
+                     * Aqui é a parte das mídias.
+                     * Terei que criar uma pasta pra cada contato
+                     * E mandar o link no mongo
+                     * Amanhã farei isso
+                     * 15/03/2021 - 23:33
+                     */
+                }
+                if (User.firstAttendace === true) {
+                    clientHelper.switchFirst(User);
+                    await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
+                    return;
+                }
+                return;
+            }
+
+            console.info(`\nMensagem recebida!\nType: ${message.type}\nSender: ${User.fullName}`);
+
+            if (message.type === 'chat') {
                 let response = await bot.sendText(message.body);
 
                 if (response.fulfillmentText) {
-
                     await this.Client.reply(message.from, response.fulfillmentText, message.id.toString());
-
                     intent = response.intent.displayName;
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: ' + response.fulfillmentText);
                 } else {
-
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: Fallback');
                 }
+
             } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
 
                 const Buffer = await this.Client.decryptFile(message);
-
                 let nameAudio = auxFunctions.WriteFileMime(message.from, message.mimetype);
-
                 let dir = path.join(__dirname, '/Temp', nameAudio);
-
                 fs.writeFileSync(dir, Buffer, 'base64', () => { });
-
                 let response = await bot.detectAudio(dir, true);
 
                 try {
+
                     if (response.queryResult.fulfillmentText) {
-
                         intent = response.queryResult.intent.displayName;
-
                         let nameAudioResponse = auxFunctions.WriteFileEXT(message.from, 'mp3');
-
                         let dirResponse = path.join(__dirname, '/Temp', nameAudioResponse);
-
                         fs.writeFileSync(dirResponse, response.outputAudio, () => { });
-
                         await this.Client.reply(message.from, response.queryResult.fulfillmentText, message.id.toString());
 
                         this.Client.sendVoice(message.from, dirResponse).then(() => {
@@ -225,21 +223,22 @@ module.exports = class {
                         }).catch((e) => {
                             console.error('Problemas no áudio');
                         }).finally(() => {
-
                             fs.unlink(dirResponse, () => { console.info('Cache limpo') });
                         });
                     }
+
                 } catch (e) {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Fallback');
                 }
             }
-            if (intent === process.env.INTENT_SAC) {
-                console.log('Atendimento solicitado via chat');
-                tempDB.addAttendace(message.sender.pushname, message.from, message.sender.profilePicThumbObj.eurl);
 
-                this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
+            if (intent === process.env.INTENT_SAC) {
+
+                console.log('Atendimento solicitado via chat');
+                await clientHelper.switchAttendance(User);
                 notifier.notify('Um novo cliente pediu atendimento');
+
             }
         } catch (e) {
             console.error('Error ' + e);
