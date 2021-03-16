@@ -29,10 +29,7 @@ const MessagesSchema = new mongoose.Schema ({
 
     fileName: String,
 
-    fileType: {
-        type: String,
-        default: 'image'
-    },
+    fileType: String
 
 }, {timestamps: true});
 

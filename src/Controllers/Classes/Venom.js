@@ -1,7 +1,7 @@
 const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
 const path = require('path');
-const tempDB = require('../../Databases/tempData');
+const messageHelper = require('../../Controllers/messages.controller')
 const notifierHelper = require('../Classes/Notifier');
 const notifier = new notifierHelper();
 const clientHelper = require('../clients.controller');
@@ -114,7 +114,7 @@ module.exports = class {
             }
         }, 1000 * 60 * 10);
 
-        this.Client.onAnyMessage(async (message) => await this.execMessages(message));
+        this.Client.onMessage(async (message) => await this.execMessages(message));
 
     }
 
@@ -125,22 +125,15 @@ module.exports = class {
 
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
 
-            if (message.from == this.#myself.number) {
-                if (message.body === '/lista') {
-                    this.Client.sendText(message.from, auxFunctions.GenerateList());
-                }
-                return;
-            }
-
             if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {
-                    this.Client.deleteMessage(message.from, message.id.toString(), false);
-                    console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
-                    return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
-            }    
+                this.Client.deleteMessage(message.from, message.id.toString(), false);
+                console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
+                return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
+            }
 
             let RequestMongo = await clientHelper.findInternal(message.from);
 
-            if (! RequestMongo.Exists) {
+            if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
                     await this.Client.reply(message.from, `Olá ${auxFunctions.Greetings()}, você ainda não está cadastrado em nosso sistema.`, message.id.toString());
@@ -164,19 +157,28 @@ module.exports = class {
             let User = RequestMongo.User;
 
             if (User.inAttendace === true) {
-                /*
-                Aqui entra o código de sincronização de mensagens,
-                vou pegar da lib do telegram e salvar localmente.
+                if (message.body == '!sair') {
+                    await clientHelper.switchAttendance(User);
+                    await clientHelper.switchFirst(User);
+                    return;
+                }
 
-                *
-                *1. Criar uma pasta pra cada user
-                *2. Liberar via api
-                *3. Mandar mensagens para o mongo
-                *4. Se for mídia mandar somente o link para o mongo
-                *
-                *15/03/2021 - Niedson Emanoel 22:30
+                if (message.type == 'chat') {
+                    let type = message.type;
+                    let author = message.author;
+                    let body = message.body;
+                    let chatId = message.from;
 
-                */
+                    await messageHelper.createText(type, author, body, chatId);
+                } else {
+                    /**
+                     * Aqui é a parte das mídias.
+                     * Terei que criar uma pasta pra cada contato
+                     * E mandar o link no mongo
+                     * Amanhã farei isso
+                     * 15/03/2021 - 23:33
+                     */
+                }
                 if (User.firstAttendace === true) {
                     clientHelper.switchFirst(User);
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
@@ -235,9 +237,8 @@ module.exports = class {
 
                 console.log('Atendimento solicitado via chat');
                 await clientHelper.switchAttendance(User);
-                this.Client.sendText(this.#myself.number, `Um novo cliente pediu atendimento, para ver a lista de atendimento digite */lista*`);
                 notifier.notify('Um novo cliente pediu atendimento');
-            
+
             }
         } catch (e) {
             console.error('Error ' + e);

@@ -14,12 +14,12 @@ const functions = require('./Functions/functions');
 
 const restApi = express();
 
-const mongoose = require('./Databases/mongoHelper');
+const mongoConector = require('./Databases/mongoHelper');
 
 const WhatsApp = require('./Controllers/multisession.controller');
 
 (async function () {
-    await mongoose.connect();
+    await mongoConector();
     await WhatsApp.createInternal();
     await WhatsApp.initilizeInternal();
 }());
