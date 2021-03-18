@@ -24,7 +24,7 @@
     <span><br/>Você pode conseguir um banco de dados mongo com até 512Mb de armazenamento gratuito em:</br>https://www.mongodb.com/cloud/atlas/signup (Solução oficial do Mongo)</br></br>Caso você queira rodar localmente indico esse tutorial do Youtube:</br>https://www.youtube.com/watch?v=aYRkF7sHrbk</span>
     <p> </p>
     <li><strong>Arquivo JSON do seu projeto Google Cloud Platforms</strong></li>
-    <span>Esse arquivo é fundamental para que seja efetuada a comunicação com seu Chatbot do Dialogflow </br>Caso você não a tenha siga os passos da sessão <a href="">Configurando o Dialogflow</a>.</span>
+    <span>Esse arquivo é fundamental para que seja efetuada a comunicação com seu Chatbot do Dialogflow </br>Caso você não a tenha siga os passos da sessão <a href="https://github.com/NiedsonEmanoel/Myzap-Flow#configurando-o-dialogflow">Configurando o Dialogflow</a>.</span>
 </ul>
 <h1>Configurando o Dialogflow</h1>
 <h1>Agradecimentos:</h1>
