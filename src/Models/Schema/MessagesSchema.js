@@ -32,6 +32,11 @@ const MessagesSchema = new mongoose.Schema ({
         ref: 'files'
     },
 
+    fileLinkDownload: {
+        type: String,
+        ref: 'files'
+    },
+
     fileName: String,
 
 }, {timestamps: true});

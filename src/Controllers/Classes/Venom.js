@@ -179,13 +179,14 @@ module.exports = class {
                     let dirF = path.resolve('./', 'Uploads') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
                     let link = `http://localhost:${process.env.PORT}/files/${message.from}?file=${fileName}`;
+                    let fileLinkDownload = `http://localhost:${process.env.PORT}/files/${message.from}?file=${fileName}&download=true`;
                     let dirN = dirF + '/' + fileName;
 
                     fs.mkdir(dirF, { recursive: true }, () => { });
                     const buffer = await this.Client.decryptFile(message);
                     fs.writeFile(dirN, buffer, () => { });
                     
-                    await messageHelper.createMedia(type, fileName, link, author, chatId);
+                    await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload);
 
                 }
                 
