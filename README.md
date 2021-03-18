@@ -26,6 +26,7 @@
     <li><strong>Arquivo JSON do seu projeto Google Cloud Platforms</strong></li>
     <span>Esse arquivo é fundamental para que seja efetuada a comunicação com seu Chatbot do Dialogflow </br>Caso você não a tenha siga os passos da sessão <a href="">Configurando o Dialogflow</a>.</span>
 </ul>
+<h1>Configurando o Dialogflow</h1>
 <h1>Agradecimentos:</h1>
 
 
