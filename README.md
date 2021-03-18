@@ -24,12 +24,13 @@
     <li><strong>Link do seu banco de dados Mongo DB</strong></li>
     <span>Ele é similar a esse: <strong>mongodb://localhost:27017/myzap-db</strong>  (Onde o myzap-db é o nome do banco, você pode colocar o que quiser.)</br></span>
     <span><br/>Você pode conseguir um banco de dados mongo com até 512Mb de armazenamento gratuito em:</br>https://www.mongodb.com/cloud/atlas/signup (Solução oficial do Mongo)</br></br>Caso você queira rodar localmente indico esse tutorial do Youtube:</br>https://www.youtube.com/watch?v=aYRkF7sHrbk</span>
-    <p> </p>
+    <h1></h1>
     <li><strong>Arquivo JSON do seu projeto Google Cloud Platforms</strong></li>
     <span>Esse arquivo é fundamental para que seja efetuada a comunicação com seu Chatbot do Dialogflow </br>Caso você não a tenha siga os passos da sessão <a href="https://github.com/NiedsonEmanoel/Myzap-Flow#configurando-o-dialogflow">Configurando o Dialogflow</a>.</span>
-    <p> </p>
+    <h1></h1>
     <li><strong>Nome do seu projeto Google Cloud Plataforms</strong></li>
     <p>É o identificador único do seu projeto, geralmente está contido dentro do JSON, mas caso você não saiba na aba <a href="https://github.com/NiedsonEmanoel/Myzap-Flow#configurando-o-dialogflow">Configurando o Dialogflow</a> é mostrado como fazer a coleta deste dado.</p>
+    <h1></h1>
     <p> <i><b>Nota do desenvolvedor:</b></br>No arquivo .json contém o nome do seu projeto então por causa disto nas  versões futuras pretendo fazer essa coleta de forma automatizada.</i> </p>
 </ul>
 
@@ -60,8 +61,12 @@ Linux ou Mac:
 cd src/ && cp .env-example .env
 ```
 #
-<h1>Configurando o Dialogflow</h1>
+<h1>Conhecendo o DialogFlow</h1>
+<p>O DialogFlow (antigo api.ai) é uma plataforma de criação de chatbots da Google com foco no processamento de linguagem natural. O processamento de linguagem natural é utilizado por diversos recursos de inteligência artificial, o seu objetivo é entender a frase e formar a melhor resposta possível para aquela frase. Ele está dividido em diversas fases. Normalização, Remoção de numerais, Remoção de Stopwords, Correção ortográfica, Stemização e Lematização. Essas etapas fazem, basicamente, a quebra da frase, para que seja possível compreender os significados e assim saber em que contexto devemos encaixar o sentido da frase.</p>
 
+#
+
+<h1>Configurando o DialogFlow</h1>
 
 <h2>Agradecimentos:</h2>
 
