@@ -110,6 +110,8 @@ dist
 *.crt
 *.key
 
+src/Uploads/
+
 #MyJSON
 src/tokens/*.json
 src/Views/package-lock.json

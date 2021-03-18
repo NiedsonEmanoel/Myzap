@@ -17,6 +17,11 @@ const MessagesSchema = new mongoose.Schema ({
         type: String
     },
 
+    isServer: {
+        type: Boolean,
+        default: false
+    },
+
     chatId: {
         type: String,
         required: true
@@ -28,8 +33,6 @@ const MessagesSchema = new mongoose.Schema ({
     },
 
     fileName: String,
-
-    fileType: String
 
 }, {timestamps: true});
 

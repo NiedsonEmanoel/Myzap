@@ -142,7 +142,9 @@ module.exports = class {
                 } else {
                     if (message.type === 'chat') {
                         let fullName = message.body;
-                        await clientHelper.createInternal(fullName, message.sender.profilePicThumbObj.eurl, message.from)
+                        await clientHelper.createInternal(fullName, message.sender.profilePicThumbObj.eurl, message.from).then(() => {
+                            fs.mkdir(path.resolve('./', 'Uploads') + '/' + message.from, { recursive: true }, () => { });
+                        })
                         await this.Client.sendText(message.from, 'Ótimo! Você já está cadastrado, o que deseja?'); //menu
                         let index = this.#IntenalAwaiting.indexOf(message.from) + 1;
                         this.#IntenalAwaiting = this.#IntenalAwaiting.splice(index, 1);
@@ -171,14 +173,22 @@ module.exports = class {
 
                     await messageHelper.createText(type, author, body, chatId);
                 } else {
-                    /**
-                     * Aqui é a parte das mídias.
-                     * Terei que criar uma pasta pra cada contato
-                     * E mandar o link no mongo
-                     * Amanhã farei isso
-                     * 15/03/2021 - 23:33
-                     */
+                    let type = message.type;
+                    let author = message.author;
+                    let chatId = message.from;
+                    let dirF = path.resolve('./', 'Uploads') + '/' + message.from;
+                    let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
+                    let link = `http://localhost:${process.env.PORT}/files/${message.from}?file=${fileName}`;
+                    let dirN = dirF + '/' + fileName;
+
+                    fs.mkdir(dirF, { recursive: true }, () => { });
+                    const buffer = await this.Client.decryptFile(message);
+                    fs.writeFile(dirN, buffer, () => { });
+                    
+                    await messageHelper.createMedia(type, fileName, link, author, chatId);
+
                 }
+                
                 if (User.firstAttendace === true) {
                     clientHelper.switchFirst(User);
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
