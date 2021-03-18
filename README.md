@@ -182,6 +182,14 @@ Ao invés de perdemos tempo e poluirmos o codigo com testes condicionais para ve
 #
 
 <h2>Agradecimentos:</h2>
+<ul>
+<li><a href="https://github.com/orkestral/venom">Equipe do Venom</a></li>
+<img src="https://avatars.githubusercontent.com/u/66584466?s=460&u=2bfbc2d39aab3e3bb62cf91c0edea2a0d3a74c06&v=4" width="100" height="100">
+<li><a href="">Apoastro</a></li>
+<img src="https://avatars.githubusercontent.com/u/79946507?s=60&v=4" width="100" height="100">
+<li><a href="https://hyerdev.com/">Hyerdev Software Development</a></li>
+<img src="https://avatars.githubusercontent.com/u/63265796?s=200&v=4" width="100" height="100">
+</ul>
 
 #
 
