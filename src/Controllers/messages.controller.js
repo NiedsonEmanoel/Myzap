@@ -36,9 +36,7 @@ module.exports = {
     },
 
     async createText(type, author, body, chatId) {
-
         let data = { type, author, body, chatId };
-
         Message = await Messages.create(data);
         console.log('criado')
         return;
