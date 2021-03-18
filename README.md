@@ -14,9 +14,11 @@
     <img src="https://shields.io/badge/license-MIT-green">
 </p>
 <h1></h1>
-</b>
+
 <h1>Instalação:</h1>
-<p>Para esse projeto é recomendado que se utilize o Node v14, pois se trata de uma versão nova e estável, garantindo a execução do código sem maiores problemas.</p>
+
+<p><strong>Para esse projeto é recomendado que se utilize o Node v14, pois se trata de uma versão nova e estável, garantindo a execução do código sem maiores problemas.</strong></p>
+
 <p>Antes que seja efetuado o clone desse projeto você tem que ter em mãos os seguintes arquivos e/ou links:</p>
 <ul>
     <li><strong>Link do seu banco de dados Mongo DB</strong></li>
@@ -25,10 +27,42 @@
     <p> </p>
     <li><strong>Arquivo JSON do seu projeto Google Cloud Platforms</strong></li>
     <span>Esse arquivo é fundamental para que seja efetuada a comunicação com seu Chatbot do Dialogflow </br>Caso você não a tenha siga os passos da sessão <a href="https://github.com/NiedsonEmanoel/Myzap-Flow#configurando-o-dialogflow">Configurando o Dialogflow</a>.</span>
+    <p> </p>
+    <li><strong>Nome do seu projeto Google Cloud Plataforms</strong></li>
+    <p>É o identificador único do seu projeto, geralmente está contido dentro do JSON, mas caso você não saiba na aba <a href="https://github.com/NiedsonEmanoel/Myzap-Flow#configurando-o-dialogflow">Configurando o Dialogflow</a> é mostrado como fazer a coleta deste dado.</p>
+    <p> <i><b>Nota do desenvolvedor:</b></br>No arquivo .json contém o nome do seu projeto então por causa disto nas  versões futuras pretendo fazer essa coleta de forma automatizada.</i> </p>
 </ul>
-<h1>Configurando o Dialogflow</h1>
-<h1>Agradecimentos:</h1>
 
+#
+
+<h1>Instalação do Projeto</h1>
+
+Para clonar o projeto em seu computador local execute o seguinte comando:
+```sh
+git clone https://github.com/NiedsonEmanoel/Myzap-Flow
+```
+#
+
+### Logo após o clone do projeto é necessário que você copie o arquivo .env-example para um arquivo .env
+
+#
+Windows:
+```sh
+npm start
+```
+
+#
+Linux ou Mac:
+```sh
+npm start
+```
+#
+<h1>Configurando o Dialogflow</h1>
+
+
+<h2>Agradecimentos:</h2>
+
+#
 
 ## Sobre o autor [META]
 Niedson Emanoel – Instagram: [@niedsonemanoel](https://instagram.com/niedsonemanoel) – [contato@niedsonemanoel.com.br](mailto:contato@niedsonemanoel.com.br)
@@ -38,7 +72,7 @@ Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
 ## Contribua
 
-1. Faça o _fork_ do projeto (<https://github.com/NiedsonEmanoel/venon-dialogflow/fork>)
+1. Faça o _fork_ do projeto (<https://github.com/NiedsonEmanoel/Myzap-Flow/fork>)
 2. Crie uma _branch_ para sua modificação (`git checkout -b feature/fooBar`)
 3. Faça o _commit_ (`git commit -am 'Add some fooBar'`)
 4. _Push_ (`git push origin feature/fooBar`)

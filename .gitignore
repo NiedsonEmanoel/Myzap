@@ -115,3 +115,7 @@ src/Uploads/
 #MyJSON
 src/tokens/*.json
 src/Views/package-lock.json
+
+src/package-lock.json
+
+package-lock.json
