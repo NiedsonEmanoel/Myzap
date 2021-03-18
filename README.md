@@ -64,7 +64,7 @@ cd src/ && cp .env-example .env
 
 <h2>Com o arquivo .env criado, vamos configura-lo</h2>
 
-#
+
 
 <p>O arquivo .env configura as variáveis de ambiente de nossa aplicação, configurar ele é um passo obrigatório.</p>
 <p>A notação " <b>./</b>  " se refere a pasta src/ do projeto, então coloque seus arquivos dentro dessa pasta.</p> 
