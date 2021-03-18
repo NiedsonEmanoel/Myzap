@@ -48,13 +48,16 @@ git clone https://github.com/NiedsonEmanoel/Myzap-Flow
 #
 Windows:
 ```sh
-npm start
+cd src/
+```
+```sh
+cp .env-example .env
 ```
 
 #
 Linux ou Mac:
 ```sh
-npm start
+cd src/ && cp .env-example .env
 ```
 #
 <h1>Configurando o Dialogflow</h1>
