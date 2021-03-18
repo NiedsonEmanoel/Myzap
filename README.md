@@ -63,6 +63,9 @@ cd src/ && cp .env-example .env
 # 
 
 <h2>Com o arquivo .env criado, vamos configura-lo</h2>
+
+#
+
 <p>O arquivo .env configura as variáveis de ambiente de nossa aplicação, configurar ele é um passo obrigatório.</p>
 <p>A notação " <b>./</b>  " se refere a pasta src/ do projeto, então coloque seus arquivos dentro dessa pasta.</p> 
 
@@ -70,7 +73,8 @@ cd src/ && cp .env-example .env
 #Coloque abaixo o link do seu banco de dados mongo, não se preocupe com a configuração, o myzap configura automaticamente.
 MONGO=mongodb://localhost:27017/yourdatabase
 
-#Localização do seu arquivo json dflow
+#Localização do seu arquivo Json do dialogflow dentro da pasta src/
+#A notação abaixo é a mesma coisa de: /Myzap/src/seuarquivo.json
 JSON_LOCATION =./seuarquivo.json
 
 #Nome do seu projeto Google
@@ -79,44 +83,71 @@ GCP_PROJECT_NAME=name
 #Idioma do BOT
 LANGUAGE_CODE=pt-BR
 
-#Porta da aplicação
+#Porta da aplicação.
 PORT=3000
 
-#HTTPS está habilitado? 0-> Não, 1-> Sim
+#Você vai utilizar o https? 0-> Não, 1-> Sim
 useHTTPS=0
 
-#Localização do Certificado
-CERT_CRT=./
+#Localização do Certificado caso você opte pelo HTTPS.
+#Mesma regra do JSON: /Myzap/src/cert.pem
+CERT_CRT=./cert.pem
 
-#Localização da Chave privada
-CERT_KEY=./
+#Localização da Chave privada caso você opte pelo HTTPS.
+#Mesma regra do JSON: /Myzap/src/cert.key
+CERT_KEY=./cert.key
 
+#Será implementado em versões futuras.
 #TOKENDialogflow=eb68ebf61f2dc69f3eb084531bb5dc52
 
-#Segredo do JWT:
+#Segredo utilizado na assinatura digital do JWT.
 SECRET=86d0f103bf15d37ebb1f5a23a1a4dd06
 
-#Intent que redireciona o usuário para o modo de atendimento ao cliente
+#Intent que redireciona o usuário para o modo de atendimento ao cliente, onde o BOT passa a ignorar a pessoa, permitindo uma conversação normal.
+#Só é ativado esse modo após o match com a intent abaixo, por enquanto não recomendo usar pois não tenho o front para fazer esse controle.
 INTENT_SAC=Atendimento
 
 #Limites de caracteres por mensagem. 256 é o limite do dialogflow.
 CHAR_LIMIT_PER_MESSAGE=256
 
-#Enviar mensagem de verificação para o próprio número? 0-> Não, 1-> Sim
+#Enviar mensagem de verificação informando que o aparelho está em uma plataforma de automação enviando uma mensagem para o próprio número: 0-> Não, 1-> Sim
 SEND_NO_PISHING=0
 
 #Limite de sessões simultâneas
+#Mantenha acima de 1
 SESSION_LIMIT=16
 ```
 
 #
 
-<h1>Conhecendo o DialogFlow</h1>
+<h1>Iniciando o projeto</h1>
+<p>Para iniciar o projeto é bem simples, basta rodar dois comandos (O primeiro só precisa uma vez)</br></p>
+
+Instalação das dependências, recomendo executar esse comando duas ou três vezes:
+```
+npm install
+```
+
+Inicialização do projeto:
+```
+npm start
+```
+
+Vai aparecer em sua janela de comando um código QR escaneie ele com seu WhatsApp e o bot entrará em pleno funcionamento.
+
+![](https://github.com/NiedsonEmanoel/Myzap-Flow/raw/092b418ec28ff35be186d48882812911db965e6a/assets/8.png)
+
+#
+
+<h1>Informações relevantes</h1>
+
+<h2>Conhecendo o DialogFlow</h2>
 <p>O DialogFlow (antigo api.ai) é uma plataforma de criação de chatbots da Google com foco no processamento de linguagem natural. O processamento de linguagem natural é utilizado por diversos recursos de inteligência artificial, o seu objetivo é entender a frase e formar a melhor resposta possível para aquela frase. Ele está dividido em diversas fases. Normalização, Remoção de numerais, Remoção de Stopwords, Correção ortográfica, Stemização e Lematização. Essas etapas fazem, basicamente, a quebra da frase, para que seja possível compreender os significados e assim saber em que contexto devemos encaixar o sentido da frase.</p>
 
 #
 
-<h1>Configurando o DialogFlow</h1>
+
+<h2>Configurando o DialogFlow</h2>
 
  Vá até as configurações do DialogFlow, guarde o nome do projeto e clique no nome dele para acessarmos o painel do GCP.
 
@@ -139,6 +170,15 @@ Clique em criar chave, nova chave, escolha o formato JSON e faça o download par
 
 
 Guarde essa chave dentro da pasta `src/` e jamais suba ela no github pois ela é a autenticadora do seu projeto e em mãos erradas pode lhe trazer grandes dores de cabeça.
+#
+
+## O que é o Venom?
+O **Venom Bot** é uma biblioteca que consegue integrar o seu número do WhatsApp abrindo por debaixo dos panos o WhatsApp Web. Uma vez que é realizada a autenticação via QR Code diretamente do terminal, você conseguirá manipular via código JavaScript toda e qualquer interação disponível no WhatsApp Web, mais especificamente pelo Node.js.
+#
+## Conclusão
+O uso da API Oficial do WhatsApp é quase insustentável e o venom cumpre bem o seu papel em permitir a manipulação do WhatsApp via código.
+Se aliando a essa biblioteca temos o DialogFlow que é um serviço da Google poderoso para a criação desses agentes automatizados e utilizar ele junto com o venom nos permite uma liberdade maior do projeto, pois o nosso bot passa a ignorar erros ortográficos e se algum trecho foi escrito em maiúsculo ou não.
+Ao invés de perdemos tempo e poluirmos o codigo com testes condicionais para verificar se foi escrito por Ex: `OI` ou `Oi` ou `oi`, podemos ser mais objetivos e definirmos todas essas expressões como uma única Intent.
 #
 
 <h2>Agradecimentos:</h2>
