@@ -9,7 +9,8 @@ module.exports = async function () {
         useCreateIndex: true
     }, (err) => {
         if (err) {
-            console.err(err);
+            console.log(' - Erro no MongoDB');
+            process.exit(1);
         } else {
             console.info('- MongoDB connected.')
         }
