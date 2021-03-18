@@ -60,13 +60,86 @@ Linux ou Mac:
 ```sh
 cd src/ && cp .env-example .env
 ```
+# 
+
+<h2>Com o arquivo .env criado, vamos configura-lo</h2>
+<p>O arquivo .env configura as variáveis de ambiente de nossa aplicação, configurar ele é um passo obrigatório.</p>
+<p>A notação " <b>./</b>  " se refere a pasta src/ do projeto, então coloque seus arquivos dentro dessa pasta.</p> 
+
+```sh
+#Coloque abaixo o link do seu banco de dados mongo, não se preocupe com a configuração, o myzap configura automaticamente.
+MONGO=mongodb://localhost:27017/yourdatabase
+
+#Localização do seu arquivo json dflow
+JSON_LOCATION =./seuarquivo.json
+
+#Nome do seu projeto Google
+GCP_PROJECT_NAME=name
+
+#Idioma do BOT
+LANGUAGE_CODE=pt-BR
+
+#Porta da aplicação
+PORT=3000
+
+#HTTPS está habilitado? 0-> Não, 1-> Sim
+useHTTPS=0
+
+#Localização do Certificado
+CERT_CRT=./
+
+#Localização da Chave privada
+CERT_KEY=./
+
+#TOKENDialogflow=eb68ebf61f2dc69f3eb084531bb5dc52
+
+#Segredo do JWT:
+SECRET=86d0f103bf15d37ebb1f5a23a1a4dd06
+
+#Intent que redireciona o usuário para o modo de atendimento ao cliente
+INTENT_SAC=Atendimento
+
+#Limites de caracteres por mensagem. 256 é o limite do dialogflow.
+CHAR_LIMIT_PER_MESSAGE=256
+
+#Enviar mensagem de verificação para o próprio número? 0-> Não, 1-> Sim
+SEND_NO_PISHING=0
+
+#Limite de sessões simultâneas
+SESSION_LIMIT=16
+```
+
 #
+
 <h1>Conhecendo o DialogFlow</h1>
 <p>O DialogFlow (antigo api.ai) é uma plataforma de criação de chatbots da Google com foco no processamento de linguagem natural. O processamento de linguagem natural é utilizado por diversos recursos de inteligência artificial, o seu objetivo é entender a frase e formar a melhor resposta possível para aquela frase. Ele está dividido em diversas fases. Normalização, Remoção de numerais, Remoção de Stopwords, Correção ortográfica, Stemização e Lematização. Essas etapas fazem, basicamente, a quebra da frase, para que seja possível compreender os significados e assim saber em que contexto devemos encaixar o sentido da frase.</p>
 
 #
 
 <h1>Configurando o DialogFlow</h1>
+
+ Vá até as configurações do DialogFlow, guarde o nome do projeto e clique no nome dele para acessarmos o painel do GCP.
+
+ ![](https://github.com/NiedsonEmanoel/Myzap-Flow/raw/092b418ec28ff35be186d48882812911db965e6a/assets/3.png)
+#
+
+ Entre no GCP e vá até APIs e serviços e logo após vá em credenciais.
+  
+![](https://github.com/NiedsonEmanoel/Myzap-Flow/raw/092b418ec28ff35be186d48882812911db965e6a/assets/4.png)
+#
+
+Vá em contas de serviço e clique no primeiro e-mail que aparecer.
+
+![](https://github.com/NiedsonEmanoel/Myzap-Flow/raw/092b418ec28ff35be186d48882812911db965e6a/assets/5.png)
+#
+
+Clique em criar chave, nova chave, escolha o formato JSON e faça o download para seu computador.
+
+![](https://github.com/NiedsonEmanoel/Myzap-Flow/raw/092b418ec28ff35be186d48882812911db965e6a/assets/6.png)
+
+
+Guarde essa chave dentro da pasta `src/` e jamais suba ela no github pois ela é a autenticadora do seu projeto e em mãos erradas pode lhe trazer grandes dores de cabeça.
+#
 
 <h2>Agradecimentos:</h2>
 
