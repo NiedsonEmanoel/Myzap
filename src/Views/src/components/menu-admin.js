@@ -125,7 +125,7 @@ export default function MenuAdmin(props) {
 
                     <IconButton color="inherit">
 
-                        <Avatar alt="Cindy Baker" src={props.image} />
+                        <Avatar alt="User" src={props.image} />
 
                     </IconButton>
 

@@ -55,7 +55,9 @@ module.exports = {
 
     async create(req, res, next) {
         try {
-            const { fullName, profileUrl, chatId } = req.body;
+            let { fullName, profileUrl, chatId } = req.body;
+            chatId = chatId+'@c.us';
+            
             let data = [];
 
             let client = await Clients.findOne({ chatId });
