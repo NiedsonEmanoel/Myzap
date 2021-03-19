@@ -94,7 +94,7 @@ export default function Dashboard() {
     <div className={classes.root}>
       <CssBaseline />
 
-      <MenuAdmin />
+      <MenuAdmin name="Dashboard"/>
 
       <main className={classes.content}>
 

@@ -1,5 +1,6 @@
 const Clients = require('../Models/client.model');
-
+const path = require('path');
+const fs = require('fs');
 module.exports = {
     async index(req, res, next) {
         try {
@@ -55,7 +56,16 @@ module.exports = {
 
     async create(req, res, next) {
         try {
-            const { fullName, profileUrl, chatId } = req.body;
+            let { fullName, profileUrl, chatId } = req.body;
+
+            if (chatId.length == 13) {
+                let part1 = chatId.substr(0, 4);
+                let part2 = chatId.substr(5, 12)
+                chatId = `${part1}${part2}`
+            }
+
+            chatId = chatId+'@c.us';
+            
             let data = [];
 
             let client = await Clients.findOne({ chatId });
@@ -65,6 +75,7 @@ module.exports = {
                 return res.status(400).send({ "message": "Client already been registered." });
             } catch {
                 data = { fullName, profileUrl, chatId };
+                fs.mkdir(path.resolve('./', 'Uploads') + '/' + chatId, { recursive: true }, () => { });
                 user = await Clients.create(data);
                 return res.status(200).send({
                     "Client": user,
