@@ -1,6 +1,4 @@
-<p align="center">
-<h1>REPOSITÓRIO SE TORNARÁ PRIVADO EM 20/03/21</h1>
-</p>
+
 <p align="center">
     <img src="src/Controllers/Classes/Temp/myzap.png" width="250">
     <h1 align="center">MyZAP-Flow</h1>
