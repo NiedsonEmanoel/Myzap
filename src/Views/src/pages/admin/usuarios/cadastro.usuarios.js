@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
+import api from '../../../services/api';
 
 const drawerWidth = 240;
 
@@ -97,8 +98,28 @@ export default function Dashboard() {
   const [profileUrl, setProfileUrl] = useState('');
   const [chatId, setChatId] = useState('');
 
-  function handleSubmit() {
-    const data = { fullName, profileUrl, chatId };
+  async function handleSubmit() {
+    try {
+      const data = { fullName, profileUrl, chatId };
+
+      if ((!fullName) || (!profileUrl) || (!chatId)) {
+        return (alert('Prencha todos os campos'));
+      }
+
+      const response = await api.post('/api/clients', data);
+      console.log(response);
+
+      if (response.status == 200) {
+        return (alert('Cadastro efetuado!'));
+      }
+    } catch (e) {
+      if (e == 'Error: Request failed with status code 400') {
+        alert('O cadastro já existe!')
+      } else {
+        console.log(e);
+        alert('Erro, tente novamente mais tarde!');
+      }
+    }
   }
 
   const classes = useStyles();

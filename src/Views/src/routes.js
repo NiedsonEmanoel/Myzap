@@ -16,7 +16,8 @@ export default function Routes() {
                 <Route path="/admin" exact component={Dashboard} />
                 <Route path="/admin/login" exact component={Login} />
 
-                <Route path="/admin/usuarios" exact component={UsuariosCadastrar} />
+                <Route path="/admin/usuarios" exact component={Usuarios} />
+                <Route path="/admin/usuarios/cadastrar" exact component={UsuariosCadastrar} />
 
                 <Route path="/admin/usuarios/editar/:idProduto" exact component={UsuariosEditar} />
 
