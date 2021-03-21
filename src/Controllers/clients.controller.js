@@ -1,4 +1,5 @@
 const Clients = require('../Models/client.model');
+const messageHelper = require('../Models/messages.model')
 const path = require('path');
 const fs = require('fs');
 module.exports = {
@@ -39,11 +40,24 @@ module.exports = {
         try {
             let inAttendace = true;
 
-            let Client = await Clients.find({ inAttendace }).sort({updatedAt: 1});
-            
+            let Client = await Clients.find({ inAttendace }).sort({ updatedAt: 1 });
+
+            let ClientsObject = [];
+            for (let key in Client) {
+                let chatId = Client[key].chatId;
+
+                let lastMessage = await messageHelper.findOne({ chatId }).sort({createdAt: -1});
+
+                let obj = Client[key].toObject();
+
+                obj.lastMessage = lastMessage;
+
+                ClientsObject.push(obj);
+            }
 
             res.status(200).send({
-                "Client": Client,
+                "Client": ClientsObject,
+
                 "message": "success"
             });
         } catch (error) {

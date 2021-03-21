@@ -248,7 +248,7 @@ export default function WhatsApp() {
                                                         <>
                                                             <ListItem button>
                                                                 <Avatar src={item.profileUrl}></Avatar>
-                                                                <ListItemText className={classes.list} primary={item.fullName} secondary={item._id} />
+                                                                <ListItemText className={classes.list} primary={item.fullName} secondary={item.lastMessage.body} />
                                                             </ListItem>
                                                             <Divider variant="inset" component="li" />
                                                         </>
