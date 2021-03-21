@@ -3,6 +3,7 @@ const Router = express.Router();
 const Clients = require('../../../Controllers/clients.controller');
 
 Router.get('/', Clients.index);
+Router.get('/attendance', Clients.getAttendace);
 Router.get('/details/:_id', Clients.details);
 
 Router.post('/', Clients.create);

@@ -35,6 +35,22 @@ module.exports = {
         }
     },
 
+    async getAttendace(req, res, next) {
+        try {
+            let inAttendace = true;
+
+            let Client = await Clients.find({ inAttendace }).sort({updatedAt: 1});
+            
+
+            res.status(200).send({
+                "Client": Client,
+                "message": "success"
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
     async findInternal(chatId) {
         let User = await Clients.findOne({ chatId });
         try {
@@ -64,8 +80,8 @@ module.exports = {
                 chatId = `${part1}${part2}`
             }
 
-            chatId = chatId+'@c.us';
-            
+            chatId = chatId + '@c.us';
+
             let data = [];
 
             let client = await Clients.findOne({ chatId });
@@ -147,7 +163,7 @@ module.exports = {
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
             return inAttendace;
-        } catch(e){
+        } catch (e) {
             console.error(e)
         }
     },
@@ -159,7 +175,7 @@ module.exports = {
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
             return firstAttendace;
-        } catch(e){
+        } catch (e) {
             console.error(e)
         }
     }

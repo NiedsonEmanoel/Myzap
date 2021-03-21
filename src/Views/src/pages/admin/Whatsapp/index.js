@@ -15,7 +15,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ImageIcon from "@material-ui/icons/Image";
 import { format } from '@flasd/whatsapp-formatting';
 import AudioPlayer from 'material-ui-audio-player';
-
+import api from '../../../services/api'
 import WorkIcon from "@material-ui/icons/Work";
 import BeachAccessIcon from "@material-ui/icons/BeachAccess";
 import {
@@ -32,40 +32,6 @@ import {
     IconButton,
     CardMedia
 } from "@material-ui/core";
-
-const list = [
-    { id: 1, name: "Kelvin", text: "Lorem ipsum", image: <ImageIcon /> },
-    { id: 2, name: "Robson", text: "Lorem ipsum", image: <WorkIcon /> },
-    { id: 3, name: "3", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 1, name: "Kelvin", text: "Lorem ipsum", image: <ImageIcon /> },
-    { id: 2, name: "Robson", text: "Lorem ipsum", image: <WorkIcon /> },
-    { id: 3, name: "3", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "4", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "5", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "6", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "7", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "8", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 1, name: "Kelvin", text: "Lorem ipsum", image: <ImageIcon /> },
-    { id: 2, name: "Robson", text: "Lorem ipsum", image: <WorkIcon /> },
-    { id: 3, name: "3", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "4", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "5", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "6", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "7", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "8", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "99", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "4", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "5", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "6", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "99", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "4", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "5", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "6", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "7", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "8", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-    { id: 3, name: "555555555555555", text: "Lorem ipsum", image: <BeachAccessIcon /> },
-
-];
 
 const drawerWidth = 240;
 
@@ -217,6 +183,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function WhatsApp() {
     const [text, setText] = useState('');
+    const [list, setList] = useState([]);
+
+    useEffect(async () => {
+        const response = await api.get('/api/clients/attendance');
+        console.clear();
+        console.log()
+        setList(response.data.Client);
+    }, [])
 
     function getBase64(file) {
         return new Promise((resolve, reject) => {
@@ -273,8 +247,8 @@ export default function WhatsApp() {
                                                     {list.map(item => (
                                                         <>
                                                             <ListItem button>
-                                                                <Avatar>{item.image}</Avatar>
-                                                                <ListItemText className={classes.list} primary={item.name} secondary={item.text} />
+                                                                <Avatar src={item.profileUrl}></Avatar>
+                                                                <ListItemText className={classes.list} primary={item.fullName} secondary={item._id} />
                                                             </ListItem>
                                                             <Divider variant="inset" component="li" />
                                                         </>
