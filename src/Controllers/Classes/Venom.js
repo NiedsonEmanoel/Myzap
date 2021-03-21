@@ -178,8 +178,8 @@ module.exports = class {
                     let chatId = message.from;
                     let dirF = path.resolve('./', 'Uploads') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
-                    let link = `http://localhost:${process.env.PORT}/files/${message.from}?file=${fileName}`;
-                    let fileLinkDownload = `http://localhost:${process.env.PORT}/files/${message.from}?file=${fileName}&download=true`;
+                    let link = `http://${process.env.HOST}:${process.env.PORT}/files/${message.from}?file=${fileName}`;
+                    let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${message.from}?file=${fileName}&download=true`;
                     let dirN = dirF + '/' + fileName;
 
                     fs.mkdir(dirF, { recursive: true }, () => { });
@@ -187,7 +187,6 @@ module.exports = class {
                     fs.writeFile(dirN, buffer, () => { });
                     
                     await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload);
-
                 }
                 
                 if (User.firstAttendace === true) {

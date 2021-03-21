@@ -13,6 +13,9 @@ import SendIcon from "@material-ui/icons/Send";
 import Divider from '@material-ui/core/Divider';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ImageIcon from "@material-ui/icons/Image";
+import { format } from '@flasd/whatsapp-formatting';
+import AudioPlayer from 'material-ui-audio-player';
+
 import WorkIcon from "@material-ui/icons/Work";
 import BeachAccessIcon from "@material-ui/icons/BeachAccess";
 import {
@@ -136,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
     },
     rightContainer: {
         background:
-            "url(/wall.jpg) center center",
+            "url(/wall.png) bottom",
         flex: 1
     },
     heightAdjust: {
@@ -189,10 +192,40 @@ const useStyles = makeStyles((theme) => ({
     fixedHeight: {
         height: 240,
     },
+    sent: {
+        width: "30%",
+        marginTop: "5px",
+        marginBottom: "5px",
+        marginLeft: "70%",
+        backgroundColor: "#DCF8C6"
+    },
+    sentImg: {
+        width: "30%",
+        marginTop: "5px",
+        maxHeight: "500px",
+        maxWidth: "500px",
+        marginBottom: "5px",
+        marginLeft: "70%",
+        backgroundColor: "#DCF8C6"
+    },
+    received: {
+        width: "30%",
+        marginLeft: "0%",
+        backgroundColor: "#ffffff"
+    }
 }));
 
 export default function WhatsApp() {
     const [text, setText] = useState('');
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
 
     const classes = useStyles();
     return (
@@ -272,6 +305,46 @@ export default function WhatsApp() {
 
                                                         <CardContent>
 
+                                                            <Card className={classes.sent}>
+                                                                <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
+                                                                    <AudioPlayer
+                                                                        download={false}
+                                                                        autoplay={false}
+                                                                        volume={false}
+                                                                        width="100%"
+                                                                        variation="default"
+                                                                        spacing={3}
+                                                                        src={'https://tutorialehtml.com/assets_tutorials/media/Loreena_Mckennitt_Snow_56bit.mp3'}
+                                                                    />
+                                                                </CardContent>
+                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
+                                                                </Typography>
+                                                            </Card>
+
+                                                            <Card className={classes.sent}>
+                                                                <CardContent>
+                                                                    <Typography color="black" variant="body" display="inline">
+                                                                        Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
+                                                                    </Typography>
+                                                                </CardContent>
+                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
+                                                                </Typography>
+                                                            </Card>
+
+                                                            <Card className={classes.received}>
+                                                                <CardContent>
+
+                                                                    <Typography color="black" variant="body" display="inline">
+                                                                        Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
+                                                                    </Typography>
+                                                                </CardContent>
+                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
+                                                                </Typography>
+                                                            </Card>
+
                                                         </CardContent>
 
                                                     </GridList>
@@ -283,7 +356,7 @@ export default function WhatsApp() {
 
                                                     <Grid xs={1} align="center">
 
-                                                        <input style={{ display: "none" }} id="icon-button-file" name='file' onInputCapture={e=>{alert('Arquivo upado!')}} type="file" />
+                                                        <input style={{ display: "none" }} id="icon-button-file" name='file' onInputCapture={e => { alert('Arquivo upado!') }} type="file" />
 
                                                         <label htmlFor="icon-button-file">
                                                             <Fab color="primary" aria-label="upload picture" component="span">
@@ -308,7 +381,7 @@ export default function WhatsApp() {
                                                     </Grid>
 
                                                     <Grid xs={1} align="center">
-                                                        <input style={{ display: "none" }} id="envi" type="submit" />
+                                                        <input style={{ display: "none" }} id="envi" type="button" />
                                                         <label htmlFor="envi">
                                                             <Fab color="primary" aria-label="upload picture" component="span">
                                                                 <SendIcon />

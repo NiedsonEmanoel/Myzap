@@ -4,6 +4,7 @@ const fs = require('fs');
 let sessions = [];
 let started = [];
 let limit = new Number(process.env.SESSION_LIMIT) || 16;
+const messageHelper = require('./messages.controller');
 
 module.exports = {
     async createInternal() {
@@ -196,6 +197,7 @@ module.exports = {
                         let part2 = arrNumbers[key].substr(5, 12)
                         arrNumbers[key] = `${part1}${part2}`
                     }
+                    await messageHelper.createText('chat', worker, arrMessages[keyM], arrNumbers[key] + '@c.us', true);
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
                 }
             }
@@ -268,6 +270,8 @@ module.exports = {
             let base64 = req.body.base64;
             let name = req.body.name || 'file';
             let message = req.body.message || '';
+
+            fs.writeFile()
 
             for (let key in arrNumbers) {
                 try {
