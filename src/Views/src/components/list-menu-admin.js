@@ -21,35 +21,35 @@ export const mainListItems = (
       <ListItemText primary="Dashboard" />
     </ListItem>
 
-    <ListItem button>
+    <ListItem button component="a" href="/admin">
       <ListItemIcon>
         <BusinessCenterIcon />
       </ListItemIcon>
       <ListItemText primary="Pedidos" />
     </ListItem>
 
-    <ListItem button>
+    <ListItem button component="a" href="/admin/usuarios">
       <ListItemIcon>
         <EmojiPeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Usuários" />
     </ListItem>
 
-    <ListItem button>
+    <ListItem button component="a" href="/admin/funcionarios">
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Funcionários" />
     </ListItem>
 
-    <ListItem button>
+    <ListItem button component="a" href="/admin/whatsapp">
       <ListItemIcon>
         <WhatsAppIcon />
       </ListItemIcon>
       <ListItemText primary="WhatsApp" />
     </ListItem>
 
-    <ListItem button>
+    <ListItem button component="a" href="/admin">
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>

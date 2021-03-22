@@ -35,15 +35,19 @@ module.exports = {
         }
     },
 
-    async createText(type, author, body, chatId) {
-        let data = { type, author, body, chatId };
+    async createText(type, author, body, chatId, isServer) {
+        if(!isServer){
+            isServer = false;
+        }
+        let data = { type, author, body, chatId, isServer };
         Message = await Messages.create(data);
         console.log('criado')
         return;
     },
 
     async createMedia(type, fileName, fileLink, author, chatId, fileLinkDownload) {
-        let data = { type, author, fileName, fileLink, chatId, fileLinkDownload };
+        let body = type;
+        let data = { type, author, fileName, fileLink, chatId, fileLinkDownload, body };
         Message = await Messages.create(data);
         console.log('criado')
         return;

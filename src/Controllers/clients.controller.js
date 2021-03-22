@@ -1,4 +1,5 @@
 const Clients = require('../Models/client.model');
+const messageHelper = require('../Models/messages.model')
 const path = require('path');
 const fs = require('fs');
 module.exports = {
@@ -35,6 +36,35 @@ module.exports = {
         }
     },
 
+    async getAttendace(req, res, next) {
+        try {
+            let inAttendace = true;
+
+            let Client = await Clients.find({ inAttendace }).sort({ updatedAt: 1 });
+
+            let ClientsObject = [];
+            for (let key in Client) {
+                let chatId = Client[key].chatId;
+
+                let lastMessage = await messageHelper.findOne({ chatId }).sort({createdAt: -1});
+
+                let obj = Client[key].toObject();
+
+                obj.lastMessage = lastMessage;
+
+                ClientsObject.push(obj);
+            }
+
+            res.status(200).send({
+                "Client": ClientsObject,
+
+                "message": "success"
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
     async findInternal(chatId) {
         let User = await Clients.findOne({ chatId });
         try {
@@ -64,8 +94,8 @@ module.exports = {
                 chatId = `${part1}${part2}`
             }
 
-            chatId = chatId+'@c.us';
-            
+            chatId = chatId + '@c.us';
+
             let data = [];
 
             let client = await Clients.findOne({ chatId });
@@ -147,7 +177,7 @@ module.exports = {
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
             return inAttendace;
-        } catch(e){
+        } catch (e) {
             console.error(e)
         }
     },
@@ -159,7 +189,7 @@ module.exports = {
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
             return firstAttendace;
-        } catch(e){
+        } catch (e) {
             console.error(e)
         }
     }

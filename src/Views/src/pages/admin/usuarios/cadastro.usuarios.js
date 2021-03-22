@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
@@ -90,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  btnSuccess: { backgroundColor: "green", color: "#fff", "&:hover": { backgroundColor: "#12b912" } }
 }));
 
 export default function Dashboard() {
@@ -110,6 +112,10 @@ export default function Dashboard() {
       console.log(response);
 
       if (response.status == 200) {
+        setChatId('');
+        setFullName('');
+        setProfileUrl('');
+        window.location.href = '/admin/usuarios'
         return (alert('Cadastro efetuado!'));
       }
     } catch (e) {
@@ -152,6 +158,7 @@ export default function Dashboard() {
                       name="fullName"
                       label="Nome Completo"
                       value={fullName}
+                      variant="outlined"
                       onChange={e => setFullName(e.target.value)}
                       fullWidth
                     />
@@ -162,6 +169,7 @@ export default function Dashboard() {
                       required
                       id="profileUrl"
                       name="profileUrl"
+                      variant="outlined"
                       value={profileUrl}
                       onChange={e => setProfileUrl(e.target.value)}
                       label="Link da imagem do perfil"
@@ -174,6 +182,7 @@ export default function Dashboard() {
                       required
                       type='number'
                       id="chatId"
+                      variant="outlined"
                       name="chatId"
                       value={chatId}
                       onChange={e => setChatId(e.target.value)}
@@ -183,8 +192,8 @@ export default function Dashboard() {
                   </Grid>
 
                   <Grid item xs={3} sm={3}>
-                    <Button variant="contained" onClick={handleSubmit} color="primary">
-                      Salvar
+                    <Button variant="contained" onClick={handleSubmit} className={classes.btnSuccess}>
+                      <SaveIcon />  Salvar
                     </Button>
                   </Grid>
 

@@ -10,6 +10,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
 const fs = require('fs');
 let app = require('./Routes/app');
+const cors = require('cors');
 const functions = require('./Functions/functions');
 
 const restApi = express();
@@ -36,25 +37,29 @@ const WhatsApp = require('./Controllers/multisession.controller');
                 privatekey = fs.readFileSync(process.env.CERT_KEY);
             } catch (e) {
                 console.error(e);
-                restApi.listen(process.env.PORT, () => { });
+                restApi.listen(process.env.PORT, process.env.HOST, () => { });
 
-                console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT}/`);
+                console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
                 break;
             }
 
             var serverRest = require('https').createServer({ key: privatekey, cert: certificate }, restApi);
 
-            serverRest.listen(process.env.PORT, () => { });
+            serverRest.listen(process.env.PORT, process.env.HOST, () => { });
 
-            console.info(`Servidor HTTPS rodando em: https://localhost:${process.env.PORT}/`);
+            console.info(`Servidor HTTPS rodando em: https://${process.env.HOST}:${process.env.PORT}/`);
             break;
 
         default:
-            restApi.listen(process.env.PORT, () => { });
-            console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT}/`);
+            restApi.listen(process.env.PORT, process.env.HOST, () => { });
+            console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
     }
 
-    restApi.use(functions.Cors);
+    restApi.use(cors({
+        origin: '*',
+        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+        methods: 'PUT, POST, PATCH, DELETE, GET'
+    }));
 
     restApi.use(functions.Limiter);
 
