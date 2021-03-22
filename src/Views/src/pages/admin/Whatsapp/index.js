@@ -177,7 +177,27 @@ const useStyles = makeStyles((theme) => ({
     received: {
         width: "30%",
         marginLeft: "0%",
+        marginTop: "5px",
+        marginBottom: "5px",
         backgroundColor: "#ffffff"
+    },
+    receivedImg: {
+        width: "30%",
+        maxHeight: "500px",
+        marginTop: "5px",
+        marginBottom: "5px",
+        maxWidth: "500px",
+        marginLeft: "0%",
+        backgroundColor: "#ffffff"
+    },
+    sentVideo: {
+        width: "30%",
+        marginTop: "5px",
+        maxHeight: "500px",
+        maxWidth: "500px",
+        marginBottom: "5px",
+        marginLeft: "70%",
+        backgroundColor: "#DCF8C6"
     }
 }));
 
@@ -279,7 +299,7 @@ export default function WhatsApp() {
 
                                                         <CardContent>
 
-                                                            <Card className={classes.sent}>
+                                                            <Card className={classes.received}>
                                                                 <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
                                                                     <AudioPlayer
                                                                         download={false}
@@ -290,6 +310,15 @@ export default function WhatsApp() {
                                                                         spacing={3}
                                                                         src={'https://tutorialehtml.com/assets_tutorials/media/Loreena_Mckennitt_Snow_56bit.mp3'}
                                                                     />
+                                                                </CardContent>
+                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
+                                                                </Typography>
+                                                            </Card>
+
+                                                            <Card className={classes.sentVideo}>
+                                                                <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
+                                                                    <video style={{ height: "100%", width: "100%", }} src="/p.mp4" controls="true"></video>
                                                                 </CardContent>
                                                                 <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
                                                                     <br></br> {new Date().toLocaleString('pt-BR')}
@@ -309,7 +338,6 @@ export default function WhatsApp() {
 
                                                             <Card className={classes.received}>
                                                                 <CardContent>
-
                                                                     <Typography color="black" variant="body" display="inline">
                                                                         Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
                                                                     </Typography>
@@ -320,6 +348,7 @@ export default function WhatsApp() {
                                                             </Card>
 
                                                         </CardContent>
+
 
                                                     </GridList>
                                                 </Grid>

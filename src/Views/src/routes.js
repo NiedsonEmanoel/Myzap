@@ -8,6 +8,7 @@ import UsuariosCadastrar from './pages/admin/usuarios/cadastro.usuarios';
 import Page404 from './pages/404/NotFound'
 
 import Login from './pages/admin/login';
+import Funcionarios from './pages/admin/funcionarios/index'
 import FuncionariosCadastrar from './pages/admin/funcionarios/funcionarios.cadastro';
 export default function Routes() {
     return (
@@ -16,14 +17,14 @@ export default function Routes() {
                 <Route path="/" exact component={Usuarios} />
                 <Route path="/admin" exact component={Dashboard} />
                 <Route path="/admin/login" exact component={Login} />
-                
+
                 <Route path="/admin/whatsapp" exact component={WhatsApp} />
 
                 <Route path="/admin/usuarios" exact component={Usuarios} />
                 <Route path="/admin/usuarios/cadastrar" exact component={UsuariosCadastrar} />
-
                 <Route path="/admin/usuarios/editar/:idUser" exact component={UsuariosEditar} />
 
+                <Route path="/admin/funcionarios" exact component={Funcionarios} />
                 <Route path="/admin/funcionarios/cadastrar" exact component={FuncionariosCadastrar} />
 
                 <Route path="*">
