@@ -126,24 +126,90 @@ export default function UsuariosListagem() {
   };
 
   function Attendace(inAttendace) {
-      switch (inAttendace) {
-        case true:
-          return ('Finalizar atendimento'); 
-          break;
-      
-        default:
-          return ('Atender');
-          break;
-      }
+    switch (inAttendace) {
+      case true:
+        return ('Finalizar atendimento');
+        break;
+
+      default:
+        return ('Atender');
+        break;
+    }
   }
 
-  useEffect(() => {
-    async function loadUsuarios() {
-      const response = await api.get('/api/clients');
-      setUsuarios(response.data.Clients);
-    }
-    loadUsuarios();
-  }, []);
+  useEffect(loadUsuarios, []);
+
+  async function loadUsuarios() {
+    const response = await api.get('/api/clients');
+    setUsuarios(response.data.Clients);
+  }
+
+  function getUsers() {
+    return(
+    usuarios.map((row) => (
+      <>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
+          <DialogTitle id="alert-dialog-title">{"Deseja excluir esse Usuário?"}</DialogTitle>
+
+          <DialogContent>
+
+            <DialogContentText id="alert-dialog-description">
+              Não será possível desfazer essa ação.
+            </DialogContentText>
+
+          </DialogContent>
+
+          <DialogActions>
+
+            <Button onClick={handleClose} color="primary">
+              Sair
+            </Button>
+
+            <Button onClick={async () => {
+              try {
+                const response = await api.delete('/api/clients/' + row._id);
+                handleClose()
+                loadUsuarios();
+                loadUsuarios();
+              } catch (e) {
+                console.log(e);
+                alert('Erro, tente mais tarde.');
+              }
+            }} color="primary" autoFocus>
+              Excluir
+            </Button>
+
+          </DialogActions>
+
+        </Dialog>
+
+        <TableRow key={row.nome}>
+          <TableCell component="th" scope="row">
+            <Chip color="primary" avatar={<Avatar src={row.profileUrl} />} label={row.fullName} />
+          </TableCell>
+          <TableCell align="center">{new String(row.chatId).replace('@c.us', '')}</TableCell>
+
+          <TableCell align="center">{`${new Date(row.createdAt).toLocaleDateString('pt-BR')} - ${new Date(row.createdAt).toLocaleTimeString('pt-BR')}`}</TableCell>
+          <TableCell align="right">
+
+            <ButtonGroup size="small" aria-label="small button group">
+              <Button variant="contained" color="primary" onClick={async () => {
+                await api.put('/api/clients/' + row._id);
+                loadUsuarios();
+                loadUsuarios();
+                loadUsuarios();
+              }}>{Attendace(row.inAttendace)}</Button>
+
+              <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
+              </Button>
+
+            </ButtonGroup>
+
+          </TableCell>
+        </TableRow>
+      </>
+    )));
+  }
 
   const classes = useStyles();
   return (
@@ -193,65 +259,7 @@ export default function UsuariosListagem() {
 
                       <TableBody>
 
-                        {usuarios.map((row) => (
-                          <>
-                            <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
-                              <DialogTitle id="alert-dialog-title">{"Deseja excluir esse Usuário?"}</DialogTitle>
-
-                              <DialogContent>
-
-                                <DialogContentText id="alert-dialog-description">
-                                  Não será possível desfazer essa ação.
-                                </DialogContentText>
-
-                              </DialogContent>
-
-                              <DialogActions>
-
-                                <Button onClick={handleClose} color="primary">
-                                  Sair
-                                </Button>
-
-                                <Button onClick={async () => {
-                                  try {
-                                    const response = await api.delete('/api/clients/' + row._id);
-                                    window.location.reload(true);
-                                  } catch (e) {
-                                    console.log(e);
-                                    alert('Erro, tente mais tarde.');
-                                  }
-                                }} color="primary" autoFocus>
-                                  Excluir
-                                </Button>
-
-                              </DialogActions>
-
-                            </Dialog>
-
-                            <TableRow key={row.nome}>
-                              <TableCell component="th" scope="row">
-                                <Chip color="primary" avatar={<Avatar src={row.profileUrl} />} label={row.fullName} />
-                              </TableCell>
-                              <TableCell align="center">{new String(row.chatId).replace('@c.us', '')}</TableCell>
-
-                              <TableCell align="center">{`${new Date(row.createdAt).toLocaleDateString('pt-BR')} - ${new Date(row.createdAt).toLocaleTimeString('pt-BR')}`}</TableCell>
-                              <TableCell align="right">
-
-                                <ButtonGroup size="small" aria-label="small button group">
-                                  <Button variant="contained" color="primary" onClick={async ()=>{
-                                    await api.put('/api/clients/' + row._id);
-                                    window.location.reload(true);
-                                  }}>{Attendace(row.inAttendace)}</Button>
-
-                                  <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
-                                  </Button>
-
-                                </ButtonGroup>
-
-                              </TableCell>
-                            </TableRow>
-                          </>
-                        ))}
+                        {getUsers()}
 
                       </TableBody>
 

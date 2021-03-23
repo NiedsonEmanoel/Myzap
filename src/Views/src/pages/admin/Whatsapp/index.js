@@ -8,12 +8,12 @@ import Copyright from '../../../components/footer';
 import GridList from '@material-ui/core/GridList';
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import io from '../../../services/socket.io';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from "@material-ui/icons/Send";
 import Divider from '@material-ui/core/Divider';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import ImageIcon from "@material-ui/icons/Image";
 import AudioPlayer from 'material-ui-audio-player';
 import api from '../../../services/api'
 
@@ -209,8 +209,6 @@ export default function WhatsApp() {
 
     async function upgrade() {
         const response = await api.get('/api/clients/attendance');
-        console.clear();
-        console.log();
         if (response) {
             setList(response.data.Client);
             if (response.data.Client[0] !== undefined) {
@@ -225,7 +223,7 @@ export default function WhatsApp() {
     }
 
     io.on('newMessage', (e) => {
-        console.log('new')
+        console.log(e.data);
         upgrade();
     });
 
@@ -262,7 +260,76 @@ export default function WhatsApp() {
         )));
     }
 
+    function getRightList() {
+        return (
+            <GridList cols={1} style={{ width: "100%", height: "100%" }} cellHeight={'auto'}>
+
+                <CardContent>
+
+                    <Card className={classes.received}>
+                        <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
+                            <AudioPlayer
+                                download={false}
+                                autoplay={false}
+                                volume={false}
+                                width="100%"
+                                variation="default"
+                                spacing={3}
+                                src={'https://tutorialehtml.com/assets_tutorials/media/Loreena_Mckennitt_Snow_56bit.mp3'}
+                            />
+                        </CardContent>
+                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                            {new Date().toLocaleString('pt-BR')}
+                        </Typography>
+                    </Card>
+
+                    <Card className={classes.sentVideo}>
+                        <CardContent style={{}}>
+                            <video style={{ height: "100%", width: "100%" }} src="/p.mp4" controls="true"></video>
+                        </CardContent>
+                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                            {new Date().toLocaleString('pt-BR')}
+                        </Typography>
+                    </Card>
+
+                    <Card className={classes.sentImg}>
+                        <img style={{ height: "100%", width: "100%", }} src="/wall.png"></img>
+                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                            {new Date().toLocaleString('pt-BR')}
+                        </Typography>
+                    </Card>
+
+                    <Card className={classes.sent}>
+                        <CardContent>
+                            <Typography color="black" variant="body" display="inline">
+                                Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
+                            </Typography>
+                        </CardContent>
+                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                            {new Date().toLocaleString('pt-BR')}
+                        </Typography>
+                    </Card>
+
+                    <Card className={classes.received}>
+                        <CardContent>
+                            <Typography color="black" variant="body" display="inline">
+                                Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
+                            </Typography>
+                        </CardContent>
+                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                            {new Date().toLocaleString('pt-BR')}
+                        </Typography>
+                    </Card>
+
+                </CardContent>
+
+
+            </GridList>
+        );
+    }
+
     function sendMessage(event) {
+
         event.preventDefault();
     }
 
@@ -321,8 +388,13 @@ export default function WhatsApp() {
                                                     <Avatar aria-label="Recipe" className={classes.avatar} src={contact.profileUrl}></Avatar>
                                                 }
                                                 action={
-                                                    <IconButton>
-                                                        <MoreVertIcon />
+                                                    <IconButton onClick={async () => {
+                                                        await api.put('/api/clients/' + contact._id);
+                                                         upgrade();
+                                                         upgrade();
+                                                         upgrade();
+                                                    }}>
+                                                        <AssignmentTurnedInIcon />
                                                     </IconButton>
                                                 }
                                                 title={contact.fullName}
@@ -330,62 +402,7 @@ export default function WhatsApp() {
 
                                             <CardContent className={[classes.rightContainer, classes.content]}>
                                                 <Grid>
-                                                    <GridList cols={1} style={{ width: "100%", height: "100%" }} cellHeight={'auto'}>
-
-                                                        <CardContent>
-
-                                                            <Card className={classes.received}>
-                                                                <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
-                                                                    <AudioPlayer
-                                                                        download={false}
-                                                                        autoplay={false}
-                                                                        volume={false}
-                                                                        width="100%"
-                                                                        variation="default"
-                                                                        spacing={3}
-                                                                        src={'https://tutorialehtml.com/assets_tutorials/media/Loreena_Mckennitt_Snow_56bit.mp3'}
-                                                                    />
-                                                                </CardContent>
-                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
-                                                                </Typography>
-                                                            </Card>
-
-                                                            <Card className={classes.sentVideo}>
-                                                                <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
-                                                                    <video style={{ height: "100%", width: "100%", }} src="/p.mp4" controls="true"></video>
-                                                                </CardContent>
-                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
-                                                                </Typography>
-                                                            </Card>
-
-                                                            <Card className={classes.sent}>
-                                                                <CardContent>
-                                                                    <Typography color="black" variant="body" display="inline">
-                                                                        Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
-                                                                    </Typography>
-                                                                </CardContent>
-                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
-                                                                </Typography>
-                                                            </Card>
-
-                                                            <Card className={classes.received}>
-                                                                <CardContent>
-                                                                    <Typography color="black" variant="body" display="inline">
-                                                                        Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
-                                                                    </Typography>
-                                                                </CardContent>
-                                                                <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                                                                    <br></br> {new Date().toLocaleString('pt-BR')}
-                                                                </Typography>
-                                                            </Card>
-
-                                                        </CardContent>
-
-
-                                                    </GridList>
+                                                    {getRightList()}
                                                 </Grid>
                                             </CardContent>
 

@@ -10,6 +10,7 @@ import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
+import Dashboard from '../pages/admin/usuarios/cadastro.usuarios'
 
 export const mainListItems = (
   <div>

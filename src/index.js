@@ -79,17 +79,15 @@ let io;
     restApi.use(app);
 }());
 
-
-
 io.on('connection', socket => {
-    console.log(`Socket conectado ${socket.id}`)
+    console.log(`Socket conectado ${socket.id}`);
+    io.on("hello", ()=>{
+        console.log("ddd");
+    })
 });
 
 
-io.on('sendMessage', socket => {
-    
-});
 
-exports.emit = function(event, data) {
+exports.emit = function (event, data) {
     io.emit(event, data);
 }

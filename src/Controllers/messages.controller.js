@@ -18,6 +18,7 @@ module.exports = {
     async details(req, res, next) {
         try {
             let { chatId } = req.params;
+            chatId = chatId.replace('@c.us', '');
             chatId = chatId + '@c.us';
 
             if (!chatId) {
