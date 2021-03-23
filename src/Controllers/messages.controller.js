@@ -1,4 +1,6 @@
 const Messages = require('../Models/messages.model');
+const Clients = require('../Models/client.model');
+const Client = require('../Models/client.model');
 
 module.exports = {
     async index(req, res, next) {
@@ -36,7 +38,7 @@ module.exports = {
     },
 
     async createText(type, author, body, chatId, isServer) {
-        if(!isServer){
+        if (!isServer) {
             isServer = false;
         }
         let data = { type, author, body, chatId, isServer };

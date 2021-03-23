@@ -125,6 +125,18 @@ export default function UsuariosListagem() {
     setOpen(false);
   };
 
+  function Attendace(inAttendace) {
+      switch (inAttendace) {
+        case true:
+          return ('Finalizar atendimento'); 
+          break;
+      
+        default:
+          return ('Atender');
+          break;
+      }
+  }
+
   useEffect(() => {
     async function loadUsuarios() {
       const response = await api.get('/api/clients');
@@ -202,8 +214,8 @@ export default function UsuariosListagem() {
 
                                 <Button onClick={async () => {
                                   try {
-                                      const response = await api.delete('/api/clients/' + row._id);
-                                      window.location.reload(true);
+                                    const response = await api.delete('/api/clients/' + row._id);
+                                    window.location.reload(true);
                                   } catch (e) {
                                     console.log(e);
                                     alert('Erro, tente mais tarde.');
@@ -226,7 +238,10 @@ export default function UsuariosListagem() {
                               <TableCell align="right">
 
                                 <ButtonGroup size="small" aria-label="small button group">
-                                  <Button variant="contained" color="primary" href={'/admin/usuarios/editar/' + row._id}>Atualizar</Button>
+                                  <Button variant="contained" color="primary" onClick={async ()=>{
+                                    await api.put('/api/clients/' + row._id);
+                                    window.location.reload(true);
+                                  }}>{Attendace(row.inAttendace)}</Button>
 
                                   <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
                                   </Button>

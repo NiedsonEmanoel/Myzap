@@ -19,12 +19,15 @@ const mongoConector = require('./Databases/mongoHelper');
 
 const WhatsApp = require('./Controllers/multisession.controller');
 
+let serverRest;
+
 (async function () {
     await mongoConector();
     await WhatsApp.createInternal();
     await WhatsApp.initilizeInternal();
 }());
 
+let io;
 (function () {
     console.clear();
     switch (process.env.useHTTPS) {
@@ -37,13 +40,15 @@ const WhatsApp = require('./Controllers/multisession.controller');
                 privatekey = fs.readFileSync(process.env.CERT_KEY);
             } catch (e) {
                 console.error(e);
-                restApi.listen(process.env.PORT, process.env.HOST, () => { });
+                serverRest = require('http').createServer(restApi);
+                io = require('socket.io')(serverRest);
+                serverRest.listen(process.env.PORT, process.env.HOST, () => { });
 
                 console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
                 break;
             }
-
-            var serverRest = require('https').createServer({ key: privatekey, cert: certificate }, restApi);
+            io = require('socket.io')(serverRest);
+            serverRest = require('https').createServer({ key: privatekey, cert: certificate }, restApi);
 
             serverRest.listen(process.env.PORT, process.env.HOST, () => { });
 
@@ -51,7 +56,9 @@ const WhatsApp = require('./Controllers/multisession.controller');
             break;
 
         default:
-            restApi.listen(process.env.PORT, process.env.HOST, () => { });
+            serverRest = require('http').createServer(restApi);
+            io = require('socket.io')(serverRest);
+            serverRest.listen(process.env.PORT, process.env.HOST, () => { });
             console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
     }
 
@@ -68,6 +75,21 @@ const WhatsApp = require('./Controllers/multisession.controller');
     restApi.use(express.urlencoded({ limit: '20mb', extended: true }));
     restApi.use(express.json({ limit: '20mb' }));
     restApi.use(cookieParser());
-    
+
     restApi.use(app);
 }());
+
+
+
+io.on('connection', socket => {
+    console.log(`Socket conectado ${socket.id}`)
+});
+
+
+io.on('sendMessage', socket => {
+    
+});
+
+exports.emit = function(event, data) {
+    io.emit(event, data);
+}

@@ -8,16 +8,15 @@ import Copyright from '../../../components/footer';
 import GridList from '@material-ui/core/GridList';
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
+import io from '../../../services/socket.io';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from "@material-ui/icons/Send";
 import Divider from '@material-ui/core/Divider';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ImageIcon from "@material-ui/icons/Image";
-import { format } from '@flasd/whatsapp-formatting';
 import AudioPlayer from 'material-ui-audio-player';
 import api from '../../../services/api'
-import WorkIcon from "@material-ui/icons/Work";
-import BeachAccessIcon from "@material-ui/icons/BeachAccess";
+
 import {
     Paper,
     Typography,
@@ -203,14 +202,44 @@ const useStyles = makeStyles((theme) => ({
 
 export default function WhatsApp() {
     const [text, setText] = useState('');
+    const [contact, setContact] = useState({});
     const [list, setList] = useState([]);
 
-    useEffect(async () => {
+    useEffect(upgrade, [])
+
+    async function upgrade() {
         const response = await api.get('/api/clients/attendance');
         console.clear();
-        console.log()
-        setList(response.data.Client);
-    }, [])
+        console.log();
+        if (response) {
+            setList(response.data.Client);
+            if (response.data.Client[0] !== undefined) {
+                setContact(response.data.Client[0]);
+            } else {
+                setContact([{ profileUrl: "/unexpected.jpg" }])
+            }
+        } else {
+            setList([]);
+        }
+
+    }
+
+    io.on('newMessage', (e) => {
+        console.log('new')
+        upgrade();
+    });
+
+    function isValidLast(message) {
+        try {
+            if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
+                return ('' + message.lastMessage.body);
+            } else {
+                return ('');
+            }
+        } catch {
+            return ('');
+        }
+    }
 
     function getBase64(file) {
         return new Promise((resolve, reject) => {
@@ -219,6 +248,22 @@ export default function WhatsApp() {
             reader.onload = () => resolve(reader.result);
             reader.onerror = error => reject(error);
         });
+    }
+
+    function getLeftList() {
+        return (list.map(item => (
+            <>
+                <ListItem button={true} onClick={(e) => { setContact(item) }}>
+                    <Avatar src={item.profileUrl}></Avatar>
+                    <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+            </>
+        )));
+    }
+
+    function sendMessage(event) {
+        event.preventDefault();
     }
 
     const classes = useStyles();
@@ -264,15 +309,7 @@ export default function WhatsApp() {
                                                 flexWrap: 'nowrap'
                                             }} cols={1} cellHeight={((window.innerHeight / 4.50) * list.length)}>
                                                 <List className={classes.list}>
-                                                    {list.map(item => (
-                                                        <>
-                                                            <ListItem button>
-                                                                <Avatar src={item.profileUrl}></Avatar>
-                                                                <ListItemText className={classes.list} primary={item.fullName} secondary={item.lastMessage.body} />
-                                                            </ListItem>
-                                                            <Divider variant="inset" component="li" />
-                                                        </>
-                                                    ))}
+                                                    {getLeftList()}
                                                 </List>
                                             </GridList>
                                         </Grid>
@@ -281,16 +318,14 @@ export default function WhatsApp() {
                                         <Grid className={classes.heightAdjust} item xs={9}>
                                             <CardHeader
                                                 avatar={
-                                                    <Avatar aria-label="Recipe" className={classes.avatar}>
-                                                        <ImageIcon />
-                                                    </Avatar>
+                                                    <Avatar aria-label="Recipe" className={classes.avatar} src={contact.profileUrl}></Avatar>
                                                 }
                                                 action={
                                                     <IconButton>
                                                         <MoreVertIcon />
                                                     </IconButton>
                                                 }
-                                                title="Niedson"
+                                                title={contact.fullName}
                                             />
 
                                             <CardContent className={[classes.rightContainer, classes.content]}>
@@ -354,7 +389,7 @@ export default function WhatsApp() {
                                                 </Grid>
                                             </CardContent>
 
-                                            <form id='form'>
+                                            <form id='form' onSubmit={sendMessage}>
                                                 <Grid container style={{ paddingLeft: "5px", marginTop: '1%' }}>
 
                                                     <Grid xs={1} align="center">
@@ -384,7 +419,7 @@ export default function WhatsApp() {
                                                     </Grid>
 
                                                     <Grid xs={1} align="center">
-                                                        <input style={{ display: "none" }} id="envi" type="button" />
+                                                        <input style={{ display: "none" }} id="envi" type="submit" />
                                                         <label htmlFor="envi">
                                                             <Fab color="primary" aria-label="upload picture" component="span">
                                                                 <SendIcon />

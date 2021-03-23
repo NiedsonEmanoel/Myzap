@@ -8,7 +8,7 @@ Router.get('/details/:_id', Clients.details);
 
 Router.post('/', Clients.create);
 
-Router.put('/:_id', Clients.update);
+Router.put('/:_id', Clients.switchAt);
 
 Router.delete('/:_id', Clients.delete)
 

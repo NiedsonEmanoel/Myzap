@@ -1,5 +1,6 @@
 const venom = require('venom-bot');
 const dialogflow = require('./Dialogflow');
+const io = require('../../index');
 const path = require('path');
 const messageHelper = require('../../Controllers/messages.controller')
 const notifierHelper = require('../Classes/Notifier');
@@ -132,7 +133,7 @@ module.exports = class {
             }
 
             let RequestMongo = await clientHelper.findInternal(message.from);
-
+console.log(RequestMongo)
             if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
@@ -192,8 +193,9 @@ module.exports = class {
                 if (User.firstAttendace === true) {
                     clientHelper.switchFirst(User);
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
-                    return;
                 }
+
+                io.emit('newMessage', {"from": message.from});
                 return;
             }
 
@@ -247,6 +249,7 @@ module.exports = class {
 
                 console.log('Atendimento solicitado via chat');
                 await clientHelper.switchAttendance(User);
+                io.emit('newAttendace', {"name": User.fullName});
                 notifier.notify('Um novo cliente pediu atendimento');
 
             }

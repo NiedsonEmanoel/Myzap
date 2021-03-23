@@ -46,7 +46,7 @@ module.exports = {
             for (let key in Client) {
                 let chatId = Client[key].chatId;
 
-                let lastMessage = await messageHelper.findOne({ chatId }).sort({createdAt: -1});
+                let lastMessage = await messageHelper.findOne({ chatId }).sort({ createdAt: -1 });
 
                 let obj = Client[key].toObject();
 
@@ -170,12 +170,30 @@ module.exports = {
         }
     },
 
+    async switchAt(req, res) {
+
+        async function switchAttendance(user) {
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
+            inAttendace = inAttendace === true ? false : true;
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+            return inAttendace;
+        }
+
+        const { _id } = req.params;
+        const user = await Clients.findOne({ _id }).lean();
+        switchAttendance(user);
+        return res.status(200).send({
+            "message": "ok"
+        });
+    },
+
     async switchAttendance(user) {
         try {
             let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             inAttendace = inAttendace === true ? false : true;
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
             return inAttendace;
         } catch (e) {
             console.error(e)
@@ -187,7 +205,7 @@ module.exports = {
             let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             firstAttendace = firstAttendace === true ? false : true;
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
             return firstAttendace;
         } catch (e) {
             console.error(e)
