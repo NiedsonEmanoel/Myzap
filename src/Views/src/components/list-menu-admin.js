@@ -10,11 +10,9 @@ import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
-import Dashboard from '../pages/admin/usuarios/cadastro.usuarios'
-
+import { logout } from '../services/auth';
 export const mainListItems = (
   <div>
-
     <ListItem button component="a" href="/admin">
       <ListItemIcon>
         <DashboardIcon />
@@ -64,7 +62,13 @@ export const secondaryListItems = (
   <div>
     <ListSubheader inset>Opções rápidas</ListSubheader>
 
-    <ListItem button>
+    <ListItem button={true} onClick={(e) => {
+      let s = window.confirm('Deseja sair?');
+      if(s){
+        logout();
+        window.location.href = "/admin/login";
+      }
+    }}>
       <ListItemIcon>
         <ExitToAppIcon />
       </ListItemIcon>

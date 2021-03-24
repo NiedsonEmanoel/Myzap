@@ -4,8 +4,8 @@ const Workers = require('../../../Controllers/worker.controller');
 
 Router.post('/', Workers.login);
 
-Router.get('/checktoken', Workers.checkToken);
-Router.get('/destroytoken', Workers.destroyToken);
+Router.get('/checktoken/:token', Workers.checkToken);
+Router.get('/destroytoken/:token', Workers.destroyToken);
 
 module.exports = Router;
 

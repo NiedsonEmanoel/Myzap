@@ -235,7 +235,7 @@ export default function UsuariosListagem() {
                               <TableCell align="right">
 
                                 <ButtonGroup size="small" aria-label="small button group">
-                                  <Button variant="contained" color="primary" href={'/admin/usuarios/editar/' + row._id}>Atualizar</Button>
+                                  <Button variant="contained" color="primary" href={'/admin/funcionarios/editar/' + row._id}>Atualizar</Button>
 
                                   <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
                                   </Button>

@@ -109,20 +109,20 @@ module.exports = {
                 console.log(err);
                 res.status(500).json({ "error":err  });
             } else if (!user) {
-                res.status(401).json({ status: 2, "error": 'Access denied' });
+                res.status(200).json({ status: 2, "error": 'Access denied' });
             } else {
                 user.isCorrectPassword(senha, async function (err, same) {
                     if (err) {
                         res.status(500).json({ error: err });
                     } else if (!same) {
-                        res.status(401).json({ status: 2, error: "Access denied" });
+                        res.status(200).json({ status: 2, error: "Access denied" });
                     } else {
                         const payload = { email };
                         const token = jwt.sign(payload, secret, {
                             expiresIn: '24h'
                         })
                         res.cookie('token', token);
-                        res.status(200).json({ status: 1, auth: true, token: token, id_client: user._id, user_name: user.nome_usuario, user_type: user.tipo_usuario });
+                        res.status(200).json({ status: 1, auth: true, token: token, user: user});
                     }
                 })
 
@@ -131,15 +131,15 @@ module.exports = {
     },
 
     async checkToken(req, res) {
-        const token = req.body.token || req.query.token || req.cookies.token || req.headers['x-access-token'] || req.headers.authorization;
+        const token = req.body.token || req.query.token || req.params.token || req.cookies.token || req.headers['x-access-token'] || req.headers.authorization;
         if (!token) {
-            res.status(401).json({ status: 401, msg: 'Access denied' });
+            res.status(200).json({ status: 401, msg: 'Access denied' });
         } else {
             jwt.verify(token, secret, function (err, decoded) {
                 if (err) {
-                    res.status(401).json({ status: 401, msg: 'Access denied' });
+                    res.status(200).json({ status: 401, msg: 'Access denied' });
                 } else {
-                    res.status(200).json({ status: 200 })
+                    res.status(200).json({ status: 200, decoded })
                 }
             })
         }
@@ -150,7 +150,7 @@ module.exports = {
         if (token) {
             res.cookie('token', null);
         } else {
-            res.status(401).send("Unauthorized logout!")
+            res.status(200).send("Unauthorized logout!")
         }
         res.send("Session ended successfully!");
     }

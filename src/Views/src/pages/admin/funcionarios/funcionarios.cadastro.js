@@ -86,9 +86,10 @@ console.log(data)
                         <Grid sm={12}>
 
                             <Paper className={classes.paper}>
+                                <h2>Cadastro de Funcionários</h2>
 
                                 <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={12}>
+                                    <Grid item xs={12} sm={10}>
                                         <TextField
                                             required
                                             id="nome"
@@ -101,6 +102,7 @@ console.log(data)
                                             onChange={e => setNome(e.target.value)}
                                         />
                                     </Grid>
+                                    <img src={foto} style={{maxHeight: "100px", marginLeft: "4%",  maxWidth:"100px", height: "100px", width: "100px"}}></img>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             required

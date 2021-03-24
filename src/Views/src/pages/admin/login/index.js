@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,6 +11,16 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Copyright from '../../../components/footer';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import { login, setIdUsuario, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario } from '../../../services/auth'
+
+import api from '../../../services/api';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,87 +60,161 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignInSide() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    Draw();
+    setEmail('');
+    setSenha('');
+  };
+
   const classes = useStyles();
 
-  return (
-    <Grid container component="main" className={classes.root}>
+  async function Login(event) {
+    event.preventDefault();
+    try {
+      const response = await api.post('/api/login', { email, senha });
+      if (response.data.status == 1) {
+        login(response.data.token);
+        setIdUsuario(response.data.user._id);
+        setProfileLinkUsuario(response.data.user.foto_perfil);
+        setNomeUsuario(response.data.user.nome_usuario);
+        setTipoUsuario(response.data.user.tipo_usuario);
 
-      <CssBaseline />
+        window.location.href = '/admin'
+      }
+      else {
+        setTitle("Acesso não autorizado");
+        setMessage("Seu email ou senha estão incorretos.");
+        handleClickOpen();
+      }
+    } catch (e) {
+      setTitle("Erro no servidor!");
+      setMessage("Ocorreu um erro interno no servidor, tente novamente mais tarde!");
+      handleClickOpen();
+    }
 
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+  }
 
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
+  function Draw() {
+    return (
+      <Grid container component="main" className={classes.root}>
 
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
+        <CssBaseline />
 
-          <Typography component="h1" variant="h5">
-              Login
-          </Typography>
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
 
-          <form className={classes.form} noValidate >
-            
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
 
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Senha"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
             >
+              <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  {message}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => {
+                  handleClose();
+                }} color="primary" autoFocus>
+                  Ok
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+
+            <Typography component="h1" variant="h5">
               Login
-            </Button>
+            </Typography>
 
-            <Grid container>
-              <Grid item xs>
+            <form className={classes.form} id="form" onSubmit={Login} >
+              <input style={{ display: "none" }} id="sub" type="submit" />
 
-                <Link href="#" variant="body2">
-                  Esqueceu a senha?
-                </Link>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value) }}
+                label="Email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
 
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                value={senha}
+                onChange={(e) => { setSenha(e.target.value) }}
+                name="password"
+                label="Senha"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <label htmlFor="sub">
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Login
+                </Button>
+              </label>
+
+
+              <Grid container>
+                <Grid item xs>
+
+                  <Link href="#" variant="body2">
+                    Esqueceu a senha?
+                  </Link>
+
+                </Grid>
+
+                <Grid item>
+
+                </Grid>
               </Grid>
-
-              <Grid item>
-
-              </Grid>
-            </Grid>
-
+            </form>
             <Box mt={5}>
               <Copyright />
             </Box>
-          </form>
 
-        </div>
+
+          </div>
+
+        </Grid>
 
       </Grid>
+    );
+  }
 
-    </Grid>
-
-  );
+  return Draw();
 
 }

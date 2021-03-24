@@ -10,6 +10,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import logo from '../assets/img/logo-empresa.png';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import {getProfileLinkUsuario} from '../services/auth';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import { mainListItems, secondaryListItems } from './list-menu-admin';
@@ -125,7 +126,7 @@ export default function MenuAdmin(props) {
 
                     <IconButton color="inherit">
 
-                        <Avatar alt="User" src={props.image} />
+                        <Avatar alt="User" src={getProfileLinkUsuario()} />
 
                     </IconButton>
 
