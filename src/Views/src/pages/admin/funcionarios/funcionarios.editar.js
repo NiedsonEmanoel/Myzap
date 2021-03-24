@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
@@ -11,6 +11,7 @@ import Select from '@material-ui/core/Select';
 import SaveIcon from '@material-ui/icons/Save';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import { useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     content: { flexGrow: 1, height: '100vh', overflow: 'auto', },
     container: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(4), },
     paper: { padding: 35, display: 'flex', overflow: 'auto', flexDirection: 'column', },
-    formControl: { width: '100%'},
+    formControl: { width: '100%' },
     btnSuccess: { backgroundColor: "green", color: "#fff", "&:hover": { backgroundColor: "#12b912" } }
 }));
 
@@ -37,35 +38,39 @@ export default function Dashboard() {
     const [tipo, setTipo] = useState('');
     const [foto, setFoto] = useState('');
 
+    const { idFuncionario } = useParams();
+
+    useEffect(() => {
+        async function S() {
+            let response = await api.get('/api/workers/details/' + idFuncionario);
+            let client = response.data.Worker[0];
+            console.log(client)
+            setNome(client.nome_usuario);
+            setEmail(client.email_usuario);
+            setSenha(client.senha_usuario);
+            setTipo(client.tipo_usuario);
+            setFoto(client.foto_perfil)
+        }
+        S();
+
+    }, []);
+
     async function handleSubmit() {
 
-        if ((!nome) || (!email) || (!senha) || (!tipo)) {
-            return (alert('Preencha todos os campos!'));
+        let data = {
+            nome_usuario: nome,
+            email_usuario: email,
+            tipo_usuario: tipo,
+            senha_usuario: senha,
+            foto_perfil: foto
         }
 
-        try {
-            const data = {
-                nome_usuario: nome,
-                email_usuario: email,
-                senha_usuario: senha,
-                tipo_usuario: tipo,
-                foto_perfil: foto
-            }
-console.log(data)
-            const response = await api.post('/api/workers', data);
-            console.log(response);
+        await api.put('/api/workers/'+idFuncionario, data, {timeout: 3000}).then(()=>{
+            alert('Atualização efetuada com sucesso')
+        }).catch(()=>{
+            alert('Erro, tente novamente mais tarde.');
+        })
 
-            if (response.status == 200) {
-                return (alert('Cadastro efetuado!'));
-            }
-        } catch (e) {
-            if (e == 'Error: Request failed with status code 400') {
-                alert('O cadastro já existe!')
-            } else {
-                alert(e)
-                alert('Erro, tente novamente mais tarde!');
-            }
-        }
     }
 
     const classes = useStyles();
@@ -73,7 +78,7 @@ console.log(data)
         <div className={classes.root}>
             <CssBaseline />
 
-            <MenuAdmin name="Cadastro de Funcionários" image={'https://avatars.githubusercontent.com/u/25508594?s=88&u=5b5d48594bf2e0858c8e35ea14ca670bed657b05&v=4'} />
+            <MenuAdmin name="Atualização de Funcionários" />
 
             <main className={classes.content}>
 
@@ -86,7 +91,7 @@ console.log(data)
                         <Grid sm={12}>
 
                             <Paper className={classes.paper}>
-                                <h2>Cadastro de Funcionários</h2>
+                                <h2>Atualização de Funcionários</h2>
 
                                 <Grid container spacing={3}>
                                     <Grid item xs={12} sm={10}>
@@ -102,7 +107,7 @@ console.log(data)
                                             onChange={e => setNome(e.target.value)}
                                         />
                                     </Grid>
-                                    <img src={foto} style={{maxHeight: "100px", marginLeft: "4%",  maxWidth:"100px", height: "100px", width: "100px"}}></img>
+                                    <img src={foto} style={{ maxHeight: "100px", marginLeft: "4%", maxWidth: "100px", height: "100px", width: "100px" }}></img>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             required

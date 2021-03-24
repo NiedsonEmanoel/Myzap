@@ -86,8 +86,6 @@ io.on('connection', socket => {
     })
 });
 
-
-
 exports.emit = function (event, data) {
-    io.emit(event, data);
+    return(io.emit(event, data));
 }

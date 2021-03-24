@@ -195,8 +195,8 @@ console.log(RequestMongo)
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
                 }
 
-                io.emit('newMessage', {"from": message.from});
-                return;
+                return(io.emit('newMessage', {"from": message.from}));
+                
             }
 
             console.info(`\nMensagem recebida!\nType: ${message.type}\nSender: ${User.fullName}`);
@@ -249,7 +249,7 @@ console.log(RequestMongo)
 
                 console.log('Atendimento solicitado via chat');
                 await clientHelper.switchAttendance(User);
-                io.emit('newAttendace', {"name": User.fullName});
+                io.emit('newAttendace', {"name": User.fullName, "chatId": message.from});
                 notifier.notify('Um novo cliente pediu atendimento');
 
             }

@@ -153,6 +153,7 @@ export default function SignInSide() {
                 margin="normal"
                 required
                 fullWidth
+                type="email"
                 id="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value) }}

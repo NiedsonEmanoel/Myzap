@@ -16,7 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AudioPlayer from 'material-ui-audio-player';
 import api from '../../../services/api'
-import {getNomeUsuario, getProfileLinkUsuario} from '../../../services/auth'
+import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
 
 import {
     Paper,
@@ -198,6 +198,15 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: "5px",
         marginLeft: "70%",
         backgroundColor: "#DCF8C6"
+    },
+    receivedVideo: {
+        width: "30%",
+        marginTop: "5px",
+        maxHeight: "500px",
+        maxWidth: "500px",
+        marginBottom: "5px",
+        marginLeft: "0%",
+        backgroundColor: "#ffffff"
     }
 }));
 
@@ -206,28 +215,52 @@ export default function WhatsApp() {
     const [contact, setContact] = useState({});
     const [worker, setWorker] = useState("");
     const [list, setList] = useState([]);
+    const [messagesList, setMessagesList] = useState([]);
 
-    useEffect(upgrade, [])
+    useEffect(() => {
+        upgrade()
+
+        io.on('newMessage', (e) => {
+            if (e.from == contact.chatId) {
+                getMessages();
+            }
+            return uptodate();
+        });
+
+        io.on('newAttendace', (e) => {
+            console.log(e.name);
+            return uptodate();
+        });
+    }, [contact])
 
     async function upgrade() {
+        setWorker(getNomeUsuario());
         const response = await api.get('/api/clients/attendance');
         if (response) {
             setList(response.data.Client);
             if (response.data.Client[0] !== undefined) {
-                setContact(response.data.Client[0]);
+                console.log('ok')
             } else {
-                setContact([{ profileUrl: "/unexpected.jpg" }])
+                setContact([{ profileUrl: "/unexpected.jpg", chatId: "0" }])
             }
         } else {
             setList([]);
         }
-
     }
 
-    io.on('newMessage', (e) => {
-        console.log(e.data);
-        upgrade();
-    });
+    async function uptodate() {
+        const response = await api.get('/api/clients/attendance');
+        setList(response.data.Client);
+    }
+
+    async function getMessages() {
+        if (contact.chatId !== "0") {
+            const response = await api.get('/api/messages/' + contact.chatId)
+            setMessagesList(response.data.Message);
+        }
+    }
+
+    useEffect(getMessages, [contact])
 
     function isValidLast(message) {
         try {
@@ -263,66 +296,93 @@ export default function WhatsApp() {
     }
 
     function getRightList() {
+
+        const AudioMessage = (props) => {
+            return (
+                <Card className={props.classe}>
+                    <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
+                        <AudioPlayer
+                            download={false}
+                            autoplay={false}
+                            volume={false}
+                            width="100%"
+                            variation="default"
+                            spacing={3}
+                            src={props.src}
+                        />
+                    </CardContent>
+                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                        {props.date}
+                    </Typography>
+                </Card>
+            );
+        }
+
+        const VideoMessage = (props) => {
+            return (
+                <Card className={props.classe}>
+                    <CardContent style={{}}>
+                        <video style={{ height: "100%", width: "100%" }} src={props.src} controls="true"></video>
+                    </CardContent>
+                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                        {props.date}
+                    </Typography>
+                </Card>
+            );
+        }
+
+        const ImageMessage = (props) => {
+            return (
+                <Card className={props.classe}>
+                    <img style={{ height: "100%", width: "100%", }} src={props.src}></img>
+                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                        {props.date}
+                    </Typography>
+                </Card>
+            );
+        }
+
+        const TextMessage = (props) => {
+            return (
+                <Card className={props.classe}>
+
+                    <CardContent>
+                        <Typography color="black" variant="body" display="inline">
+                            {props.message}
+                        </Typography>
+                    </CardContent>
+
+                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                        {props.date}
+                    </Typography>
+
+                </Card>
+            );
+        }
+
         return (
-            <GridList cols={1} style={{ width: "100%", height: "100%" }} cellHeight={'auto'}>
+            <GridList cols={1} style={{ width: "100%", height: "100%", direction: "column-reverse", overflow: "hidden" }} cellHeight={'auto'}>
 
                 <CardContent>
+                    {messagesList.map((message) => {
+                        switch (message.type) {
+                            case 'chat':
+                                return (function () {
+                                    let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                    return (
+                                        <TextMessage
+                                            classe={classMessage}
+                                            message={message.body}
+                                            date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                        />
+                                    );
+                                }());
+                                break;
 
-                    <Card className={classes.received}>
-                        <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
-                            <AudioPlayer
-                                download={false}
-                                autoplay={false}
-                                volume={false}
-                                width="100%"
-                                variation="default"
-                                spacing={3}
-                                src={'https://tutorialehtml.com/assets_tutorials/media/Loreena_Mckennitt_Snow_56bit.mp3'}
-                            />
-                        </CardContent>
-                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                            {new Date().toLocaleString('pt-BR')}
-                        </Typography>
-                    </Card>
-
-                    <Card className={classes.sentVideo}>
-                        <CardContent style={{}}>
-                            <video style={{ height: "100%", width: "100%" }} src="/p.mp4" controls="true"></video>
-                        </CardContent>
-                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                            {new Date().toLocaleString('pt-BR')}
-                        </Typography>
-                    </Card>
-
-                    <Card className={classes.sentImg}>
-                        <img style={{ height: "100%", width: "100%", }} src="/wall.png"></img>
-                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                            {new Date().toLocaleString('pt-BR')}
-                        </Typography>
-                    </Card>
-
-                    <Card className={classes.sent}>
-                        <CardContent>
-                            <Typography color="black" variant="body" display="inline">
-                                Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
-                            </Typography>
-                        </CardContent>
-                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                            {new Date().toLocaleString('pt-BR')}
-                        </Typography>
-                    </Card>
-
-                    <Card className={classes.received}>
-                        <CardContent>
-                            <Typography color="black" variant="body" display="inline">
-                                Em linguística, a noção de texto é ampla e ainda aberta a uma definição mais precisa. Grosso modo, pode ser entendido como manifestação linguística das ideias de um autor, que serão interpretadas pelo leitor de acordo com seus conhecimentos linguísticos e culturais. Seu tamanho é variável.
-                            </Typography>
-                        </CardContent>
-                        <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                            {new Date().toLocaleString('pt-BR')}
-                        </Typography>
-                    </Card>
-
+                            default:
+                                break;
+                        }
+                    })}
                 </CardContent>
 
 
@@ -392,9 +452,7 @@ export default function WhatsApp() {
                                                 action={
                                                     <IconButton onClick={async () => {
                                                         await api.put('/api/clients/' + contact._id);
-                                                         upgrade();
-                                                         upgrade();
-                                                         upgrade();
+                                                        window.location.reload();
                                                     }}>
                                                         <AssignmentTurnedInIcon />
                                                     </IconButton>

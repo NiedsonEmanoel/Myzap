@@ -1,4 +1,8 @@
-const mongoose = require('mongoose');
+let mongoose = require('mongoose');
+mongoose.set('useFindAndModify', true);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.set('useCreateIndex', true);
 
 const MessagesSchema = new mongoose.Schema ({
     type: {
