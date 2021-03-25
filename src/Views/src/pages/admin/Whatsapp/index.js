@@ -13,7 +13,7 @@ import io from '../../../services/socket.io';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from "@material-ui/icons/Send";
 import Divider from '@material-ui/core/Divider';
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import AudioPlayer from 'material-ui-audio-player';
 import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
@@ -38,6 +38,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
+        overflow: 'hidden'
     },
     fila: {
         zIndex: 999,
@@ -193,7 +194,6 @@ const useStyles = makeStyles((theme) => ({
     sentVideo: {
         width: "30%",
         marginTop: "5px",
-        maxHeight: "500px",
         maxWidth: "500px",
         marginBottom: "5px",
         marginLeft: "70%",
@@ -201,11 +201,30 @@ const useStyles = makeStyles((theme) => ({
     },
     receivedVideo: {
         width: "30%",
-        marginTop: "5px",
-        maxHeight: "500px",
+        height: "100%",
+        width: "100%",
         maxWidth: "500px",
+        marginTop: "5px",
         marginBottom: "5px",
         marginLeft: "0%",
+        backgroundColor: "#ffffff"
+    },
+    receivedSticker: {
+        width: "30%",
+        maxHeight: "150px",
+        marginTop: "5px",
+        marginBottom: "5px",
+        maxWidth: "150px",
+        marginLeft: "0%",
+        backgroundColor: "#ffffff"
+    },
+    sentSticker: {
+        width: "30%",
+        maxHeight: "150px",
+        marginTop: "5px",
+        marginBottom: "5px",
+        maxWidth: "150px",
+        marginLeft: "70%",
         backgroundColor: "#ffffff"
     }
 }));
@@ -216,10 +235,13 @@ export default function WhatsApp() {
     const [worker, setWorker] = useState("");
     const [list, setList] = useState([]);
     const [messagesList, setMessagesList] = useState([]);
+    let xtext;
 
     useEffect(() => {
         upgrade()
+    }, []);
 
+    useEffect(() => {
         io.on('newMessage', (e) => {
             if (e.from == contact.chatId) {
                 getMessages();
@@ -231,7 +253,11 @@ export default function WhatsApp() {
             console.log(e.name);
             return uptodate();
         });
-    }, [contact])
+    }, [contact]);
+
+    useEffect(() => {
+        setText(xtext)
+    }, [xtext]);
 
     async function upgrade() {
         setWorker(getNomeUsuario());
@@ -265,7 +291,9 @@ export default function WhatsApp() {
     function isValidLast(message) {
         try {
             if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
-                return ('' + message.lastMessage.body);
+                let mess = new String(message.lastMessage.body)
+                mess = mess.replace(`*${worker}:*`, '')
+                return ('' + mess);
             } else {
                 return ('');
             }
@@ -346,6 +374,10 @@ export default function WhatsApp() {
             return (
                 <Card className={props.classe}>
 
+                    <Typography variant="button" style={{ marginLeft: "3%", marginTop: "3%" }} color="black" display="inline" gutterBottom>
+                        {props.author}
+                    </Typography>
+
                     <CardContent>
                         <Typography color="black" variant="body" display="inline">
                             {props.message}
@@ -360,39 +392,130 @@ export default function WhatsApp() {
             );
         }
 
+        const DocumentMessage = (props) => {
+            let docs = [{ uri: props.src }]
+            return (
+                <Card className={props.classe}>
+                    <DocViewer pluginRenderers={DocViewerRenderers} config={{ header: { disableHeader: true, disableFileName: true } }} style={{ height: "100%", width: "100%" }} documents={docs} />
+                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
+                        {props.date}
+                    </Typography>
+
+                </Card>
+            );
+        }
+
+
         return (
-            <GridList cols={1} style={{ width: "100%", height: "100%", direction: "column-reverse", overflow: "hidden" }} cellHeight={'auto'}>
+            <CardContent>
+                {messagesList.map((message) => {
+                    switch (message.type) {
+                        case 'chat':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                let mess = new String(message.body);
+                                return (
+                                    <TextMessage
+                                        classe={classMessage}
+                                        author={message.author}
+                                        message={mess}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
+                        case 'image':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
+                                return (
+                                    <ImageMessage
+                                        classe={classMessage}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
 
-                <CardContent>
-                    {messagesList.map((message) => {
-                        switch (message.type) {
-                            case 'chat':
-                                return (function () {
-                                    let classMessage = message.isServer == true ? classes.sent : classes.received;
-                                    return (
-                                        <TextMessage
-                                            classe={classMessage}
-                                            message={message.body}
-                                            date={new Date(message.createdAt).toLocaleString('pt-BR')}
-                                        />
-                                    );
-                                }());
-                                break;
+                        case 'ptt':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                return (
+                                    <AudioMessage
+                                        classe={classMessage}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
 
-                            default:
-                                break;
-                        }
-                    })}
-                </CardContent>
+                        case 'audio':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                return (
+                                    <AudioMessage
+                                        classe={classMessage}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
 
+                        case 'video':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
+                                return (
+                                    <VideoMessage
+                                        classe={classMessage}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
 
-            </GridList>
+                        case 'sticker':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sentSticker : classes.receivedSticker;
+                                return (
+                                    <ImageMessage
+                                        classe={classMessage}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
+
+                        case 'document':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                return (
+                                    <DocumentMessage
+                                        classe={classMessage}
+                                        name={message.fileName}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
+
+                        default:
+                            break;
+                    }
+                })}
+            </CardContent>
         );
     }
 
-    function sendMessage(event) {
+    async function sendMessage(event) {
+        if (xtext) {
+            event.preventDefault();
 
-        event.preventDefault();
+            let data = {
+                numbers: contact.chatId.replace('@c.us', ''),
+                worker: worker,
+                messages: xtext
+            }
+
+            await api.post('/api/whatsapp/message?id=0', data);
+        }
     }
 
     const classes = useStyles();
@@ -470,24 +593,20 @@ export default function WhatsApp() {
                                                 <Grid container style={{ paddingLeft: "5px", marginTop: '1%' }}>
 
                                                     <Grid xs={1} align="center">
-
-                                                        <input style={{ display: "none" }} id="icon-button-file" name='file' onInputCapture={e => { alert('Arquivo upado!') }} type="file" />
-
-                                                        <label htmlFor="icon-button-file">
-                                                            <Fab color="primary" aria-label="upload picture" component="span">
-                                                                <AttachFileIcon />
-                                                            </Fab>
-                                                        </label>
-
+                                                        <Fab color="primary" aria-label="upload picture" component="span">
+                                                            <AttachFileIcon />
+                                                        </Fab>
                                                     </Grid>
 
                                                     <Grid item xs={10}>
-                                                        <input style={{ display: "none" }} id="escriba" name='text' value={text} type="text" />
+                                                        <input style={{ display: "none" }} id="escriba" name='text' value={xtext} type="text" />
                                                         <label htmlFor="escriba">
                                                             <TextField
                                                                 id="outlined-basic-email"
                                                                 variant="outlined"
-                                                                onChange={e => setText(e.target.value)}
+                                                                value={xtext}
+                                                                onChange={e => xtext = e.target.value}
+                                                                onSubmitCapture={()=>{xtext=""}}
                                                                 label="Digite aqui..."
                                                                 fullWidth
                                                             />

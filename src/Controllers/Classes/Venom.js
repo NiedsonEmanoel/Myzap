@@ -133,7 +133,7 @@ module.exports = class {
             }
 
             let RequestMongo = await clientHelper.findInternal(message.from);
-console.log(RequestMongo)
+            console.log(RequestMongo)
             if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
@@ -168,14 +168,14 @@ console.log(RequestMongo)
 
                 if (message.type == 'chat') {
                     let type = message.type;
-                    let author = message.author;
+                    let author = User.fullName;
                     let body = message.body;
                     let chatId = message.from;
 
                     await messageHelper.createText(type, author, body, chatId);
                 } else {
                     let type = message.type;
-                    let author = message.author;
+                    let author = User.fullName;
                     let chatId = message.from;
                     let dirF = path.resolve('./', 'Uploads') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
@@ -186,17 +186,17 @@ console.log(RequestMongo)
                     fs.mkdir(dirF, { recursive: true }, () => { });
                     const buffer = await this.Client.decryptFile(message);
                     fs.writeFile(dirN, buffer, () => { });
-                    
+
                     await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload);
                 }
-                
+
                 if (User.firstAttendace === true) {
                     clientHelper.switchFirst(User);
                     await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
                 }
 
-                return(io.emit('newMessage', {"from": message.from}));
-                
+                return (io.emit('newMessage', { "from": message.from }));
+
             }
 
             console.info(`\nMensagem recebida!\nType: ${message.type}\nSender: ${User.fullName}`);
@@ -249,7 +249,7 @@ console.log(RequestMongo)
 
                 console.log('Atendimento solicitado via chat');
                 await clientHelper.switchAttendance(User);
-                io.emit('newAttendace', {"name": User.fullName, "chatId": message.from});
+                io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
                 notifier.notify('Um novo cliente pediu atendimento');
 
             }

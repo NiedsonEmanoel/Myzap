@@ -4,6 +4,7 @@ const fs = require('fs');
 let sessions = [];
 let started = [];
 let limit = new Number(process.env.SESSION_LIMIT) || 16;
+const io = require('../index');
 const messageHelper = require('./messages.controller');
 
 module.exports = {
@@ -197,7 +198,10 @@ module.exports = {
                         let part2 = arrNumbers[key].substr(5, 12)
                         arrNumbers[key] = `${part1}${part2}`
                     }
-                    await messageHelper.createText('chat', worker, arrMessages[keyM], arrNumbers[key] + '@c.us', true);
+                    let from = arrNumbers[key] + '@c.us';
+                    let mess = arrMessages[key].replace(`*${worker}:*`, '')
+                    await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
+                    io.emit('newMessage', {"from": from});
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
                 }
             }
