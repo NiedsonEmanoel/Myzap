@@ -187,7 +187,7 @@ module.exports = class {
                     const buffer = await this.Client.decryptFile(message);
                     fs.writeFile(dirN, buffer, () => { });
 
-                    await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload);
+                    await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload, false);
                 }
 
                 if (User.firstAttendace === true) {

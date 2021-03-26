@@ -319,9 +319,18 @@ export default function WhatsApp() {
     }, []);
 
     useEffect(() => {
+        
         io.on('newMessage', (e) => {
             if (e.from == contact.chatId) {
                 getMessages();
+            }
+            return uptodate();
+        });
+
+        io.on('newFile', (e) => {
+            if (e.from == contact.chatId) {
+                getMessages();
+                setOpen(false);
             }
             return uptodate();
         });
@@ -564,6 +573,17 @@ export default function WhatsApp() {
                             }());
 
                         default:
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                return (
+                                    <DocumentMessage
+                                        classe={classMessage}
+                                        name={message.fileName}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
+                                );
+                            }());
                             break;
                     }
                 })}
@@ -660,7 +680,7 @@ export default function WhatsApp() {
                                                         getBase64(selectedFile).then(async (data) => {
                                                             let type = selectedFile.type.split('/', 1);
                                                             let ext = selectedFile.type.split('/', 2);
-                                                             ext = ext[1];
+                                                            ext = ext[1];
                                                             if (type == 'aplication') {
                                                                 type = 'document'
                                                             }
@@ -672,7 +692,7 @@ export default function WhatsApp() {
                                                                 "name": selectedFile.name
                                                             };
 
-                                                            await api.post('/api/whatsapp/message.doc?id=0', dados).then(()=>handleClose);
+                                                            await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
                                                         })
                                                     }} color="primary">
                                                         Enviar
@@ -692,7 +712,7 @@ export default function WhatsApp() {
                                                     </Fab>
                                                 </Grid>
 
-                                                <Grid style={{margin: "0 0 0 0"}} item xs={11}>
+                                                <Grid style={{ margin: "0 0 0 0" }} item xs={11}>
                                                     <Forme number={contact} worker={worker} />
                                                 </Grid>
 

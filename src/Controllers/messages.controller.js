@@ -48,9 +48,9 @@ module.exports = {
         return;
     },
 
-    async createMedia(type, fileName, fileLink, author, chatId, fileLinkDownload) {
+    async createMedia(type, fileName, fileLink, author, chatId, fileLinkDownload, isServer) {
         let body = type;
-        let data = { type, author, fileName, fileLink, chatId, fileLinkDownload, body };
+        let data = { type, author, fileName, fileLink, chatId, fileLinkDownload, body, isServer };
         Message = await Messages.create(data);
         console.log('criado')
         return;

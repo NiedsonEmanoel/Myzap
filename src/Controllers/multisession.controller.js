@@ -287,19 +287,23 @@ module.exports = {
                         arrNumbers[key] = `${part1}${part2}`
                     }
 
-                    let dirF = path.resolve('./', 'Uploads') + '/' + arrNumbers[key] + '@c.us';
-                    let fileName = auxFunctions.WriteFileEXT(arrNumbers[key] + '@c.us', ext)
-                    let link = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}@c.us?file=${fileName}`;
-                    let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}@c.us?file=${fileName}&download=true`;
+                    let dirF = path.resolve('./', 'Uploads') + '/' + arrNumbers[key];
+                    let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
+                    let link = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}?file=${fileName}`;
+                    let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}?file=${fileName}&download=true`;
                     let dirN = dirF + '/' + fileName;
 
-                    fs.mkdir(dirF, { recursive: true }, () => { });
-                    fs.writeFile(dirN, base64, () => { });
+                    let matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                    let s= new Buffer.from(matches[2], 'base64');
 
-                    await messageHelper.createMedia(type, fileName, link, "", arrNumbers[key] + '@c.us', fileLinkDownload);
-                    io.emit('newMessage', { "from": from });
-                    sessions[id].Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, message);
+                    fs.mkdir(dirF, { recursive: true }, () => { });
+                    fs.writeFile(dirN, s, 'binary', ()=>{});
+                    let from = arrNumbers[key];
+                    await messageHelper.createMedia(type[0], fileName, link, "", arrNumbers[key], fileLinkDownload, true);
+                    io.emit('newFile', { "from": from });
+                    await sessions[id].Client.sendFileFromBase64(arrNumbers[key], base64, name, message);
                 } catch (e) {
+                    console.log(e)
                     res.status(400).send({
                         "id": id,
                         'to': arrNumbers,
