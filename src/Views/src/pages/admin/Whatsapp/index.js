@@ -6,6 +6,7 @@ import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import GridList from '@material-ui/core/GridList';
+import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
@@ -14,6 +15,10 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from "@material-ui/icons/Send";
 import Divider from '@material-ui/core/Divider';
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import AudioPlayer from 'material-ui-audio-player';
 import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
@@ -38,7 +43,6 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        overflow: 'hidden'
     },
     fila: {
         zIndex: 999,
@@ -136,15 +140,18 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         paddingLeft: 15
     },
-    appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
-        height: '100vh',
+        marginTop: "2%",
+        height: 'auto',
+        display: "flex",
+        flexDirection: 'column-reverse',
         overflow: 'auto',
     },
     container: {
         paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        paddingBottom: theme.spacing(6),
+        maxHeight: "100%"
     },
     paper: {
         padding: theme.spacing(2),
@@ -229,13 +236,83 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function WhatsApp() {
+const Forme = (props) => {
     const [text, setText] = useState('');
+
+    return (
+        <>
+
+            <form id='form' onSubmit={async (event) => {
+
+                event.preventDefault();
+
+                if (props.number.chatId) {
+                    if (text) {
+                        let data = {
+                            numbers: props.number.chatId.replace('@c.us', ''),
+                            worker: props.worker,
+                            messages: text
+                        }
+
+                        await api.post('/api/whatsapp/message?id=0', data);
+                        setText('');
+                    }
+                }
+            }}>
+                <Grid container style={{ paddingLeft: "5px", marginTop: '1%' }}>
+
+                    <Grid item xs={10}>
+                        <TextField
+                            id="outlined-basic-email"
+                            variant="outlined"
+                            value={text}
+                            onChange={e => setText(e.target.value)}
+                            label="Digite aqui..."
+                            fullWidth
+                        />
+                    </Grid>
+
+                    <Grid xs={1} align="center">
+                        <input style={{ display: "none" }} id="envi" type="submit" />
+                        <label htmlFor="envi">
+                            <Fab color="primary" aria-label="upload picture" component="span">
+                                <SendIcon />
+                            </Fab>
+                        </label>
+                    </Grid>
+
+                </Grid>
+            </form>
+        </>
+
+    );
+}
+
+export default function WhatsApp() {
     const [contact, setContact] = useState({});
     const [worker, setWorker] = useState("");
     const [list, setList] = useState([]);
     const [messagesList, setMessagesList] = useState([]);
-    let xtext;
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        if (contact.chatId)
+            setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
 
     useEffect(() => {
         upgrade()
@@ -254,10 +331,6 @@ export default function WhatsApp() {
             return uptodate();
         });
     }, [contact]);
-
-    useEffect(() => {
-        setText(xtext)
-    }, [xtext]);
 
     async function upgrade() {
         setWorker(getNomeUsuario());
@@ -302,14 +375,6 @@ export default function WhatsApp() {
         }
     }
 
-    function getBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    }
 
     function getLeftList() {
         return (list.map(item => (
@@ -322,6 +387,8 @@ export default function WhatsApp() {
             </>
         )));
     }
+
+
 
     function getRightList() {
 
@@ -379,7 +446,7 @@ export default function WhatsApp() {
                     </Typography>
 
                     <CardContent>
-                        <Typography color="black" variant="body" display="inline">
+                        <Typography color="black" variant="body" display="block">
                             {props.message}
                         </Typography>
                     </CardContent>
@@ -504,20 +571,6 @@ export default function WhatsApp() {
         );
     }
 
-    async function sendMessage(event) {
-        if (xtext) {
-            event.preventDefault();
-
-            let data = {
-                numbers: contact.chatId.replace('@c.us', ''),
-                worker: worker,
-                messages: xtext
-            }
-
-            await api.post('/api/whatsapp/message?id=0', data);
-        }
-    }
-
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -529,8 +582,7 @@ export default function WhatsApp() {
 
                 <div className={classes.appBarSpacer} />
 
-                <Container maxWidth="80vh" className={classes.container}>
-
+                <Container maxWidth="100%" className={classes.container}>
                     <Grid>
 
                         <Grid container className={classes.fila}>
@@ -541,29 +593,29 @@ export default function WhatsApp() {
 
                                     <Grid container>
                                         <Grid item xs={3}>
-                                            <CardHeader
-                                                className={classes.rightBorder}
-                                                avatar={
-                                                    <Avatar aria-label="Recipe" className={classes.avatar} src={getProfileLinkUsuario()}></Avatar>
-                                                }
-                                                title={getNomeUsuario()}
-                                            />
 
-                                            <Paper className={classes.warnings} elevation={0}>
-                                                <Typography className={classes.information} variant="subheader">
-                                                    Aqui estão listados todos os clientes que solicitaram atendimento.
-                                                </Typography>
+                                            <Paper elevation={3} style={{ marginBottom: "2%" }}>
+                                                <CardHeader
+                                                    className={classes.rightBorder}
+                                                    avatar={
+                                                        <Avatar aria-label="Recipe" className={classes.avatar} src={getProfileLinkUsuario()}></Avatar>
+                                                    }
+                                                    title={getNomeUsuario()}
+                                                />
                                             </Paper>
-                                            <GridList style={{
-                                                width: '100%',
-                                                display: "flex",
-                                                height: window.innerHeight,
-                                                flexWrap: 'nowrap'
-                                            }} cols={1} cellHeight={((window.innerHeight / 4.50) * list.length)}>
-                                                <List className={classes.list}>
-                                                    {getLeftList()}
-                                                </List>
-                                            </GridList>
+
+                                            <Paper elevation={2}>
+                                                <GridList style={{
+                                                    width: '100%',
+                                                    display: "flex",
+                                                    height: window.innerHeight,
+                                                    flexWrap: 'nowrap'
+                                                }} cols={1} cellHeight={((window.innerHeight / 4.50) * list.length)}>
+                                                    <List className={classes.list}>
+                                                        {getLeftList()}
+                                                    </List>
+                                                </GridList>
+                                            </Paper>
                                         </Grid>
 
 
@@ -583,48 +635,69 @@ export default function WhatsApp() {
                                                 title={contact.fullName}
                                             />
 
-                                            <CardContent className={[classes.rightContainer, classes.content]}>
+                                            <CardContent className={[classes.rightContainer, classes.content]} style={{ marginTop: "0%" }}>
                                                 <Grid>
                                                     {getRightList()}
                                                 </Grid>
                                             </CardContent>
 
-                                            <form id='form' onSubmit={sendMessage}>
-                                                <Grid container style={{ paddingLeft: "5px", marginTop: '1%' }}>
+                                            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                                <DialogTitle id="form-dialog-title">Enviar Arquivo</DialogTitle>
+                                                <DialogContent>
+                                                    <form>
+                                                        <input
+                                                            type="file"
+                                                            onChange={(e) => setSelectedFile(e.target.files[0])}
+                                                        />
+                                                    </form>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={handleClose} color="primary">
+                                                        Cancelar
+                                                    </Button>
+                                                    <Button onClick={() => {
+                                                        console.log(selectedFile)
+                                                        getBase64(selectedFile).then(async (data) => {
+                                                            let type = selectedFile.type.split('/', 1);
+                                                            let ext = selectedFile.type.split('/', 2);
+                                                             ext = ext[1];
+                                                            if (type == 'aplication') {
+                                                                type = 'document'
+                                                            }
+                                                            let dados = {
+                                                                "base64": data,
+                                                                "type": type,
+                                                                "numbers": contact.chatId,
+                                                                "ext": ext,
+                                                                "name": selectedFile.name
+                                                            };
 
-                                                    <Grid xs={1} align="center">
-                                                        <Fab color="primary" aria-label="upload picture" component="span">
-                                                            <AttachFileIcon />
-                                                        </Fab>
-                                                    </Grid>
+                                                            await api.post('/api/whatsapp/message.doc?id=0', dados).then(()=>handleClose);
+                                                        })
+                                                    }} color="primary">
+                                                        Enviar
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="space-evenly"
+                                                alignItems="center"
+                                            >
 
-                                                    <Grid item xs={10}>
-                                                        <input style={{ display: "none" }} id="escriba" name='text' value={xtext} type="text" />
-                                                        <label htmlFor="escriba">
-                                                            <TextField
-                                                                id="outlined-basic-email"
-                                                                variant="outlined"
-                                                                value={xtext}
-                                                                onChange={e => xtext = e.target.value}
-                                                                onSubmitCapture={()=>{xtext=""}}
-                                                                label="Digite aqui..."
-                                                                fullWidth
-                                                            />
-                                                        </label>
-
-                                                    </Grid>
-
-                                                    <Grid xs={1} align="center">
-                                                        <input style={{ display: "none" }} id="envi" type="submit" />
-                                                        <label htmlFor="envi">
-                                                            <Fab color="primary" aria-label="upload picture" component="span">
-                                                                <SendIcon />
-                                                            </Fab>
-                                                        </label>
-                                                    </Grid>
-
+                                                <Grid style={{ paddingLeft: "5px", marginTop: '1%' }} container item xs={1}>
+                                                    <Fab style={{ marginLeft: 0, paddingLeft: 0 }} color="primary" aria-label="upload picture" component="span" onClick={handleClickOpen}  >
+                                                        <AttachFileIcon />
+                                                    </Fab>
                                                 </Grid>
-                                            </form>
+
+                                                <Grid style={{margin: "0 0 0 0"}} item xs={11}>
+                                                    <Forme number={contact} worker={worker} />
+                                                </Grid>
+
+                                            </Grid>
+
                                         </Grid>
 
                                     </Grid>

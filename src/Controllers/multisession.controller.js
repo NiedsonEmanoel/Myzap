@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 let sessions = [];
 let started = [];
+const auxFunctions = require('../Functions/functions')
 let limit = new Number(process.env.SESSION_LIMIT) || 16;
 const io = require('../index');
 const messageHelper = require('./messages.controller');
@@ -201,7 +202,7 @@ module.exports = {
                     let from = arrNumbers[key] + '@c.us';
                     let mess = arrMessages[key].replace(`*${worker}:*`, '')
                     await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
-                    io.emit('newMessage', {"from": from});
+                    io.emit('newMessage', { "from": from });
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
                 }
             }
@@ -271,11 +272,12 @@ module.exports = {
             numbers = numbers.replace(/\s/g, '');
 
             let arrNumbers = numbers.split(',');
+            let type = req.body.type
             let base64 = req.body.base64;
             let name = req.body.name || 'file';
+            let ext = req.body.ext;
             let message = req.body.message || '';
 
-            fs.writeFile()
 
             for (let key in arrNumbers) {
                 try {
@@ -284,6 +286,18 @@ module.exports = {
                         let part2 = arrNumbers[key].substr(5, 12)
                         arrNumbers[key] = `${part1}${part2}`
                     }
+
+                    let dirF = path.resolve('./', 'Uploads') + '/' + arrNumbers[key] + '@c.us';
+                    let fileName = auxFunctions.WriteFileEXT(arrNumbers[key] + '@c.us', ext)
+                    let link = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}@c.us?file=${fileName}`;
+                    let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}@c.us?file=${fileName}&download=true`;
+                    let dirN = dirF + '/' + fileName;
+
+                    fs.mkdir(dirF, { recursive: true }, () => { });
+                    fs.writeFile(dirN, base64, () => { });
+
+                    await messageHelper.createMedia(type, fileName, link, "", arrNumbers[key] + '@c.us', fileLinkDownload);
+                    io.emit('newMessage', { "from": from });
                     sessions[id].Client.sendFileFromBase64(arrNumbers[key] + '@c.us', base64, name, message);
                 } catch (e) {
                     res.status(400).send({
