@@ -13,18 +13,15 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import io from '../../../services/socket.io';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Divider from '@material-ui/core/Divider';
-import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import AudioPlayer from 'material-ui-audio-player';
 import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
 
 import {
     Paper,
-    Typography,
     Grid,
     Card,
     CardHeader,
@@ -35,6 +32,14 @@ import {
     ListItemText,
     IconButton,
 } from "@material-ui/core";
+
+import {
+    AudioMessage,
+    ImageMessage,
+    TextMessage,
+    VideoMessage,
+    DocumentMessage
+} from '../../../components/cardsMessage';
 
 const drawerWidth = 240;
 
@@ -234,7 +239,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
 export default function WhatsApp() {
     const [contact, setContact] = useState({});
     const [worker, setWorker] = useState("");
@@ -262,7 +266,12 @@ export default function WhatsApp() {
     }
 
     useEffect(() => {
-        upgrade()
+        upgrade();
+
+        io.on('newAttendace', (e) => {
+            console.log(e.name);
+            return uptodate();
+        });
     }, []);
 
     useEffect(() => {
@@ -279,11 +288,6 @@ export default function WhatsApp() {
                 getMessages();
                 setOpen(false);
             }
-            return uptodate();
-        });
-
-        io.on('newAttendace', (e) => {
-            console.log(e.name);
             return uptodate();
         });
     }, [contact]);
@@ -347,88 +351,6 @@ export default function WhatsApp() {
 
 
     function getRightList() {
-
-        const AudioMessage = (props) => {
-            return (
-                <Card className={props.classe}>
-                    <CardContent style={{ marginTop: "2%", marginLeft: "2%" }}>
-                        <AudioPlayer
-                            download={false}
-                            autoplay={false}
-                            volume={false}
-                            width="100%"
-                            variation="default"
-                            spacing={3}
-                            src={props.src}
-                        />
-                    </CardContent>
-                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                        {props.date}
-                    </Typography>
-                </Card>
-            );
-        }
-
-        const VideoMessage = (props) => {
-            return (
-                <Card className={props.classe}>
-                    <CardContent style={{}}>
-                        <video style={{ height: "100%", width: "100%" }} src={props.src} controls="true"></video>
-                    </CardContent>
-                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                        {props.date}
-                    </Typography>
-                </Card>
-            );
-        }
-
-        const ImageMessage = (props) => {
-            return (
-                <Card className={props.classe}>
-                    <img style={{ height: "100%", width: "100%", }} src={props.src}></img>
-                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                        {props.date}
-                    </Typography>
-                </Card>
-            );
-        }
-
-        const TextMessage = (props) => {
-            return (
-                <Card className={props.classe}>
-
-                    <Typography variant="button" style={{ marginLeft: "3%", marginTop: "3%" }} color="black" display="inline" gutterBottom>
-                        {props.author}
-                    </Typography>
-
-                    <CardContent>
-                        <Typography color="black" variant="body" display="block">
-                            {props.message}
-                        </Typography>
-                    </CardContent>
-
-                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                        {props.date}
-                    </Typography>
-
-                </Card>
-            );
-        }
-
-        const DocumentMessage = (props) => {
-            let docs = [{ uri: props.src }]
-            return (
-                <Card className={props.classe}>
-                    <DocViewer pluginRenderers={DocViewerRenderers} config={{ header: { disableHeader: true, disableFileName: true } }} style={{ height: "100%", width: "100%" }} documents={docs} />
-                    <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
-                        {props.date}
-                    </Typography>
-
-                </Card>
-            );
-        }
-
-
         return (
             <CardContent>
                 {messagesList.map((message) => {
@@ -531,7 +453,6 @@ export default function WhatsApp() {
                                     />
                                 );
                             }());
-                            break;
                     }
                 })}
             </CardContent>
