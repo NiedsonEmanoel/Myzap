@@ -10,12 +10,16 @@ const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
 module.exports = class {
+    #onStartCallback
+    #onStatusSessionCallback
+    #onMessageCallback
     #GCP_PROJECT_NAME
     #JSON_LOCATION
     #LANGUAGE_CODE
     #IntenalAwaiting = []
     #myself
     #index
+    #onStateChange
 
     constructor(index, GCP_PROJECT_NAME, JSON_LOCATION, LANGUAGE_CODE) {
         this.#index = index;
