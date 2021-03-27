@@ -10,16 +10,12 @@ const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
 module.exports = class {
-    #onStartCallback
-    #onStatusSessionCallback
-    #onMessageCallback
     #GCP_PROJECT_NAME
     #JSON_LOCATION
     #LANGUAGE_CODE
     #IntenalAwaiting = []
     #myself
     #index
-    #onStateChange
 
     constructor(index, GCP_PROJECT_NAME, JSON_LOCATION, LANGUAGE_CODE) {
         this.#index = index;
@@ -186,7 +182,6 @@ module.exports = class {
                 return (io.emit('newMessage', { "from": message.from }));
 
             }
-
 
             if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {
                 this.Client.deleteMessage(message.from, message.id.toString(), false);
