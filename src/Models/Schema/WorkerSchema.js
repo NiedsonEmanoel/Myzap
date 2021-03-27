@@ -24,11 +24,12 @@ UsersSchema.pre('save', function (next) {
     next();
 });
 
-UsersSchema.pre('findOneAndUpdate', function (next) {
-    let password = this.getUpdate().senha_usuario + '';
-    if (password.length < 100) {
-        this.getUpdate().senha_usuario = bcrypt.hashSync(password, 10);
+UsersSchema.pre('findOneAndUpdate', function (next){
+    var password = this.getUpdate().senha_usuario+'';
+    if(password.length<55){
+        this.getUpdate().senha_usuario = bcrypt.hashSync(password,10);
     }
+    next();
 });
 
 UsersSchema.methods.isCorrectPassword = function (password, callback ){

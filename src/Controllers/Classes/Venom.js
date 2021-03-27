@@ -126,12 +126,6 @@ module.exports = class {
 
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
 
-            if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {
-                this.Client.deleteMessage(message.from, message.id.toString(), false);
-                console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
-                return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
-            }
-
             let RequestMongo = await clientHelper.findInternal(message.from);
             console.log(RequestMongo)
             if (!RequestMongo.Exists) {
@@ -162,7 +156,6 @@ module.exports = class {
             if (User.inAttendace === true) {
                 if (message.body == '!sair') {
                     await clientHelper.switchAttendance(User);
-                    await clientHelper.switchFirst(User);
                     return;
                 }
 
@@ -190,13 +183,15 @@ module.exports = class {
                     await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload, false);
                 }
 
-                if (User.firstAttendace === true) {
-                    clientHelper.switchFirst(User);
-                    await this.Client.reply(message.from, 'Estamos com todos os atendentes ocupados nesse momento caro cliente!\n\nMarcamos seu atendimento como urgente e repassamos para os nossos atendentes as suas mensagens, se você tiver mais algo a dizer pode nos continuar enviando o que deseja.', message.id.toString());
-                }
-
                 return (io.emit('newMessage', { "from": message.from }));
 
+            }
+
+
+            if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {
+                this.Client.deleteMessage(message.from, message.id.toString(), false);
+                console.info('\nMensagem abortada: TOO_LONG_MESSAGE\n');
+                return this.Client.sendText(message.from, 'Desculpe, essa mensagem é muito longa!');
             }
 
             console.info(`\nMensagem recebida!\nType: ${message.type}\nSender: ${User.fullName}`);

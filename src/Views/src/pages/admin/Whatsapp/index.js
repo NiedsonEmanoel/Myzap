@@ -7,12 +7,11 @@ import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import GridList from '@material-ui/core/GridList';
 import Button from '@material-ui/core/Button';
-import TextField from "@material-ui/core/TextField";
+import Forme from '../../../components/form'
 import Fab from "@material-ui/core/Fab";
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import io from '../../../services/socket.io';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
-import SendIcon from "@material-ui/icons/Send";
 import Divider from '@material-ui/core/Divider';
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import Dialog from '@material-ui/core/Dialog';
@@ -35,7 +34,6 @@ import {
     ListItem,
     ListItemText,
     IconButton,
-    CardMedia
 } from "@material-ui/core";
 
 const drawerWidth = 240;
@@ -236,57 +234,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Forme = (props) => {
-    const [text, setText] = useState('');
-
-    return (
-        <>
-
-            <form id='form' onSubmit={async (event) => {
-
-                event.preventDefault();
-
-                if (props.number.chatId) {
-                    if (text) {
-                        let data = {
-                            numbers: props.number.chatId.replace('@c.us', ''),
-                            worker: props.worker,
-                            messages: text
-                        }
-
-                        await api.post('/api/whatsapp/message?id=0', data);
-                        setText('');
-                    }
-                }
-            }}>
-                <Grid container style={{ paddingLeft: "5px", marginTop: '1%' }}>
-
-                    <Grid item xs={10}>
-                        <TextField
-                            id="outlined-basic-email"
-                            variant="outlined"
-                            value={text}
-                            onChange={e => setText(e.target.value)}
-                            label="Digite aqui..."
-                            fullWidth
-                        />
-                    </Grid>
-
-                    <Grid xs={1} align="center">
-                        <input style={{ display: "none" }} id="envi" type="submit" />
-                        <label htmlFor="envi">
-                            <Fab color="primary" aria-label="upload picture" component="span">
-                                <SendIcon />
-                            </Fab>
-                        </label>
-                    </Grid>
-
-                </Grid>
-            </form>
-        </>
-
-    );
-}
 
 export default function WhatsApp() {
     const [contact, setContact] = useState({});
@@ -319,7 +266,7 @@ export default function WhatsApp() {
     }, []);
 
     useEffect(() => {
-        
+
         io.on('newMessage', (e) => {
             if (e.from == contact.chatId) {
                 getMessages();
@@ -640,26 +587,32 @@ export default function WhatsApp() {
 
 
                                         <Grid className={classes.heightAdjust} item xs={9}>
-                                            <CardHeader
-                                                avatar={
-                                                    <Avatar aria-label="Recipe" className={classes.avatar} src={contact.profileUrl}></Avatar>
-                                                }
-                                                action={
-                                                    <IconButton onClick={async () => {
-                                                        await api.put('/api/clients/' + contact._id);
-                                                        window.location.reload();
-                                                    }}>
-                                                        <AssignmentTurnedInIcon />
-                                                    </IconButton>
-                                                }
-                                                title={contact.fullName}
-                                            />
+                                            <Paper elevation={3}>
+                                                <CardHeader
+                                                    avatar={
+                                                        <Avatar aria-label="Recipe" className={classes.avatar} src={contact.profileUrl}></Avatar>
+                                                    }
+                                                    action={
+                                                        <IconButton onClick={async () => {
+                                                            await api.put('/api/clients/' + contact._id);
+                                                            window.location.reload();
+                                                        }}>
+                                                            <AssignmentTurnedInIcon />
+                                                        </IconButton>
+                                                    }
+                                                    title={contact.fullName}
+                                                />
+                                            </Paper>
+
 
                                             <CardContent className={[classes.rightContainer, classes.content]} style={{ marginTop: "0%" }}>
+
                                                 <Grid>
                                                     {getRightList()}
                                                 </Grid>
+
                                             </CardContent>
+
 
                                             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                                                 <DialogTitle id="form-dialog-title">Enviar Arquivo</DialogTitle>

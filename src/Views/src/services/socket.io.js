@@ -1,5 +1,16 @@
 import openSocket from 'socket.io-client/dist/socket.io';
-import pack from '../../package.json'
 
-const socket = openSocket(pack.proxy)
+let port = window.location.port;
+
+if ((window.location.protocol == 'https:') && (port == '')) {
+    port = '443'
+}
+
+if ((window.location.protocol == 'http:') && (port == '')) {
+    port = '80'
+}
+
+let proxy = `${window.location.protocol}//${window.location.hostname}:${port}`
+
+const socket = openSocket(proxy)
 export default socket;

@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://10.0.1.102:3000",
   "dependencies": {
     "@flasd/whatsapp-formatting": "^0.1.4",
     "@material-ui/core": "^4.11.3",
