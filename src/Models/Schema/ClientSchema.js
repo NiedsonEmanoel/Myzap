@@ -27,6 +27,11 @@ const ClientSchema = new mongoose.Schema({
     firstAttendace: {
         type: Boolean,
         default: true
+    },
+
+    attendaceBy: {
+        type: String,
+        default: ""
     }
 
 }, {

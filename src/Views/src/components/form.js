@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import SendIcon from "@material-ui/icons/Send";
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
@@ -30,7 +30,17 @@ const Forme = (props) => {
             }}>
                 <Grid container style={{ paddingLeft: "5px", marginTop: '1%' }}>
 
-                    <Grid item xs={10}>
+                    {props.number.firstAttendace ? <Grid item xs={10}>
+                        <TextField
+                            id="outlined-basic-email"
+                            variant="outlined"
+                            value={text}
+                            onChange={e => setText(e.target.value)}
+                            label="Digite aqui..."
+                            fullWidth
+                            disabled
+                        />
+                    </Grid> : <Grid item xs={10}>
                         <TextField
                             id="outlined-basic-email"
                             variant="outlined"
@@ -39,7 +49,7 @@ const Forme = (props) => {
                             label="Digite aqui..."
                             fullWidth
                         />
-                    </Grid>
+                    </Grid>}
 
                     <Grid xs={1} align="center">
                         <input style={{ display: "none" }} id="envi" type="submit" />

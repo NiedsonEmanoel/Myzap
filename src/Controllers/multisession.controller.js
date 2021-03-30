@@ -219,6 +219,10 @@ module.exports = {
         }
     },
 
+    async sendMessageInternal(chatid, message){
+        await sessions[0].Client.sendText(chatid, message);
+    },
+
     async inputDeviceInfo(req, res, next) {
         try {
             let id = req.query.id;

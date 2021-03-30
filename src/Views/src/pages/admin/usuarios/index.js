@@ -19,7 +19,7 @@ import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
-
+import * as libs from '../../../services/auth'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -194,9 +194,10 @@ export default function UsuariosListagem() {
 
             <ButtonGroup size="small" aria-label="small button group">
               <Button variant="contained" color="primary" onClick={async () => {
-                await api.put('/api/clients/' + row._id);
-                loadUsuarios();
-                loadUsuarios();
+                let data = {
+                  worker: "",
+                }
+                await api.put('/api/clients/' + row._id, data);
                 loadUsuarios();
               }}>{Attendace(row.inAttendace)}</Button>
 

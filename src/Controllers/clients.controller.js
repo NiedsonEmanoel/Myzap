@@ -2,7 +2,71 @@ const Clients = require('../Models/client.model');
 const messageHelper = require('../Models/messages.model')
 const path = require('path');
 const fs = require('fs');
+//const interControl = require('./multisession.controller')
 module.exports = {
+
+    async SwitchFist(req, res) {
+        async function switchAttendance(user, worker) {
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy } = user;
+
+            firstAttendace = false;
+            attendaceBy = worker;
+
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy };
+
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+
+            return inAttendace;
+        }
+
+        const {_id}  = req.query;
+        console.log(_id)
+        const worker = req.body.worker;
+        const user = await Clients.findOne({_id}).lean();
+
+        await switchAttendance(user, worker);
+
+        return res.status(200).send({
+            "message": "ok"
+        });
+    },
+
+    async switchAt(req, res) {
+        async function switchAttendance(user, worker) {
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy } = user;
+            if (inAttendace == true) {
+                firstAttendace = true;
+                inAttendace = false;
+                attendaceBy = "";
+                //     interControl.sendMessageInternal(chatId, 'Atendimento finalizado com sucesso!');
+            } else {
+                inAttendace = true;
+                attendaceBy = worker;
+            }
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy };
+
+            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+
+            return inAttendace;
+        }
+
+        const { _id } = req.params;
+        const worker = req.body.worker;
+        const user = await Clients.findOne({ _id }).lean();
+
+        await switchAttendance(user, worker);
+
+        return res.status(200).send({
+            "message": "ok"
+        });
+    },
+
+    async handleAttendance(req, res) {
+        const { _id } = req.params;
+        const worker = req.body.worker;
+        const user = await Clients.findOne({ _id }).lean();
+    },
+
     async index(req, res, next) {
         try {
             let Client = await Clients.find();
@@ -127,6 +191,7 @@ module.exports = {
         }
     },
 
+
     async delete(req, res, next) {
         try {
             const { _id } = req.params;
@@ -202,8 +267,10 @@ module.exports = {
 
     async switchFirst(user) {
         try {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
-            firstAttendace = firstAttendace === true ? false : true;
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy } = user;
+            inAttendace = true;
+            attendaceBy="";
+            firstAttendace = true;
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
             return firstAttendace;

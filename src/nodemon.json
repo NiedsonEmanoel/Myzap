@@ -1,6 +1,7 @@
 {
     "ignore": [
-        "tokens/*"
+        "tokens/*",
+        "views/src/"
     ],
     "delay": "500"
 }

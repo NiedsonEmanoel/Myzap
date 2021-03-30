@@ -4,6 +4,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
+import PanToolIcon from '@material-ui/icons/PanTool';
+import CancelIcon from '@material-ui/icons/Cancel';
 import Copyright from '../../../components/footer';
 import GridList from '@material-ui/core/GridList';
 import Button from '@material-ui/core/Button';
@@ -337,11 +339,18 @@ export default function WhatsApp() {
 
 
     function getLeftList() {
-        return (list.map(item => (
+        let ArrLis = [];
+        for (let key in list) {
+            if ((list[key].attendaceBy == "") || (list[key].attendaceBy == worker)) {
+                ArrLis.push(list[key]);
+            }
+        }
+        return (ArrLis.map(item => (
             <>
                 <ListItem button={true} onClick={(e) => { setContact(item) }}>
                     <Avatar src={item.profileUrl}></Avatar>
                     <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
+                    {item.firstAttendace ? <PanToolIcon /> : <></>}
                 </ListItem>
                 <Divider variant="inset" component="li" />
             </>
@@ -515,10 +524,19 @@ export default function WhatsApp() {
                                                     }
                                                     action={
                                                         <IconButton onClick={async () => {
-                                                            await api.put('/api/clients/' + contact._id);
+                                                            let data = {
+                                                                "worker": worker
+                                                            }
+                                                      console.clear()
+                                                      console.log(contact.firstAttendace);
+                                                            if (contact.firstAttendace == false) {
+                                                                await api.put('/api/clients/' + contact._id, data);
+                                                            }else{
+                                                                await api.patch('/api/clients/first/?_id='+ contact._id, data);
+                                                            }
                                                             window.location.reload();
                                                         }}>
-                                                            <AssignmentTurnedInIcon />
+                                                            {contact.firstAttendace ? <AssignmentTurnedInIcon /> : <CancelIcon />}
                                                         </IconButton>
                                                     }
                                                     title={contact.fullName}
@@ -580,11 +598,11 @@ export default function WhatsApp() {
                                                 alignItems="center"
                                             >
 
-                                                <Grid style={{ paddingLeft: "5px", marginTop: '1%' }} container item xs={1}>
+                                                {contact.firstAttendace ? <></> : <Grid style={{ paddingLeft: "5px", marginTop: '1%' }} container item xs={1}>
                                                     <Fab style={{ marginLeft: 0, paddingLeft: 0 }} color="primary" aria-label="upload picture" component="span" onClick={handleClickOpen}  >
                                                         <AttachFileIcon />
                                                     </Fab>
-                                                </Grid>
+                                                </Grid>}
 
                                                 <Grid style={{ margin: "0 0 0 0" }} item xs={11}>
                                                     <Forme number={contact} worker={worker} />

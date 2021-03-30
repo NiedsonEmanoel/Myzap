@@ -78,7 +78,9 @@ export const DocumentMessage = (props) => {
     let docs = [{ uri: props.src }]
     return (
         <Card className={props.classe}>
-            <DocViewer pluginRenderers={DocViewerRenderers} config={{ header: { disableHeader: true, disableFileName: true } }} style={{ height: "100%", width: "100%" }} documents={docs} />
+            <p>Documento ({props.name})<br></br></p>
+            <a href={props.src}>Abrir</a>
+            <br></br>
             <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
                 {props.date}
             </Typography>
