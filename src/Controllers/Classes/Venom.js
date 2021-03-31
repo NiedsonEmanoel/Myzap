@@ -242,7 +242,6 @@ module.exports = class {
             if (intent === process.env.INTENT_SAC) {
 
                 console.log('Atendimento solicitado via chat');
-                await clientHelper.switchAttendance(User);
                 await clientHelper.switchFirst(User);
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
                 notifier.notify('Um novo cliente pediu atendimento');

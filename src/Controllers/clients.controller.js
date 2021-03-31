@@ -7,22 +7,21 @@ module.exports = {
 
     async SwitchFist(req, res) {
         async function switchAttendance(user, worker) {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy } = user;
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
 
             firstAttendace = false;
-            attendaceBy = worker;
 
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy };
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
 
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+            let Client = await Clients.findByIdAndUpdate({ _id }, data, { new: true });
 
             return inAttendace;
         }
 
-        const {_id}  = req.query;
+        const { _id } = req.query;
         console.log(_id)
         const worker = req.body.worker;
-        const user = await Clients.findOne({_id}).lean();
+        const user = await Clients.findOne({ _id }).lean();
 
         await switchAttendance(user, worker);
 
@@ -33,19 +32,16 @@ module.exports = {
 
     async switchAt(req, res) {
         async function switchAttendance(user, worker) {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy } = user;
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             if (inAttendace == true) {
                 firstAttendace = true;
                 inAttendace = false;
-                attendaceBy = "";
-                //     interControl.sendMessageInternal(chatId, 'Atendimento finalizado com sucesso!');
             } else {
                 inAttendace = true;
                 attendaceBy = worker;
             }
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy };
-
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
+            let Client = await Clients.findByIdAndUpdate({ _id }, data, { new: true });
 
             return inAttendace;
         }
@@ -59,12 +55,6 @@ module.exports = {
         return res.status(200).send({
             "message": "ok"
         });
-    },
-
-    async handleAttendance(req, res) {
-        const { _id } = req.params;
-        const worker = req.body.worker;
-        const user = await Clients.findOne({ _id }).lean();
     },
 
     async index(req, res, next) {
@@ -267,9 +257,8 @@ module.exports = {
 
     async switchFirst(user) {
         try {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace, attendaceBy } = user;
+            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             inAttendace = true;
-            attendaceBy="";
             firstAttendace = true;
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });

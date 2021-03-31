@@ -1,5 +1,5 @@
 import AudioPlayer from 'material-ui-audio-player';
-import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
+import Button from '@material-ui/core/Button';
 
 import {
     Typography,
@@ -57,7 +57,7 @@ export const TextMessage = (props) => {
         <Card className={props.classe}>
 
             <Typography variant="button" style={{ marginLeft: "3%", marginTop: "3%" }} color="black" display="inline" gutterBottom>
-                {props.author}
+                {props.author}:
             </Typography>
 
             <CardContent>
@@ -78,8 +78,8 @@ export const DocumentMessage = (props) => {
     let docs = [{ uri: props.src }]
     return (
         <Card className={props.classe}>
-            <p>Documento ({props.name})<br></br></p>
-            <a href={props.src}>Abrir</a>
+            <p style={{ marginLeft: "3%", marginBottom: "3%" }}>Documento ({props.name})<br></br></p>
+            <Button style={{ marginLeft: "3%", marginBottom: "5%" }} href={props.src} target="new_blank">Abrir</Button>
             <br></br>
             <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
                 {props.date}

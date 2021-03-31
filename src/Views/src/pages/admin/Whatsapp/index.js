@@ -341,11 +341,11 @@ export default function WhatsApp() {
     function getLeftList() {
         let ArrLis = [];
         for (let key in list) {
-            if ((list[key].attendaceBy == "") || (list[key].attendaceBy == worker)) {
+            if ((list[key].attendaceBy == "aw") || (list[key].attendaceBy == worker)) {
                 ArrLis.push(list[key]);
             }
         }
-        return (ArrLis.map(item => (
+        return (list.map(item => (
             <>
                 <ListItem button={true} onClick={(e) => { setContact(item) }}>
                     <Avatar src={item.profileUrl}></Avatar>
