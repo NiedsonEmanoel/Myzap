@@ -29,9 +29,9 @@ const ClientSchema = new mongoose.Schema({
         default: true
     },
 
-    attendaceBy: {
+    WorkerAttendance: {
         type: String,
-        default: ""
+        default: "no-one"
     }
 
 }, {

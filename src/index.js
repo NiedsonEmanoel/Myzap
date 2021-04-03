@@ -48,7 +48,7 @@ let io;
                 break;
             }
             io = require('socket.io')(serverRest);
-            serverRest = require('https').createServer({ key: privatekey, cert: certificate }, restApi);
+            serverRest = require('https').createServer({ key: privatekey, cert: certificate, rejectUnauthorized: false }, restApi);
 
             serverRest.listen(process.env.PORT, process.env.HOST, () => { });
 
@@ -81,9 +81,6 @@ let io;
 
 io.on('connection', socket => {
     console.log(`Socket conectado ${socket.id}`);
-    io.on("hello", ()=>{
-        console.log("ddd");
-    })
 });
 
 exports.emit = function (event, data) {

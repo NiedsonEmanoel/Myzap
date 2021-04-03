@@ -48,6 +48,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
+        width: '100vw'
     },
     fila: {
         zIndex: 999,
@@ -78,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
         }),
     },
     menuButton: {
-        marginRight: 36,
+        marginRight: 0,
     },
     menuButtonHidden: {
         display: 'none',
@@ -97,8 +98,9 @@ const useStyles = makeStyles((theme) => ({
     },
     card: {
         display: "flex",
+        marginTop: '3px',
         height: "calc(91.05vh - 100px)",
-        width: `calc(110% - ${drawerWidth}px)`,
+        width: `98%`,
     },
     rightBorder: {
         borderRight: "solid #d0D0D0 1px"
@@ -120,12 +122,11 @@ const useStyles = makeStyles((theme) => ({
     },
     heightAdjust: {
         display: "flex",
-        maxHeight: '79vh',
+        maxHeight: '98%',
         flexDirection: "column"
     },
     paper: {
         background: "#9de1fe",
-        padding: 20
     },
     information: {
         color: "#444"
@@ -148,6 +149,7 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         marginTop: "2%",
+        width: "100%",
         height: 'auto',
         display: "flex",
         flexDirection: 'column-reverse',
@@ -159,10 +161,7 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: "100%"
     },
     paper: {
-        padding: theme.spacing(2),
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column',
+        padding: '0',
     },
     warnings: {
         background: "#9de1fe",
@@ -517,7 +516,7 @@ export default function WhatsApp() {
 
 
                                         <Grid className={classes.heightAdjust} item xs={9}>
-                                            <Paper elevation={3}>
+                                            <Paper elevation={5}>
                                                 <CardHeader
                                                     avatar={
                                                         <Avatar aria-label="Recipe" className={classes.avatar} src={contact.profileUrl}></Avatar>
@@ -527,12 +526,12 @@ export default function WhatsApp() {
                                                             let data = {
                                                                 "worker": worker
                                                             }
-                                                      console.clear()
-                                                      console.log(contact.firstAttendace);
+                                                            console.clear()
+                                                            console.log(contact.firstAttendace);
                                                             if (contact.firstAttendace == false) {
                                                                 await api.put('/api/clients/' + contact._id, data);
-                                                            }else{
-                                                                await api.patch('/api/clients/first/?_id='+ contact._id, data);
+                                                            } else {
+                                                                await api.patch('/api/clients/first/?_id=' + contact._id, data);
                                                             }
                                                             window.location.reload();
                                                         }}>

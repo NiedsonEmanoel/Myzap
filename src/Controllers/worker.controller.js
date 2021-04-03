@@ -91,7 +91,7 @@ module.exports = {
 
             let data = { nome_usuario, email_usuario, tipo_usuario, senha_usuario, foto_perfil };
 
-            const Worker = await Workers.findOneAndUpdate(_id , data);
+            const Worker = await Workers.findOneAndReplace(_id , data);
 
             res.status(200).send({
                 Worker,
