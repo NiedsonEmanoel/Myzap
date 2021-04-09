@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
-import { Grid } from '@material-ui/core';
+import api from '../../../services/api'
+import CloseIcon from '@material-ui/icons/Close';
+import BeenhereIcon from '@material-ui/icons/Beenhere';
+import { Grid, Paper, TextField, MenuItem, Button } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -46,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  burron: {
+    height: "55px"
   },
   drawerPaper: {
     position: 'relative',
@@ -90,11 +96,30 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+  const [sessions, setSessions] = useState([]);
+  const [started, setStarted] = useState(true);
+  const [id, setId] = useState('0');
+
+  const handleChange = (event) => {
+
+    setId(event.target.value);
+  }
+
+  useEffect(() => {
+
+    async function getSessions() {
+      const response = await api.get('/api/whatsapp/sessions');
+      setSessions(response.data.sessions);
+    }
+
+    getSessions();
+  }, [])
+
   return (
     <div className={classes.root}>
       <CssBaseline />
 
-      <MenuAdmin name="Dashboard"/>
+      <MenuAdmin name="Dashboard" />
 
       <main className={classes.content}>
 
@@ -103,7 +128,34 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
 
           <Grid>
-            
+
+            <Grid>
+
+              <Paper style={{ height: '269px', width: '269px' }} elevation={3}>
+                <iframe style={{ height: '269px', width: '269px' }} src={`/api/whatsapp/qrcode?id=${id}`}></iframe>
+              </Paper>
+
+              <TextField
+                id="standard-select-currency"
+                select
+                value={id}
+                variant="filled"
+                onChange={handleChange}
+                helperText="Por favor selecione o ID da sessão."
+              >
+                {sessions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <Button className={classes.burron} onClick={async () => { }}>
+                {started ? <BeenhereIcon className={classes.burron}/> : <CloseIcon className={classes.burron}/>}
+              </Button>
+
+            </Grid>
+
           </Grid>
 
           <Box pt={4}>

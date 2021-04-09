@@ -391,8 +391,6 @@ module.exports = {
             const QrCode = path.resolve(tempDir, 'qrcode' + id + '.png');
             const QrOut = path.resolve(tempDir, 'out.png');
 
-            res.setHeader('Refresh', 5);
-
             fs.readFile(QrCode, (err, data) => {
                 if (err) {
                     fs.readFile(QrOut, (err, data) => {
@@ -400,11 +398,13 @@ module.exports = {
                             res.status(500).json("Unavaliable");
                         }
                         else {
+                            res.setHeader('Refresh', 60);
                             res.writeHead(200, { 'Content-Type': 'image/png' });
                             res.end(data);
                         }
                     });
                 } else {
+                    res.setHeader('Refresh', 5);
                     res.writeHead(200, { 'Content-Type': 'image/png' });
                     res.end(data);
                 }

@@ -276,7 +276,6 @@ export default function WhatsApp() {
     }, []);
 
     useEffect(() => {
-
         io.on('newMessage', (e) => {
             if (e.from == contact.chatId) {
                 getMessages();

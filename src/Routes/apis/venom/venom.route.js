@@ -5,7 +5,7 @@ const jwtPasser = require('../../../Middlewares/verify');
 const trustID_SESSION = require('../../../Middlewares/idPasserNOCREATE')
 const trustID = require('../../../Middlewares/idPasser');
 
-Router.get('/qrcode', trustID, Venom.qrCode); // /qrcode?id=1
+Router.get('/qrcode', jwtPasser, trustID, Venom.qrCode); // /qrcode?id=1
 
 Router.get('/sessions', jwtPasser, Venom.getMax); // []
 Router.get('/sessions.details/:id', jwtPasser, Venom.verifySession);// sessions.details/1

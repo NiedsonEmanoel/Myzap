@@ -62,7 +62,7 @@ module.exports = class {
                 fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
             }
         }, {
-            disableWelcome: true, autoClose: 0, updatesLog: false, disableSpins: true, browserArgs: [
+            disableWelcome: true, autoClose: 0, updatesLog: false, headless: true, disableSpins: true, browserArgs: [
                 '--js-flags="--max_old_space_size=80" --disable-web-security',
                 '--no-sandbox',
                 '--disable-web-security',
