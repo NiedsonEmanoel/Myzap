@@ -10,46 +10,17 @@ const auxFunctions = require('../../Functions/functions');
 const fs = require('fs');
 
 module.exports = class {
-    #onStartCallback
-    #onStatusSessionCallback
-    #onMessageCallback
     #GCP_PROJECT_NAME
     #JSON_LOCATION
     #LANGUAGE_CODE
     #IntenalAwaiting = []
-    #myself
     #index
-    #onStateChange
 
     constructor(index, GCP_PROJECT_NAME, JSON_LOCATION, LANGUAGE_CODE) {
         this.#index = index;
         this.#GCP_PROJECT_NAME = GCP_PROJECT_NAME;
         this.#JSON_LOCATION = JSON_LOCATION;
         this.#LANGUAGE_CODE = LANGUAGE_CODE;
-    }
-
-    async onStart(callback) {
-        if (callback) {
-            this.#onStartCallback = callback;
-        }
-    }
-
-    async onStatusSession(callback) {
-        if (callback) {
-            this.#onStatusSessionCallback = callback;
-        }
-    }
-
-    async onMessage(callback) {
-        if (callback) {
-            this.#onMessageCallback = callback;
-        }
-    }
-
-    async onStateChange(callback) {
-        if (callback) {
-            this.#onStateChange = callback;
-        }
     }
 
     async initVenom() {
@@ -87,24 +58,9 @@ module.exports = class {
         }).catch(e => {
             console.error('Erro ao iniciar sessão ' + e);
         });
-        const device = await this.Client.getHostDevice();
-
-        this.#myself = {
-            "number": device.wid._serialized,
-            "name": device.pushname,
-            "phone": device.phone.device_model,
-            "waVersion": device.phone.wa_version
-        }
-
-        if (process.env.SEND_NO_PISHING !== '0') {
-            await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[0]).then(console.log('- [INITIAL_MESSAGE][0]: Sent'));
-            await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[1]).then(console.log('- [INITIAL_MESSAGE][1]: Sent'));
-            await this.Client.sendText(this.#myself.number, auxFunctions.InitialMessage(this.#myself)[2]).then(console.log('- [INITIAL_MESSAGE][2]: Sent'));
-        }
 
         console.info('- [SYSTEM]: STARTING');
 
-        this.onStart(this.Client);
         fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
         console.info('- [SYSTEM]: ACTIVE');
 
