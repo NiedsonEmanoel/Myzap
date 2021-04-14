@@ -15,14 +15,14 @@ const functions = require('./Functions/functions');
 
 const restApi = express();
 
-const mongoConector = require('./Databases/mongoHelper');
+const Databases = require('./Databases/index');
 
 const WhatsApp = require('./Controllers/multisession.controller');
 
 let serverRest;
 
 (async function () {
-    await mongoConector();
+    await Databases.MongoDB.Connect();
     await WhatsApp.createInternal();
     await WhatsApp.initilizeInternal();
 }());

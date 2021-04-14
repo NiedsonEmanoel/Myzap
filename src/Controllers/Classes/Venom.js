@@ -126,8 +126,8 @@ module.exports = class {
 
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
 
-            let RequestMongo = await clientHelper.findInternal(message.from);
-            console.log(RequestMongo)
+            const RequestMongo = await clientHelper.findInternal(message.from);
+
             if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
@@ -154,11 +154,6 @@ module.exports = class {
             let User = RequestMongo.User;
 
             if (User.inAttendace === true) {
-                if (message.body == '!sair') {
-                    await clientHelper.switchAttendance(User);
-                    return;
-                }
-
                 if (message.type == 'chat') {
                     let type = message.type;
                     let author = User.fullName;
@@ -197,14 +192,41 @@ module.exports = class {
 
             if (message.type === 'chat') {
                 let response = await bot.sendText(message.body);
-
                 if (response.fulfillmentText) {
-                    await this.Client.reply(message.from, response.fulfillmentText, message.id.toString());
+
+                    for (let responses of response.fulfillmentMessages) {
+                        try {
+                            if (responses.text) {
+                                let messageResponse = responses.text.text[0].replace('%USER-NAME%', User.fullName);
+                                await this.Client.reply(message.from, messageResponse, message.id.toString());
+                            }
+
+                            /**
+                             *  {
+                             *      "mediaUrl": "https://pbs.twimg.com/media/Dk4sOm5WwAMdibY.jpg",
+                             *      "mediaName": "foto",
+                             *      "mediaText": "kkkkkkkkkkkk"
+                             *  }
+                             */
+
+                            if (responses.payload) {
+                                if (responses.payload.fields.mediaUrl) {
+                                    let link = responses.payload.fields.mediaUrl.stringValue;
+                                    let name = responses.payload.fields.mediaName.stringValue ? responses.payload.fields.mediaName.stringValue : "file";
+                                    let text = responses.payload.fields.mediaText.stringValue ? responses.payload.fields.mediaText.stringValue : "";
+
+                                    await this.Client.sendFile(message.from, link, name, text);
+                                }
+                            }
+
+                        } catch (e) {
+                            console.log(e)
+                        }
+                    }
+
                     intent = response.intent.displayName;
-                    console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: ' + response.fulfillmentText);
                 } else {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
-                    console.info('Número: ' + message.from + '\nMensagem: ' + message.body + '\nResposta: Fallback');
                 }
 
             } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
@@ -219,18 +241,27 @@ module.exports = class {
 
                     if (response.queryResult.fulfillmentText) {
                         intent = response.queryResult.intent.displayName;
-                        let nameAudioResponse = auxFunctions.WriteFileEXT(message.from, 'mp3');
-                        let dirResponse = path.join(__dirname, '/Temp', nameAudioResponse);
-                        fs.writeFileSync(dirResponse, response.outputAudio, () => { });
-                        await this.Client.reply(message.from, response.queryResult.fulfillmentText, message.id.toString());
 
-                        this.Client.sendVoice(message.from, dirResponse).then(() => {
-                            console.info('Mensagem enviada');
-                        }).catch((e) => {
-                            console.error('Problemas no áudio');
-                        }).finally(() => {
-                            fs.unlink(dirResponse, () => { console.info('Cache limpo') });
-                        });
+                        for (let responses of response.queryResult.fulfillmentMessages) {
+                            try {
+                                if (responses.text) {
+                                    let messageResponse = responses.text.text[0].replace('%USER-NAME%', User.fullName);
+                                    await this.Client.reply(message.from, messageResponse, message.id.toString());
+                                }
+
+                                if (responses.payload) {
+                                if (responses.payload.fields.mediaUrl) {
+                                    let link = responses.payload.fields.mediaUrl.stringValue;
+                                    let name = responses.payload.fields.mediaName.stringValue ? responses.payload.fields.mediaName.stringValue : "file";
+                                    let text = responses.payload.fields.mediaText.stringValue ? responses.payload.fields.mediaText.stringValue : "";
+
+                                    await this.Client.sendFile(message.from, link, name, text);
+                                }
+                                }
+                            } catch (e) {
+                                console.log(e)
+                            }
+                        }
                     }
 
                 } catch (e) {
