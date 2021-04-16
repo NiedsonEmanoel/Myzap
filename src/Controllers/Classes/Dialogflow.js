@@ -131,9 +131,6 @@ module.exports = class {
                 },
             },
             inputAudio: inputAudio,
-            outputAudioConfig: {
-                audioEncoding: 'OUTPUT_AUDIO_ENCODING_LINEAR_16',
-            },
         };
 
         let responses = await this.#sessionClient.detectIntent(request);
@@ -141,14 +138,11 @@ module.exports = class {
 
         const result = responses[0].queryResult;
         console.log(`  Query: ${result.queryText}`);
-        console.log(`  Response: ${result.fulfillmentText}`);
 
         if (result.fulfillmentText) {
-            console.log(`  Intent: ${result.intent.displayName}`);
             return responses[0];
         }
         else {
-            console.log(result);
             return fallbackResponses();
         }
     }

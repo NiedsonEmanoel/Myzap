@@ -74,9 +74,48 @@ module.exports = class {
         this.Client.onMessage(async (message) => await this.execMessages(message));
 
     }
+    /*
+        {
+            "mediaUrl": "https://pbs.twimg.com/media/Dk4sOm5WwAMdibY.jpg",
+            "mediaText": "kkkkkkkkkkkk",
+            "mediaName": "foto"
+        }
+    */
+    async processPayload(fulfillmentMessages, fullName, message) {
+        for (let responses of fulfillmentMessages) {
+            try {
+                if (responses.text) {
+                    let messageResponse = responses.text.text[0].replace('%USER-NAME%', fullName);
+                    await this.Client.reply(message.from, messageResponse, message.id.toString());
+                }
+
+                if (responses.payload) {
+                    if (responses.payload.fields.mediaUrl) {
+                        let link = responses.payload.fields.mediaUrl.stringValue;
+                        let name = responses.payload.fields.mediaName.stringValue ? responses.payload.fields.mediaName.stringValue : "file";
+                        let text = responses.payload.fields.mediaText.stringValue ? responses.payload.fields.mediaText.stringValue : "";
+                        try {
+                            await this.Client.sendFile(message.from, link, name, text);
+                        } catch (e) {
+                            try {
+                                await this.Client.sendVoice(message.from, link, name, text);
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        }
+
+                    }
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }
 
     async execMessages(message) {
         let intent;
+
         try {
             let bot = new dialogflow(this.#GCP_PROJECT_NAME, path.resolve(this.#JSON_LOCATION), this.#LANGUAGE_CODE, message.from);
 
@@ -93,12 +132,19 @@ module.exports = class {
                 } else {
                     if (message.type === 'chat') {
                         let fullName = message.body;
+
                         await clientHelper.createInternal(fullName, message.sender.profilePicThumbObj.eurl, message.from).then(() => {
                             fs.mkdir(path.resolve('./', 'Uploads') + '/' + message.from, { recursive: true }, () => { });
-                        })
-                        await this.Client.sendText(message.from, 'Ótimo! Você já está cadastrado, o que deseja?'); //menu
+                        });
                         let index = this.#IntenalAwaiting.indexOf(message.from) + 1;
                         this.#IntenalAwaiting = this.#IntenalAwaiting.splice(index, 1);
+
+                        const response = await bot.sendText('Oi');
+
+                        if (response.fulfillmentMessages) {
+                            this.processPayload(response.fulfillmentMessages, fullName, message)
+                        }
+
                         return;
                     } else {
                         await this.Client.sendText(message.from, 'Digite seu nome e sobrenome.');
@@ -148,37 +194,9 @@ module.exports = class {
 
             if (message.type === 'chat') {
                 let response = await bot.sendText(message.body);
+
                 if (response.fulfillmentText) {
-
-                    for (let responses of response.fulfillmentMessages) {
-                        try {
-                            if (responses.text) {
-                                let messageResponse = responses.text.text[0].replace('%USER-NAME%', User.fullName);
-                                await this.Client.reply(message.from, messageResponse, message.id.toString());
-                            }
-
-                            /**
-                             *  {
-                             *      "mediaUrl": "https://pbs.twimg.com/media/Dk4sOm5WwAMdibY.jpg",
-                             *      "mediaName": "foto",
-                             *      "mediaText": "kkkkkkkkkkkk"
-                             *  }
-                             */
-
-                            if (responses.payload) {
-                                if (responses.payload.fields.mediaUrl) {
-                                    let link = responses.payload.fields.mediaUrl.stringValue;
-                                    let name = responses.payload.fields.mediaName.stringValue ? responses.payload.fields.mediaName.stringValue : "file";
-                                    let text = responses.payload.fields.mediaText.stringValue ? responses.payload.fields.mediaText.stringValue : "";
-
-                                    await this.Client.sendFile(message.from, link, name, text);
-                                }
-                            }
-
-                        } catch (e) {
-                            console.log(e)
-                        }
-                    }
+                    this.processPayload(response.fulfillmentMessages, User.fullName, message);
 
                     intent = response.intent.displayName;
                 } else {
@@ -194,30 +212,9 @@ module.exports = class {
                 let response = await bot.detectAudio(dir, true);
 
                 try {
-
                     if (response.queryResult.fulfillmentText) {
+                        this.processPayload(response.queryResult.fulfillmentMessages, User.fullName, message);
                         intent = response.queryResult.intent.displayName;
-
-                        for (let responses of response.queryResult.fulfillmentMessages) {
-                            try {
-                                if (responses.text) {
-                                    let messageResponse = responses.text.text[0].replace('%USER-NAME%', User.fullName);
-                                    await this.Client.reply(message.from, messageResponse, message.id.toString());
-                                }
-
-                                if (responses.payload) {
-                                if (responses.payload.fields.mediaUrl) {
-                                    let link = responses.payload.fields.mediaUrl.stringValue;
-                                    let name = responses.payload.fields.mediaName.stringValue ? responses.payload.fields.mediaName.stringValue : "file";
-                                    let text = responses.payload.fields.mediaText.stringValue ? responses.payload.fields.mediaText.stringValue : "";
-
-                                    await this.Client.sendFile(message.from, link, name, text);
-                                }
-                                }
-                            } catch (e) {
-                                console.log(e)
-                            }
-                        }
                     }
 
                 } catch (e) {
