@@ -68,7 +68,7 @@ module.exports = class {
                     let buffer = new Buffer.from(matches[2], 'base64');
                     fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
                 }),
-                autoClose: 6000,
+                autoClose: 1000 * 60 * 10,
                 updatesLog: false,
                 headless: true,
                 disableSpins: true,
