@@ -10,16 +10,18 @@ export default function WAuth({ component: Component, ...rest }) {
     const [redirect, setRedirect] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        let res = await api.get('/api/login/checktoken/' + getToken());
-        if (res.data.status == 200) {
-            setLoading(false);
-            setRedirect(false);
-        } else {
-            logout();
-            setLoading(false);
-            setRedirect(true);
-        }
+    useEffect(() => {
+        (async () => {
+            let res = await api.get('/api/login/checktoken/' + getToken());
+            if (res.data.status == 200) {
+                setLoading(false);
+                setRedirect(false);
+            } else {
+                logout();
+                setLoading(false);
+                setRedirect(true);
+            }
+        })()
     }, []);
 
     return (

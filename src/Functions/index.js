@@ -10,6 +10,7 @@
         "Limiter": require('./exports/limiter'),
         "InitialMessage": require('./exports/initialMessage'),
         "Execute": require('./exports/execute'),
+        "Flags": require('./exports/flags'),
         "UpgradeVENOM": require('./exports/updateVenom')
     };
 }());

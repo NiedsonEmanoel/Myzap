@@ -1,9 +1,9 @@
-const Venom = require('./Classes/Venom');
+const Venom = require('./Classes/Engine');
 const path = require('path');
 const fs = require('fs');
 let sessions = [];
 let started = [];
-const auxFunctions = require('../Functions/functions')
+const auxFunctions = require('../Functions/index')
 let limit = new Number(process.env.SESSION_LIMIT) || 16;
 const io = require('../index');
 const messageHelper = require('./messages.controller');
@@ -58,8 +58,8 @@ module.exports = {
             next(error);
         }
         try {
+            started.push(id);
             await sessions[id].initVenom().then(() => {
-                started.push(id);
                 res.status(200).send({
                     "id": id,
                     "message": "success"
@@ -88,12 +88,12 @@ module.exports = {
             if (started.includes(id)) {
                 res.status(200).send({
                     "message": "success",
-                    "started": "true"
+                    "started": true
                 });
             } else {
-                res.status(404).send({
+                res.status(200).send({
                     "message": "success",
-                    "started": "false"
+                    "started": false
                 });
             }
         } catch (error) {
@@ -219,7 +219,7 @@ module.exports = {
         }
     },
 
-    async sendMessageInternal(chatid, message){
+    async sendMessageInternal(chatid, message) {
         await sessions[0].Client.sendText(chatid, message);
     },
 
@@ -298,10 +298,10 @@ module.exports = {
                     let dirN = dirF + '/' + fileName;
 
                     let matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-                    let s= new Buffer.from(matches[2], 'base64');
+                    let s = new Buffer.from(matches[2], 'base64');
 
                     fs.mkdir(dirF, { recursive: true }, () => { });
-                    fs.writeFile(dirN, s, 'binary', ()=>{});
+                    fs.writeFile(dirN, s, 'binary', () => { });
                     let from = arrNumbers[key];
                     await messageHelper.createMedia(type[0], fileName, link, "", arrNumbers[key], fileLinkDownload, true);
                     io.emit('newFile', { "from": from });
@@ -366,7 +366,18 @@ module.exports = {
                 });
             }
             else {
-                await sessions[id].Client.close();
+                try {
+                    started.splice(id, 1);
+                    await sessions[id].Client.close();
+                }
+                catch (e) {
+                    console.log(e);
+                    res.status(200).send({
+                        "id": id,
+                        "message": "success"
+                    });
+                }
+
                 res.status(200).send({
                     "id": id,
                     "message": "success"

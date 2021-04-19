@@ -80,7 +80,6 @@ module.exports = {
             }
 
             let Client = await Clients.find({ _id });
-
             res.status(200).send({
                 "Client": Client,
                 "message": "success"

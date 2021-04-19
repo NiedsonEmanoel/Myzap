@@ -12,6 +12,8 @@ import Funcionarios from './pages/admin/funcionarios/index'
 import FuncionariosEditar from './pages/admin/funcionarios/funcionarios.editar';
 import FuncionariosCadastrar from './pages/admin/funcionarios/funcionarios.cadastro';
 
+import Sessions from './pages/admin/sessions'
+
 import PrivateRoute from './services/wAuth';
 
 // 
@@ -34,6 +36,8 @@ export default function Routes() {
                 <PrivateRoute path="/admin/funcionarios" exact component={Funcionarios} />
                 <PrivateRoute path="/admin/funcionarios/editar/:idFuncionario" exact component={FuncionariosEditar} />
                 <PrivateRoute path="/admin/funcionarios/cadastrar" exact component={FuncionariosCadastrar} />
+
+                <PrivateRoute path="/admin/sessions" exact component={Sessions} />
 
                 <Route path="*">
                     <Page404 />

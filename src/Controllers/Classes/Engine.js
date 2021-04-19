@@ -1,12 +1,13 @@
 const venom = require('venom-bot');
+const wppconnect = require('@wppconnect-team/wppconnect')
 const dialogflow = require('./Dialogflow');
 const io = require('../../index');
 const path = require('path');
-const messageHelper = require('../../Controllers/messages.controller')
-const notifierHelper = require('../Classes/Notifier');
+const messageHelper = require('../messages.controller')
+const notifierHelper = require('./Notifier');
 const notifier = new notifierHelper();
 const clientHelper = require('../clients.controller');
-const auxFunctions = require('../../Functions/functions');
+const auxFunctions = require('../../Functions/index');
 const fs = require('fs');
 
 module.exports = class {
@@ -15,63 +16,80 @@ module.exports = class {
     #LANGUAGE_CODE
     #IntenalAwaiting = []
     #index
+    #engine
 
     constructor(index, GCP_PROJECT_NAME, JSON_LOCATION, LANGUAGE_CODE) {
         this.#index = index;
         this.#GCP_PROJECT_NAME = GCP_PROJECT_NAME;
         this.#JSON_LOCATION = JSON_LOCATION;
         this.#LANGUAGE_CODE = LANGUAGE_CODE;
+        this.#engine = process.env.ENGINE == 'WPPCONNECT' ? wppconnect : venom;
     }
 
     async initVenom() {
-        this.Client = await venom.create('MyZAP ' + this.#index, (Base64QR => {
-            let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-            let buffer = new Buffer.from(matches[2], 'base64');
-            fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
-        }), (status) => {
-            if (status == 'qrReadSuccess') {
-                fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
-            }
-        }, {
-            disableWelcome: true, autoClose: 0, updatesLog: false, headless: true, disableSpins: true, browserArgs: [
-                '--js-flags="--max_old_space_size=80" --disable-web-security',
-                '--no-sandbox',
-                '--disable-web-security',
-                '--aggressive-cache-discard',
-                '--disable-cache',
-                '--disable-application-cache',
-                '--disable-offline-load-stale-cache',
-                '--disk-cache-size=0',
-                '--disable-background-networking',
-                '--disable-default-apps', '--disable-extensions',
-                '--disable-sync',
-                '--disable-translate',
-                '--hide-scrollbars',
-                '--metrics-recording-only',
-                '--mute-audio',
-                '--no-first-run',
-                '--safebrowsing-disable-auto-update',
-                '--ignore-certificate-errors',
-                '--ignore-ssl-errors',
-                '--ignore-certificate-errors-spki-list'
-            ]
-        }).catch(e => {
-            console.error('Erro ao iniciar sessão ' + e);
-        });
+        if (process.env.ENGINE !== 'WPPCONNECT') {
+            this.Client = await this.#engine.create('MyZAP ' + this.#index, (Base64QR => {
+                let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                let buffer = new Buffer.from(matches[2], 'base64');
+                fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
+            }), (status) => {
+                if (status == 'qrReadSuccess') {
+                    fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+                }
+            }, {
+                 autoClose: 60 * 1000 * 10, updatesLog: false, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
+            }).catch(e => {
+                console.error('Erro ao iniciar sessão ' + e);
+            });
 
-        console.info('- [SYSTEM]: STARTING');
+            console.info('- [SYSTEM]: STARTING');
 
-        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
-        console.info('- [SYSTEM]: ACTIVE');
+            fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+            console.info('- [SYSTEM]: ACTIVE');
 
-        setInterval(async () => {
-            let battery = await this.Client.getBatteryLevel();
-            if (battery <= 5) {
-                notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
-            }
-        }, 1000 * 60 * 10);
+            setInterval(async () => {
+                let battery = await this.Client.getBatteryLevel();
+                if (battery <= 5) {
+                    notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                }
+            }, 1000 * 60 * 10);
 
-        this.Client.onMessage(async (message) => await this.execMessages(message));
+            this.Client.onMessage(async (message) => await this.execMessages(message));
+        } else {
+            this.Client = await this.#engine.create({
+                session: 'MyZAP ' + this.#index,
+                statusFind: (status) => {
+                    if (status == 'qrReadSuccess') {
+                        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+                    }
+                },
+                catchQR: (Base64QR => {
+                    let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                    let buffer = new Buffer.from(matches[2], 'base64');
+                    fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
+                }),
+                autoClose: 6000,
+                updatesLog: false,
+                headless: true,
+                disableSpins: true,
+                browserArgs: auxFunctions.Flags
+            }).catch(e => {
+                console.error('Erro ao iniciar sessão ' + e);
+            });
+
+            console.info('- [SYSTEM]: STARTING');
+
+            fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+            console.info('- [SYSTEM]: ACTIVE');
+
+            setInterval(async () => {
+                let battery = await this.Client.getBatteryLevel();
+                if (battery <= 5) {
+                    notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                }
+            }, 1000 * 60 * 10);
+            this.Client.onMessage(async (message) => await this.execMessages(message));
+        }
 
     }
     /*

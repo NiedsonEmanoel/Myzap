@@ -48,11 +48,11 @@ export const mainListItems = (
       <ListItemText primary="WhatsApp" />
     </ListItem>
 
-    <ListItem button component="a" href="/admin">
+    <ListItem button component="a" href="/admin/sessions">
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
-      <ListItemText primary="Estatísticas" />
+      <ListItemText primary="Sessões" />
     </ListItem>
 
   </div>

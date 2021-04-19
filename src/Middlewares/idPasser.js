@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
     try {
         idNumber = new Number(idText);
     } catch{
-        res.status(400).send({
+        res.status(200).send({
             "error": "Invalid ID"
         });
     }
@@ -19,12 +19,12 @@ module.exports = (req, res, next) => {
         if (started.includes(idText)) {
             next();
         } else {
-            res.status(400).send({
+            res.status(200).send({
                 "error": "Session not started"
             });
         }
     } else {
-        res.status(400).send({
+        res.status(200).send({
             "error": "Invalid ID"
         });
     }
