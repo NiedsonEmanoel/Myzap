@@ -10,9 +10,11 @@ module.exports = class {
     #languageCode;
     #sessionID;
 
-    constructor(ProjectID, JSON_LOCATION, languageCode, session) {
-        this.#sessionClient = new dialogflow.SessionsClient({ keyFilename: JSON_LOCATION });
-        this.#projectID = ProjectID;
+    constructor(Credentials, languageCode, session) {
+        this.#sessionClient = new dialogflow.SessionsClient({
+            credentials: Credentials
+        });
+        this.#projectID = Credentials.project_id;
         this.#languageCode = languageCode;
         this.#sessionID = session;
     }

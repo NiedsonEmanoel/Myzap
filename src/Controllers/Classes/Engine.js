@@ -11,19 +11,27 @@ const auxFunctions = require('../../Functions/index');
 const fs = require('fs');
 
 module.exports = class {
-    #GCP_PROJECT_NAME
-    #JSON_LOCATION
+    #CREDENTIALS_DFLOW
     #LANGUAGE_CODE
     #IntenalAwaiting = []
     #index
+    #alias
     #engine
 
-    constructor(index, GCP_PROJECT_NAME, JSON_LOCATION, LANGUAGE_CODE) {
+    constructor(index, Credentials, LANGUAGE_CODE) {
         this.#index = index;
-        this.#GCP_PROJECT_NAME = GCP_PROJECT_NAME;
-        this.#JSON_LOCATION = JSON_LOCATION;
+        this.#CREDENTIALS_DFLOW = Credentials;
         this.#LANGUAGE_CODE = LANGUAGE_CODE;
         this.#engine = process.env.ENGINE == 'WPPCONNECT' ? wppconnect : venom;
+    }
+
+    setCredential(credential, alias) {
+        this.#CREDENTIALS_DFLOW = credential;
+        this.#alias = alias;
+    }
+
+    getAlias() {
+        return this.#alias;
     }
 
     async initVenom() {
@@ -37,7 +45,7 @@ module.exports = class {
                     fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
                 }
             }, {
-                 autoClose: 60 * 1000 * 10, updatesLog: false, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
+                autoClose: 60 * 1000 * 10, updatesLog: false, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
             }).catch(e => {
                 console.error('Erro ao iniciar sessão ' + e);
             });
@@ -53,7 +61,7 @@ module.exports = class {
                     notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }
             }, 1000 * 60 * 10);
-
+            io.emit('sessionChanged', {});
             this.Client.onMessage(async (message) => await this.execMessages(message));
         } else {
             this.Client = await this.#engine.create({
@@ -88,6 +96,7 @@ module.exports = class {
                     notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }
             }, 1000 * 60 * 10);
+            io.emit('sessionChanged', {});
             this.Client.onMessage(async (message) => await this.execMessages(message));
         }
 
@@ -135,7 +144,7 @@ module.exports = class {
         let intent;
 
         try {
-            let bot = new dialogflow(this.#GCP_PROJECT_NAME, path.resolve(this.#JSON_LOCATION), this.#LANGUAGE_CODE, message.from);
+            let bot = new dialogflow(this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
 
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
 

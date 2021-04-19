@@ -11,7 +11,18 @@ const messageHelper = require('./messages.controller');
 module.exports = {
     async createInternal() {
         for (let index = 0; index < limit; index++) {
-            sessions[index] = new Venom(index, process.env.GCP_PROJECT_NAME, process.env.JSON_LOCATION, process.env.LANGUAGE_CODE);
+            sessions[index] = new Venom(index, {
+                "type": "service_account",
+                "project_id": "secret-chat-71aeb",
+                "private_key_id": "b67bded944f5943a4d6266c12f792827af6e88a7",
+                "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnvStlU+VZhKfY\n1Fp7eSQVCgkjR1hEXmPs5HUJvckdfk3DIgbHuBb8uV5Jbi2ftcqKmwdyaLOZP5qx\nO2TQHEkdWsPrUlfoPpB/4Tnj5/hz4Umf3tkb3vU5rfgRymV8+4R8x7wHTAkzZJMk\nC2lI9QHZs9A0IxxrRiBAn4jYHmP6N0eYZ3XxhIfN6ZSctPte8HhbGJGJ7RriVGIL\nzahCYZMqrmv8vzKG+H3qGa6gV7/I5GK9TRRy5HbGsXnv0yjKFgXafuxKjjslw/Sv\nyOtQ2qBym3Dw0nIbC63lb6HsDGArnrDjMtCcsAgJROe+HRMFV8VTuWLbwPwtt49F\nc3xyRGALAgMBAAECggEAChzGc/pl1krAD7tlpRH9keMj/+N6N8z0+0AeqjKt4EBQ\nEdaIUBwSDrRiMc0ZpQpBpq+H+GbFhRSnj83D2yQJaGKjcxlowVCcR4ldgxbmDJ5l\nYOT/c8WyRQLu9KueCLXlG9yywkHcQCPtFvw1Ibfbn7NOdwYy3WjB4wN7LYRPhLMd\naFLHCaJ3iffZWouV41RFxUfdpe0yfmzNfMdKX9VKGHBJtme2+ZmH76eql1VUlmWM\nasEGkrXrLbP/lLjwkCcEA3wOmfxbNgocgay60qfxEfa2JRzThEJBdRylgZx8PSR8\nyOL86HYesCvJqPaM1Kvzr5bDZOa413AjlJDi84uPMQKBgQDfb7lQg93hnEXLJ3YQ\nZyPBYaS5hoThKasazJ9OyCIJDn3YSV/CVGy3k8U073wgm32bKNstnk+m0gyxxNab\n3nc+a8SKDCuOgCJHjV5K20n0gfGq6iQgSQKhA4lk/ir4O0AYNGtWeclHGmSc1nGL\nzLUfJG5ExAd9DW/3TgheP61SqQKBgQDAL2glRaP7PWg4fSeQZFGZpt0z+BQH+/Z0\nC+D51X/iYHUecaTv80ZH+jgUaxSEC+Tx73OQq/0Slo0+ThIsTpZo7k1lKBlhRCkw\nfDSOfINoG3DxQUGeqQkiLP0R9EutbAOAS8oEcRsIUSMrsMawrMKBJwkYBhfaWGRs\n9mqQ61lBkwKBgQDGb5cJZtO79uoVTuqQDsm2iV2eV1XUEwmfN3OUqDFyEai6Wg/t\nqsUTFO3j4X1ACFg5YMOndB4RbiNQDhz7OUx154gZgk18tVe8bFT97lt0B6P1wxRq\nh+0JyvZO91x6MUTvOj7KAkc8GriYges92YRSMCyubdqouTJjVK4h5jOsYQKBgQC9\nfMB5p11UNSqSL8wXkOHn1l9Zgyr06FgJ+UBb9EaABEzVtIVEVJ+iDjLG5wE2ZKfa\nZxaRuRHwBuLCYKWIa//e+77xkwTbIyJdfMkxB9Fkj1HffVDex5mKycLHtg/7sHkP\nQSqxEHfvzlgYFtcAkYXBY6SSvEc+cFKsIJXXx0Sc4wKBgCMSsYda9/RSFTJiHiZS\nfJ837QcfHnQZKvG2QdO4I2Q2mTRVGmOnz43WKxM0bB66e2ezwlNy8wH0Xa4z6I4q\nIFItfRJQFpdXy5ViTDgHeds3gtL8PfATzCFOaplw8Q+5I8TgfXaUu+CxkbHfWD5I\noYFtCVBp/dkJ7egdD4EF7Rtm\n-----END PRIVATE KEY-----\n",
+                "client_email": "secret-chat-71aeb@appspot.gserviceaccount.com",
+                "client_id": "105792998107016357009",
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/secret-chat-71aeb%40appspot.gserviceaccount.com"
+            }, process.env.LANGUAGE_CODE);
         }
     },
 
@@ -21,6 +32,14 @@ module.exports = {
 
     getLimit() {
         return limit;
+    },
+
+    setCredential(credential, id, alias){
+        sessions[id].setCredential(credential, alias);
+    },
+
+    getAlias(id){
+        return sessions[id].getAlias();
     },
 
     async getMax(req, res, next) {

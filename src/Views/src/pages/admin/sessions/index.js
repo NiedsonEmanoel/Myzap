@@ -76,6 +76,7 @@ export default function Sessions() {
                 }
                 switchSessions(sessionsTemp);
             })();
+            handleClose();
         });
     }, []);
 
@@ -120,7 +121,15 @@ export default function Sessions() {
                         </TableCell>
 
                         <TableCell align="center">
-                            {value.device != '-' ? value.device != 'Aguardando...' ? <Chip label={value.device} variant="outlined" color="primary"/>:<Chip label={value.device} variant="outlined" color="secondary"/> : value.device}
+                            {
+                                value.device != '-' ?
+                                    value.device != 'Aguardando...' ?
+                                        <Chip label={value.device} variant="outlined" color="primary" />
+                                        :
+                                        <Chip label={value.device} variant="outlined" color="secondary" />
+                                    :
+                                    value.device
+                            }
                         </TableCell>
 
                         <TableCell align="right">
