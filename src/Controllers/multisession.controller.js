@@ -61,6 +61,7 @@ module.exports = {
             started.push(id);
             io.emit('sessionChanged', {});
             await sessions[id].initVenom().then(() => {
+                io.emit('sessionChanged', {});
                 res.status(200).send({
                     "id": id,
                     "message": "success"
