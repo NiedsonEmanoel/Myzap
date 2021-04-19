@@ -59,6 +59,7 @@ module.exports = {
         }
         try {
             started.push(id);
+            io.emit('sessionChanged', {});
             await sessions[id].initVenom().then(() => {
                 res.status(200).send({
                     "id": id,
@@ -367,6 +368,7 @@ module.exports = {
             }
             else {
                 try {
+                    io.emit('sessionChanged', {});
                     started.splice(id, 1);
                     await sessions[id].Client.close();
                 }

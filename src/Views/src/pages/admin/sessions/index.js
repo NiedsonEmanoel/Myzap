@@ -51,11 +51,33 @@ export default function Sessions() {
         setId(id);
     }
 
-    /*useEffect(() => {
+    useEffect(() => {
         io.on('sessionChanged', (e) => {
+            (async () => {
+                const handler = await api.get('/api/whatsapp/sessions');
+                const numberOfSessions = handler.data.numberOfSessions;
+                let sessionsTemp = [];
 
+                for (let i = 0; i < numberOfSessions; i++) {
+                    let active = await (await api.get('/api/whatsapp/sessions.details/' + i)).data.started;
+                    let phone
+                    try {
+                        phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
+                    }
+                    catch (e) {
+                        phone = 'Aguardando...'
+                    }
+                    let tempAux = {
+                        "Session": i,
+                        "active": active,
+                        "device": phone
+                    }
+                    sessionsTemp.push(tempAux);
+                }
+                switchSessions(sessionsTemp);
+            })();
         });
-    }, [])*/
+    }, []);
 
     useEffect(() => {
         (async () => {
@@ -66,11 +88,11 @@ export default function Sessions() {
             for (let i = 0; i < numberOfSessions; i++) {
                 let active = await (await api.get('/api/whatsapp/sessions.details/' + i)).data.started;
                 let phone
-                try{
+                try {
                     phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
                 }
-                catch(e){
-                     phone = 'Aguardando...'
+                catch (e) {
+                    phone = 'Aguardando...'
                 }
                 let tempAux = {
                     "Session": i,
@@ -107,7 +129,7 @@ export default function Sessions() {
                                     <Button onClick={async () => {
                                         if (value.Session != 0) {
                                             const r = await api.delete('/api/whatsapp/sessions?id=' + value.Session);
-                                            return (''); 
+                                            return ('');
                                         }
                                     }}>
                                         Desabilitar
