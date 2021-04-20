@@ -89,16 +89,20 @@ export default function Sessions() {
             for (let i = 0; i < numberOfSessions; i++) {
                 let active = await (await api.get('/api/whatsapp/sessions.details/' + i)).data.started;
                 let phone
+                let alias
                 try {
                     phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
+                    alias = active == true ? await (await api.get('/api/whatsapp/alias?id='+i)).data.alias : '-'
                 }
                 catch (e) {
-                    phone = 'Aguardando...'
+                    phone = 'Aguardando...';
+                    alias = '-';
                 }
                 let tempAux = {
                     "Session": i,
                     "active": active,
-                    "device": phone
+                    "device": phone,
+                    "alias": alias
                 }
                 sessionsTemp.push(tempAux);
             }
@@ -130,6 +134,10 @@ export default function Sessions() {
                                     :
                                     value.device
                             }
+                        </TableCell>
+
+                        <TableCell align="center">
+                            {value.alias}
                         </TableCell>
 
                         <TableCell align="right">
@@ -225,6 +233,7 @@ export default function Sessions() {
                                                     <TableCell>ID</TableCell>
                                                     <TableCell align="center">Status</TableCell>
                                                     <TableCell align="center">Aparelho</TableCell>
+                                                    <TableCell align="center">Sessão DialogFlow</TableCell>
                                                     <TableCell align="right">Opções</TableCell>
                                                 </TableRow>
 

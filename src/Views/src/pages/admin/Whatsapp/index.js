@@ -21,6 +21,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
+import { NotificationManager } from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 
 import {
     Paper,
@@ -116,8 +118,12 @@ const useStyles = makeStyles((theme) => ({
         background: "#7159C1"
     },
     rightContainer: {
-        background:
-            "url(/wall.png) bottom",
+        backgroundImage: 'url(https://source.unsplash.com/random)',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor:
+            theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         flex: 1
     },
     heightAdjust: {
@@ -248,6 +254,8 @@ export default function WhatsApp() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
 
+    const audioNotify = new Audio('/notify.mp3');
+
     const handleClickOpen = () => {
         if (contact.chatId)
             setOpen(true);
@@ -271,6 +279,8 @@ export default function WhatsApp() {
 
         io.on('newAttendace', (e) => {
             console.log(e.name);
+            NotificationManager.info('Um novo cliente pediu atendimento.');
+            audioNotify.play();
             return uptodate();
         });
     }, []);
@@ -623,7 +633,6 @@ export default function WhatsApp() {
                     <Box pt={4}>
                         <Copyright />
                     </Box>
-
                 </Container>
 
             </main>

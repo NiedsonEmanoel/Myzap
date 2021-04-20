@@ -22,7 +22,7 @@ module.exports = {
                 "token_uri": "https://oauth2.googleapis.com/token",
                 "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
                 "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/secret-chat-71aeb%40appspot.gserviceaccount.com"
-            }, process.env.LANGUAGE_CODE);
+            }, process.env.LANGUAGE_CODE, 'Principal');
         }
     },
 
@@ -34,12 +34,18 @@ module.exports = {
         return limit;
     },
 
-    setCredential(credential, id, alias){
+    setCredential(credential, id, alias) {
         sessions[id].setCredential(credential, alias);
     },
 
-    getAlias(id){
-        return sessions[id].getAlias();
+    getAlias(req, res, next) {
+        try {
+            let id = req.query.id;
+            const alias = sessions[id].getAlias();
+            return res.status(200).send({ "alias": alias });
+        } catch (e) {
+
+        }
     },
 
     async getMax(req, res, next) {

@@ -91,7 +91,7 @@ module.exports = {
 
             let data = { nome_usuario, email_usuario, tipo_usuario, senha_usuario, foto_perfil };
 
-            const Worker = await Workers.findOneAndReplace(_id , data);
+            const Worker = await Workers.findByIdAndUpdate(_id, data);
 
             res.status(200).send({
                 Worker,
@@ -135,7 +135,7 @@ module.exports = {
         if (!token) {
             res.status(200).json({ status: 401, msg: 'Access denied' });
         } else {
-            jwt.verify(token, secret, function (err, decoded) {
+            jwt.verify(token, secret,  function(err, decoded) {
                 if (err) {
                     res.status(200).json({ status: 401, msg: 'Access denied' });
                 } else {

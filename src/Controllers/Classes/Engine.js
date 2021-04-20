@@ -18,10 +18,11 @@ module.exports = class {
     #alias
     #engine
 
-    constructor(index, Credentials, LANGUAGE_CODE) {
+    constructor(index, Credentials, LANGUAGE_CODE, alias) {
         this.#index = index;
         this.#CREDENTIALS_DFLOW = Credentials;
         this.#LANGUAGE_CODE = LANGUAGE_CODE;
+        this.#alias = alias
         this.#engine = process.env.ENGINE == 'WPPCONNECT' ? wppconnect : venom;
     }
 
@@ -255,8 +256,7 @@ module.exports = class {
                 console.log('Atendimento solicitado via chat');
                 await clientHelper.switchFirst(User);
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
-                notifier.notify('Um novo cliente pediu atendimento');
-
+                
             }
         } catch (e) {
             console.error('Error ' + e);

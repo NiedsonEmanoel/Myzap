@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from './api';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { NotificationContainer } from 'react-notifications';
 import { logout, getToken } from './auth';
 
 import { Route, Redirect } from 'react-router-dom';
@@ -25,10 +26,22 @@ export default function WAuth({ component: Component, ...rest }) {
     }, []);
 
     return (
-        loading ? <Backdrop open={true}><CircularProgress color="inherit" /></Backdrop> : <Route {...rest} render={props => !redirect ? (
-            <Component {...props} />
-        ) : <Redirect to={{ pathname: "/admin/login", state: { from: props.location } }}></Redirect>}>
-        </Route>
+        loading ? <Backdrop open={true}><CircularProgress color="inherit" /></Backdrop>
+            :
+            <Route {...rest} render={props => !redirect ?
+
+                (
+                    <>
+                        <Component {...props} />
+                        <NotificationContainer />
+                    </>
+                )
+
+                :
+
+                <Redirect to={{ pathname: "/admin/login", state: { from: props.location } }}></Redirect>}>
+
+            </Route>
     );
 
 }
