@@ -18,7 +18,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { login, setIdUsuario, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario } from '../../../services/auth'
+import { login, setIdUsuario, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario, setMenuPreference, getMenuPreference } from '../../../services/auth'
 
 import api from '../../../services/api';
 
@@ -89,7 +89,9 @@ export default function SignInSide() {
         setProfileLinkUsuario(response.data.user.foto_perfil);
         setNomeUsuario(response.data.user.nome_usuario);
         setTipoUsuario(response.data.user.tipo_usuario);
-
+        if(!getMenuPreference()){
+          setMenuPreference('true');
+        }
         window.location.href = '/admin'
       }
       else {

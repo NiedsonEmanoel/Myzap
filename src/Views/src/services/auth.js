@@ -4,6 +4,7 @@ export const ID_USUARIO = '&id-usuario';
 export const NOME_USUARIO = '&nome-usuario';
 export const USER_TYPE  = '&user-type';
 export const PROFILE_LINK = '&profile-link';
+export const MENU_PREFERENCE = '&menu-user';
 
 export const login = token => {sessionStorage.setItem(TOKEN_KEY, token)};
 export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
@@ -20,3 +21,6 @@ export const getTipoUsuario = () => sessionStorage.getItem(USER_TYPE);
 
 export const setProfileLinkUsuario = id => sessionStorage.setItem(PROFILE_LINK, id);
 export const getProfileLinkUsuario = () => sessionStorage.getItem(PROFILE_LINK);
+
+export const setMenuPreference = id => localStorage.setItem(MENU_PREFERENCE, id);
+export const getMenuPreference = () => localStorage.getItem(MENU_PREFERENCE);
