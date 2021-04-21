@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
@@ -15,6 +15,8 @@ import Button from '@material-ui/core/Button';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
+import { useSnackbar } from 'notistack';
+import io from '../../../services/socket.io'
 
 const drawerWidth = 240;
 
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     content: { flexGrow: 1, height: '100vh', overflow: 'auto', },
     container: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(4), },
     paper: { padding: 35, display: 'flex', overflow: 'auto', flexDirection: 'column', },
-    formControl: { width: '100%'},
+    formControl: { width: '100%' },
     btnSuccess: { backgroundColor: "green", color: "#fff", "&:hover": { backgroundColor: "#12b912" } }
 }));
 
@@ -36,6 +38,7 @@ export default function Dashboard() {
     const [senha, setSenha] = useState('');
     const [tipo, setTipo] = useState('');
     const [foto, setFoto] = useState('');
+
 
     async function handleSubmit() {
 
@@ -51,7 +54,7 @@ export default function Dashboard() {
                 tipo_usuario: tipo,
                 foto_perfil: foto
             }
-console.log(data)
+            console.log(data)
             const response = await api.post('/api/workers', data);
             console.log(response);
 
@@ -102,7 +105,7 @@ console.log(data)
                                             onChange={e => setNome(e.target.value)}
                                         />
                                     </Grid>
-                                    <img src={foto} style={{maxHeight: "100px", marginLeft: "4%",  maxWidth:"100px", height: "100px", width: "100px"}}></img>
+                                    <img src={foto} style={{ maxHeight: "100px", marginLeft: "4%", maxWidth: "100px", height: "100px", width: "100px" }}></img>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             required

@@ -21,8 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
-import { NotificationManager } from 'react-notifications';
-import 'react-notifications/lib/notifications.css';
+import { useSnackbar} from 'notistack';
 
 import {
     Paper,
@@ -254,8 +253,6 @@ export default function WhatsApp() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
 
-    const audioNotify = new Audio('/notify.mp3');
-
     const handleClickOpen = () => {
         if (contact.chatId)
             setOpen(true);
@@ -274,13 +271,11 @@ export default function WhatsApp() {
         });
     }
 
+
     useEffect(() => {
         upgrade();
 
         io.on('newAttendace', (e) => {
-            console.log(e.name);
-            NotificationManager.info('Um novo cliente pediu atendimento.');
-            audioNotify.play();
             return uptodate();
         });
     }, []);

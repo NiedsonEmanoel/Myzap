@@ -6,6 +6,8 @@ import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useSnackbar } from 'notistack';
+import io from '../../../services/socket.io'
 import AddIcon from '@material-ui/icons/Add';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -205,8 +207,8 @@ export default function UsuariosListagem() {
 
                                 <Button onClick={async () => {
                                   try {
-                                      const response = await api.delete('/api/workers/' + row._id);
-                                      window.location.reload(true);
+                                    const response = await api.delete('/api/workers/' + row._id);
+                                    window.location.reload(true);
                                   } catch (e) {
                                     console.log(e);
                                     alert('Erro, tente mais tarde.');
@@ -227,11 +229,11 @@ export default function UsuariosListagem() {
                               <TableCell align="center">{row.email_usuario}</TableCell>
 
                               <TableCell align="center">
-                                  <Chip color={getColor(row.tipo_usuario)} label={getTipo(row.tipo_usuario)}></Chip>
+                                <Chip color={getColor(row.tipo_usuario)} label={getTipo(row.tipo_usuario)}></Chip>
                               </TableCell>
 
                               <TableCell align="center">{`${new Date(row.createdAt).toLocaleDateString('pt-BR')} - ${new Date(row.createdAt).toLocaleTimeString('pt-BR')}`}</TableCell>
-                              
+
                               <TableCell align="right">
 
                                 <ButtonGroup size="small" aria-label="small button group">

@@ -1,11 +1,12 @@
 import React from 'react';
 
-import Routes from './routes'
+import PrivateRoutes from './private.routes'
+
 
 function App() {
   return (
     <div className="App">
-      <Routes />
+        <PrivateRoutes />
     </div>
   );
 }

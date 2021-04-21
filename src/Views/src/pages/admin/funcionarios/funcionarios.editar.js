@@ -16,6 +16,8 @@ import Button from '@material-ui/core/Button';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
+import { useSnackbar } from 'notistack';
+import io from '../../../services/socket.io'
 
 const drawerWidth = 240;
 
@@ -65,9 +67,9 @@ export default function Dashboard() {
             foto_perfil: foto
         }
 
-        await api.put('/api/workers/'+idFuncionario, data, {timeout: 3000}).then(()=>{
+        await api.put('/api/workers/' + idFuncionario, data, { timeout: 3000 }).then(() => {
             alert('Atualização efetuada com sucesso')
-        }).catch(()=>{
+        }).catch(() => {
             alert('Erro, tente novamente mais tarde.');
         })
 

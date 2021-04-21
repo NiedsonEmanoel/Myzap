@@ -75,6 +75,11 @@ module.exports = {
         try {
             const { alias } = req.body;
             const id = req.query.id;
+
+            if(id == 0){
+                next(new Error('Não é possível alterar a credencial da sessão principal.'))
+            }
+
             const Credential = await (await Credentials.findOne({ alias })).credential;
             if (Credential) {
                 Engine.setCredential(Credential, id, alias);

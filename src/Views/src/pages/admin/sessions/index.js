@@ -3,6 +3,7 @@ import useStyles from './theme';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
+import { useSnackbar} from 'notistack';
 import api from '../../../services/api'
 
 import {
@@ -92,7 +93,7 @@ export default function Sessions() {
                 let alias
                 try {
                     phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
-                    alias = active == true ? await (await api.get('/api/whatsapp/alias?id='+i)).data.alias : '-'
+                    alias = active == true ? await (await api.get('/api/whatsapp/alias?id=' + i)).data.alias : '-'
                 }
                 catch (e) {
                     phone = 'Aguardando...';

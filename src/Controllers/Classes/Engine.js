@@ -221,6 +221,7 @@ module.exports = class {
             console.info(`\nMensagem recebida!\nType: ${message.type}\nSender: ${User.fullName}`);
 
             if (message.type === 'chat') {
+
                 let response = await bot.sendText(message.body);
 
                 if (response.fulfillmentText) {
@@ -230,6 +231,7 @@ module.exports = class {
                 } else {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                 }
+
 
             } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
 
@@ -249,6 +251,7 @@ module.exports = class {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Fallback');
                 }
+
             }
 
             if (intent === process.env.INTENT_SAC) {
@@ -256,7 +259,11 @@ module.exports = class {
                 console.log('Atendimento solicitado via chat');
                 await clientHelper.switchFirst(User);
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
-                
+                io.emit('newNotification', {
+                    'type': "info",
+                    'message': 'Um novo cliente solicitou atendimento'
+                });
+
             }
         } catch (e) {
             console.error('Error ' + e);

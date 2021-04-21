@@ -16,10 +16,11 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Copyright from '../../../components/footer';
+import { useSnackbar } from 'notistack';
 import { Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
-import * as libs from '../../../services/auth'
+import io from '../../../services/socket.io';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -137,7 +138,15 @@ export default function UsuariosListagem() {
     }
   }
 
-  useEffect(loadUsuarios, []);
+
+  useEffect(() => {
+    loadUsuarios();
+    io.on('userChanged', (e) => {
+      console.log('a')
+      loadUsuarios();
+      handleClose();
+    });
+  }, [])
 
   async function loadUsuarios() {
     const response = await api.get('/api/clients');
@@ -145,71 +154,68 @@ export default function UsuariosListagem() {
   }
 
   function getUsers() {
-    return(
-    usuarios.map((row) => (
-      <>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
-          <DialogTitle id="alert-dialog-title">{"Deseja excluir esse Usuário?"}</DialogTitle>
+    return (
+      usuarios.map((row) => (
+        <>
+          <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
+            <DialogTitle id="alert-dialog-title">{"Deseja excluir esse Usuário?"}</DialogTitle>
 
-          <DialogContent>
+            <DialogContent>
 
-            <DialogContentText id="alert-dialog-description">
-              Não será possível desfazer essa ação.
-            </DialogContentText>
+              <DialogContentText id="alert-dialog-description">
+                Não será possível desfazer essa ação.
+              </DialogContentText>
 
-          </DialogContent>
+            </DialogContent>
 
-          <DialogActions>
+            <DialogActions>
 
-            <Button onClick={handleClose} color="primary">
-              Sair
-            </Button>
-
-            <Button onClick={async () => {
-              try {
-                const response = await api.delete('/api/clients/' + row._id);
-                handleClose()
-                loadUsuarios();
-                loadUsuarios();
-              } catch (e) {
-                console.log(e);
-                alert('Erro, tente mais tarde.');
-              }
-            }} color="primary" autoFocus>
-              Excluir
-            </Button>
-
-          </DialogActions>
-
-        </Dialog>
-
-        <TableRow key={row.nome}>
-          <TableCell component="th" scope="row">
-            <Chip color="primary" avatar={<Avatar src={row.profileUrl} />} label={row.fullName} />
-          </TableCell>
-          <TableCell align="center">{new String(row.chatId).replace('@c.us', '')}</TableCell>
-
-          <TableCell align="center">{`${new Date(row.createdAt).toLocaleDateString('pt-BR')} - ${new Date(row.createdAt).toLocaleTimeString('pt-BR')}`}</TableCell>
-          <TableCell align="right">
-
-            <ButtonGroup size="small" aria-label="small button group">
-              <Button variant="contained" color="primary" onClick={async () => {
-                let data = {
-                  worker: "aw",
-                }
-                await api.put('/api/clients/' + row._id, data);
-                loadUsuarios();
-              }}>{Attendace(row.inAttendace)}</Button>
-
-              <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
+              <Button onClick={handleClose} color="primary">
+                Sair
               </Button>
 
-            </ButtonGroup>
+              <Button onClick={async () => {
+                try {
+                  const response = await api.delete('/api/clients/' + row._id);
+                  handleClose();
+                } catch (e) {
+                  console.log(e);
+                  alert('Erro, tente mais tarde.');
+                }
+              }} color="primary" autoFocus>
+                Excluir
+              </Button>
 
-          </TableCell>
-        </TableRow>
-      </>
-    )));
+            </DialogActions>
+
+          </Dialog>
+
+          <TableRow key={row.nome}>
+            <TableCell component="th" scope="row">
+              <Chip color="primary" avatar={<Avatar src={row.profileUrl} />} label={row.fullName} />
+            </TableCell>
+            <TableCell align="center">{new String(row.chatId).replace('@c.us', '')}</TableCell>
+
+            <TableCell align="center">{`${new Date(row.createdAt).toLocaleDateString('pt-BR')} - ${new Date(row.createdAt).toLocaleTimeString('pt-BR')}`}</TableCell>
+            <TableCell align="right">
+
+              <ButtonGroup size="small" aria-label="small button group">
+                <Button variant="contained" color="primary" onClick={async () => {
+                  let data = {
+                    worker: "aw",
+                  }
+                  await api.put('/api/clients/' + row._id, data);
+                }}>{Attendace(row.inAttendace)}</Button>
+
+                <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
+                </Button>
+
+              </ButtonGroup>
+
+            </TableCell>
+          </TableRow>
+        </>
+      )));
   }
 
   const classes = useStyles();

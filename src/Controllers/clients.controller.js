@@ -1,6 +1,7 @@
 const Clients = require('../Models/client.model');
 const messageHelper = require('../Models/messages.model')
 const path = require('path');
+const io = require('../index');
 const fs = require('fs');
 //const interControl = require('./multisession.controller')
 module.exports = {
@@ -24,7 +25,7 @@ module.exports = {
         const user = await Clients.findOne({ _id }).lean();
 
         await switchAttendance(user, worker);
-
+        io.emit('userChanged');
         return res.status(200).send({
             "message": "ok"
         });
@@ -42,7 +43,6 @@ module.exports = {
             }
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findByIdAndUpdate({ _id }, data, { new: true });
-
             return inAttendace;
         }
 
@@ -51,7 +51,6 @@ module.exports = {
         const user = await Clients.findOne({ _id }).lean();
 
         await switchAttendance(user, worker);
-
         return res.status(200).send({
             "message": "ok"
         });
@@ -160,6 +159,7 @@ module.exports = {
                 data = { fullName, profileUrl, chatId };
                 fs.mkdir(path.resolve('./', 'Uploads') + '/' + chatId, { recursive: true }, () => { });
                 user = await Clients.create(data);
+                io.emit('userChanged');
                 return res.status(200).send({
                     "Client": user,
                     "message": "success"
@@ -191,6 +191,7 @@ module.exports = {
             }
 
             let Client = await Clients.findByIdAndDelete({ _id });
+            io.emit('userChanged');
             return res.status(200).send({
                 Client,
                 "message": "success"
@@ -230,13 +231,13 @@ module.exports = {
             let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             inAttendace = inAttendace === true ? false : true;
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+            let Client = await Clients.findByIdAndUpdate({ _id }, data);
             return inAttendace;
         }
-
         const { _id } = req.params;
         const user = await Clients.findOne({ _id }).lean();
-        switchAttendance(user);
+        await switchAttendance(user);
+        io.emit('userChanged');
         return res.status(200).send({
             "message": "ok"
         });

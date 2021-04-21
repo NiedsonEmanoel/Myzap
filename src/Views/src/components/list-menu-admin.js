@@ -11,49 +11,63 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import { logout } from '../services/auth';
+import { Link } from 'react-router-dom'
+
 export const mainListItems = (
   <div>
-    <ListItem button component="a" href="/admin">
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
+    <Link to='/admin' style={{ textDecorationLine: 'none' }}>
+      <ListItem component="a">
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" />
+      </ListItem>
+    </Link>
 
-    <ListItem button component="a" href="/admin">
-      <ListItemIcon>
-        <BusinessCenterIcon />
-      </ListItemIcon>
-      <ListItemText primary="Pedidos" />
-    </ListItem>
+    <Link to='/admin' style={{ textDecorationLine: 'none' }}>
+      <ListItem component="a">
+        <ListItemIcon>
+          <BusinessCenterIcon />
+        </ListItemIcon>
+        <ListItemText primary="Pedidos" />
+      </ListItem>
+    </Link>
 
-    <ListItem button component="a" href="/admin/usuarios">
-      <ListItemIcon>
-        <EmojiPeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Usuários" />
-    </ListItem>
+    <Link to='/admin/usuarios' style={{ textDecorationLine: 'none' }}>
+      <ListItem component="a" >
+        <ListItemIcon>
+          <EmojiPeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Usuários" />
+      </ListItem>
+    </Link>
 
-    <ListItem button component="a" href="/admin/funcionarios">
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Funcionários" />
-    </ListItem>
+    <Link to='/admin/funcionarios' style={{ textDecorationLine: 'none' }}>
+      <ListItem component="a" >
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Funcionários" />
+      </ListItem>
+    </Link>
 
-    <ListItem button component="a" href="/admin/whatsapp">
-      <ListItemIcon>
-        <WhatsAppIcon />
-      </ListItemIcon>
-      <ListItemText primary="WhatsApp" />
-    </ListItem>
+    <Link to='/admin/whatsapp' style={{ textDecorationLine: 'none' }}>
+      <ListItem component="a">
+        <ListItemIcon>
+          <WhatsAppIcon />
+        </ListItemIcon>
+        <ListItemText primary="WhatsApp" />
+      </ListItem>
+    </Link>
 
-    <ListItem button component="a" href="/admin/sessions">
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Sessões" />
-    </ListItem>
+    <Link to='/admin/sessions' style={{ textDecorationLine: 'none' }}>
+      <ListItem component="a">
+        <ListItemIcon>
+          <BarChartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Sessões" />
+      </ListItem>
+    </Link>
 
   </div>
 );
@@ -64,7 +78,7 @@ export const secondaryListItems = (
 
     <ListItem button={true} onClick={(e) => {
       let s = window.confirm('Deseja sair?');
-      if(s){
+      if (s) {
         logout();
         window.location.href = "/admin/login";
       }
