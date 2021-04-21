@@ -1,9 +1,9 @@
 {
   "name": "My Zap",
-  "short_name": "My Zap",
+  "short_name": "MYZAP",
   "theme_color": "#21f349",
   "background_color": "#5ef321",
-  "display": "standalone",
+  "display": "standalone ",
   "scope": "/",
   "start_url": ".",
   "icons": [

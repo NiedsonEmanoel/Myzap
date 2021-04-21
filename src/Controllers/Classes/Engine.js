@@ -4,8 +4,6 @@ const dialogflow = require('./Dialogflow');
 const io = require('../../index');
 const path = require('path');
 const messageHelper = require('../messages.controller')
-const notifierHelper = require('./Notifier');
-const notifier = new notifierHelper();
 const clientHelper = require('../clients.controller');
 const auxFunctions = require('../../Functions/index');
 const fs = require('fs');
@@ -59,7 +57,11 @@ module.exports = class {
             setInterval(async () => {
                 let battery = await this.Client.getBatteryLevel();
                 if (battery <= 5) {
-                    notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                    io.emit('newNotification', {
+                        'type': "error",
+                        'message': 'Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.'
+                    });
+                  //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }
             }, 1000 * 60 * 10);
             io.emit('sessionChanged', {});
@@ -94,7 +96,11 @@ module.exports = class {
             setInterval(async () => {
                 let battery = await this.Client.getBatteryLevel();
                 if (battery <= 5) {
-                    notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                    io.emit('newNotification', {
+                        'type': "error",
+                        'message': 'Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.'
+                    });
+                  //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }
             }, 1000 * 60 * 10);
             io.emit('sessionChanged', {});
