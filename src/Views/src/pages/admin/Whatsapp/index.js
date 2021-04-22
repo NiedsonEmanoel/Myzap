@@ -21,7 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth'
-import { useSnackbar} from 'notistack';
+import { useSnackbar } from 'notistack';
 
 import {
     Paper,
@@ -530,14 +530,14 @@ export default function WhatsApp() {
                                                             let data = {
                                                                 "worker": worker
                                                             }
-                                                            console.clear()
-                                                            console.log(contact.firstAttendace);
-                                                            if (contact.firstAttendace == false) {
-                                                                await api.put('/api/clients/' + contact._id, data);
-                                                            } else {
-                                                                await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                                                            if (contact.firstAttendace !== undefined) {
+                                                                if (contact.firstAttendace == false) {
+                                                                    await api.put('/api/clients/' + contact._id, data);
+                                                                } else {
+                                                                    await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                                                                }
+                                                                window.location.reload();
                                                             }
-                                                            window.location.reload();
                                                         }}>
                                                             {contact.firstAttendace ? <AssignmentTurnedInIcon /> : <CancelIcon />}
                                                         </IconButton>
