@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
@@ -95,6 +97,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+  const [usersInAttendance, setUsersInAttendance] = useState([]);
+  const [usersInFirstAttendance, setUsersInFirstAttendance] = useState([]);
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  async function getUsers() {
+    const response = await (await api.get('/api/clients/attendance')).data.Client;
+    let first = [];
+    for (let key in response) {
+      if (response[key].firstAttendace == true) {
+        first.push(response[key]);
+      }
+    }
+    setUsersInFirstAttendance(first);
+    setUsersInAttendance(response);
+  }
+
+  useEffect(() => {
+    io.on('userChanged', (e) => {
+      getUsers();
+    });
+  })
+
+  useEffect(() => {
+    getUsers();
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -111,6 +138,40 @@ export default function Dashboard() {
           <Grid>
 
             <Grid>
+
+              <Grid item xs={12} md={4} lg={4}>
+
+                <Paper className={fixedHeightPaper} style={{
+                  display: "flex",
+                  flexDirection: "collum",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  alignItems: "center"
+                }}>
+
+                  <Typography component="h2" variant="h6" color="primary" gutterBottom style={{paddingBottom: "6%", marginTop: 0}}>
+                    {"Atendimentos"}
+                  </Typography>
+
+                  <Typography component="p" variant="h3" >
+                    {`${usersInAttendance.length}`}
+                  </Typography>
+
+                  <div style={{
+                    marginBottom: 0,
+                    paddingTop: "10.5%",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center"
+                  }}>
+                    <Typography color="textSecondary" >
+                      {`${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`}
+                    </Typography>
+                  </div>
+
+                </Paper>
+
+              </Grid>
 
             </Grid>
 

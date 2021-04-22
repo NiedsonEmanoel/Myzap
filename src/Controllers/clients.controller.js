@@ -31,31 +31,6 @@ module.exports = {
         });
     },
 
-    async switchAt(req, res) {
-        async function switchAttendance(user, worker) {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
-            if (inAttendace == true) {
-                firstAttendace = true;
-                inAttendace = false;
-            } else {
-                inAttendace = true;
-                attendaceBy = worker;
-            }
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findByIdAndUpdate({ _id }, data, { new: true });
-            return inAttendace;
-        }
-
-        const { _id } = req.params;
-        const worker = req.body.worker;
-        const user = await Clients.findOne({ _id }).lean();
-
-        await switchAttendance(user, worker);
-        return res.status(200).send({
-            "message": "ok"
-        });
-    },
-
     async index(req, res, next) {
         try {
             let Client = await Clients.find();
@@ -243,18 +218,6 @@ module.exports = {
         });
     },
 
-    async switchAttendance(user) {
-        try {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
-            inAttendace = inAttendace === true ? false : true;
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
-            return inAttendace;
-        } catch (e) {
-            console.error(e)
-        }
-    },
-
     async switchFirst(user) {
         try {
             let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
@@ -262,6 +225,7 @@ module.exports = {
             firstAttendace = true;
             data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+            io.emit('userChanged');
             return firstAttendace;
         } catch (e) {
             console.error(e)

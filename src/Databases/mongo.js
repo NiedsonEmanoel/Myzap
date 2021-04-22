@@ -4,7 +4,7 @@ module.exports = {
     async Connect() {
         await mongoose.connect(process.env.MONGO, {
             useCreateIndex: true,
-            useFindAndModify: true,
+            useFindAndModify: false,
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true
