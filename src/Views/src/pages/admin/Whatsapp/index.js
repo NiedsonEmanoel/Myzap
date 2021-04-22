@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
         background: "#7159C1"
     },
     rightContainer: {
-        backgroundImage: 'url(https://source.unsplash.com/random)',
+        backgroundImage: 'url(/wall.png)',
         backgroundRepeat: 'no-repeat',
         backgroundColor:
             theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -482,7 +482,7 @@ export default function WhatsApp() {
 
                 <div className={classes.appBarSpacer} />
 
-                <Container maxWidth="100%" className={classes.container}>
+                <Container maxWidth="100%" maxHeight="100%" className={classes.container}>
                     <Grid>
 
                         <Grid container className={classes.fila}>
