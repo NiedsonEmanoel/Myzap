@@ -3,5 +3,5 @@
         "tokens/*",
         "views/src/"
     ],
-    "delay": "500"
+    "delay": "150"
 }

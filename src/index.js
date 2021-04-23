@@ -47,9 +47,8 @@ let io;
                 console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
                 break;
             }
-            io = require('socket.io')(serverRest);
             serverRest = require('https').createServer({ key: privatekey, cert: certificate, rejectUnauthorized: false }, app);
-
+            io = require('socket.io')(serverRest);
             serverRest.listen(process.env.PORT, process.env.HOST, () => { });
 
             console.info(`Servidor HTTPS rodando em: https://${process.env.HOST}:${process.env.PORT}/`);
