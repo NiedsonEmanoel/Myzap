@@ -16,7 +16,6 @@ import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
 import { useSnackbar } from 'notistack';
-import io from '../../../services/socket.io'
 
 const drawerWidth = 240;
 
@@ -37,13 +36,22 @@ export default function Dashboard() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [tipo, setTipo] = useState('');
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [foto, setFoto] = useState('');
+
+    function clear() {
+        setNome('');
+        setEmail('');
+        setSenha('');
+        setTipo('');
+        setFoto('');
+    }
 
 
     async function handleSubmit() {
 
         if ((!nome) || (!email) || (!senha) || (!tipo)) {
-            return (alert('Preencha todos os campos!'));
+            return (enqueueSnackbar('Prencha todos os campos!', { variant: "warning" }));
         }
 
         try {
@@ -56,17 +64,18 @@ export default function Dashboard() {
             }
             console.log(data)
             const response = await api.post('/api/workers', data);
-            console.log(response);
 
             if (response.status == 200) {
-                return (alert('Cadastro efetuado!'));
+                clear();
+                return (enqueueSnackbar('Cadastro efetuado!', { variant: "success" }));
+
             }
         } catch (e) {
             if (e == 'Error: Request failed with status code 400') {
-                alert('O cadastro já existe!')
+                clear();
+                return (enqueueSnackbar('O cadastro já existe!', { variant: "warning" }))
             } else {
-                alert(e)
-                alert('Erro, tente novamente mais tarde!');
+                return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "error" }))
             }
         }
     }
@@ -76,7 +85,7 @@ export default function Dashboard() {
         <div className={classes.root}>
             <CssBaseline />
 
-            <MenuAdmin name="Cadastro de Funcionários" image={'https://avatars.githubusercontent.com/u/25508594?s=88&u=5b5d48594bf2e0858c8e35ea14ca670bed657b05&v=4'} />
+            <MenuAdmin name="Cadastro de Funcionários" />
 
             <main className={classes.content}>
 

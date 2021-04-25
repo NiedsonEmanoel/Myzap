@@ -1,3 +1,4 @@
+import React from 'react'
 import AudioPlayer from 'material-ui-audio-player';
 import Button from '@material-ui/core/Button';
 
@@ -61,7 +62,7 @@ export const TextMessage = (props) => {
             </Typography>
 
             <CardContent>
-                <Typography color="black" variant="body" display="block">
+                <Typography color="black" variant="body2" display="block">
                     {props.message}
                 </Typography>
             </CardContent>
