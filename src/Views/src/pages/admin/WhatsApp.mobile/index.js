@@ -45,6 +45,14 @@ function WhatsMobile() {
             return requestList();
         });
 
+        io.on('newMessage', (e) => {
+            return requestList();
+        });
+
+        io.on('newFile', (e) => {
+            return requestList();
+        });
+
     }, []);
 
     function isValidLast(message) {
