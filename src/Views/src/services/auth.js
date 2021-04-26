@@ -1,14 +1,24 @@
-
 export const TOKEN_KEY = '&app-token';
 export const ID_USUARIO = '&id-usuario';
 export const NOME_USUARIO = '&nome-usuario';
-export const USER_TYPE  = '&user-type';
+export const USER_TYPE = '&user-type';
 export const PROFILE_LINK = '&profile-link';
 export const MENU_PREFERENCE = '&menu-user';
 
-export const login = token => {sessionStorage.setItem(TOKEN_KEY, token)};
+export const login = token => { sessionStorage.setItem(TOKEN_KEY, token) };
 export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
-export const logout = () => {sessionStorage.clear()};
+
+export const logout = () => {
+    document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=Thu, 01-Jan-1970 00:00:01 GMT;path=/");
+    });
+
+    sessionStorage.clear()
+
+    window.location.href = '/admin/login';
+};
 
 export const setIdUsuario = id => sessionStorage.setItem(ID_USUARIO, id);
 export const getIdUsuario = () => sessionStorage.getItem(ID_USUARIO);

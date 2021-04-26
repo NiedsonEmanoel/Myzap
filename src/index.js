@@ -11,13 +11,21 @@ const cookieParser = require('cookie-parser')
 const fs = require('fs');
 const Routes = require('./Routes');
 const cors = require('cors');
-const {Limiter} = require('./Functions');
+const MailerClass = require('./Controllers/Classes/Mailer');
+
+const Mailer = new MailerClass(
+    process.env.USER_MAIL,
+    process.env.PASSWORD_MAIL,
+    process.env.SERVICE_MAIL
+);
+
+const { Limiter } = require('./Functions');
 
 const app = express();
 
-const {MongoDB} = require('./Databases');
+const { MongoDB } = require('./Databases');
 
-const {createInternal, initilizeInternal} = require('./Controllers/multisession.controller');
+const { createInternal, initilizeInternal } = require('./Controllers/multisession.controller');
 
 let serverRest;
 
@@ -82,6 +90,14 @@ io.on('connection', socket => {
     console.log(`Socket conectado ${socket.id}`);
 });
 
+exports.sendEmail = function (options) {
+    Mailer.sendEmail(options, (err, info) => {
+        if (err) {
+            console.log('Erro no envio do email.');
+        }
+    })
+}
+
 exports.emit = function (event, data) {
-    return(io.emit(event, data));
+    return (io.emit(event, data));
 }

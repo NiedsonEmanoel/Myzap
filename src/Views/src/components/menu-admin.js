@@ -5,15 +5,27 @@ import List from '@material-ui/core/List';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import logo from '../assets/img/logo-empresa.png';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import { logout } from '../services/auth'
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { getProfileLinkUsuario, setMenuPreference, getMenuPreference } from '../services/auth';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
-import { mainListItems, secondaryListItems } from './list-menu-admin';
+import { mainListItems } from './list-menu-admin';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export default function MenuAdmin(props) {
   const drawerWidth = 240;
@@ -98,77 +110,126 @@ export default function MenuAdmin(props) {
   }));
   const classes = useStyles();
   const [open, setOpen] = React.useState(getMenuPreference() == 'true');
+  const [dopen, setDOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setMenuPreference('true');
     setOpen(true);
   };
-  
+
   const handleDrawerClose = () => {
     setMenuPreference('false');
     setOpen(false);
   };
 
-    return (
-      <>
-        <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+  const handleClickOpen = () => {
+    setDOpen(true);
+  };
 
-          <Toolbar className={classes.toolbar}>
+  const handleClose = () => {
+    setDOpen(false);
+  };
 
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-            >
-              <MenuIcon />
-            </IconButton>
+  return (
+    <>
+      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
 
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              {props.name}
-            </Typography>
+        <Toolbar className={classes.toolbar}>
 
-            <IconButton color="inherit">
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+          >
+            <MenuIcon />
+          </IconButton>
 
-              <Avatar alt="User" src={getProfileLinkUsuario()} />
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            {props.name}
+          </Typography>
 
-            </IconButton>
+          <IconButton color="inherit">
 
-          </Toolbar>
+            <Avatar alt="User" src={getProfileLinkUsuario()} />
 
-        </AppBar>
+          </IconButton>
 
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-          }}
-          open={open}
-        >
-          <div className={classes.toolbarIcon}>
+        </Toolbar>
 
-            <img src={logo} />
+      </AppBar>
 
-            <IconButton onClick={handleDrawerClose}>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+        }}
+        open={open}
+      >
+        <div className={classes.toolbarIcon}>
 
-              <ChevronLeftIcon />
+          <img src={logo} />
 
-            </IconButton>
+          <IconButton onClick={handleDrawerClose}>
 
-          </div>
+            <ChevronLeftIcon />
 
-          <Divider />
+          </IconButton>
 
-          <List>
-            {mainListItems}
-          </List>
+        </div>
 
-          <Divider />
+        <Divider />
 
-          <List>{secondaryListItems}</List>
+        <List>
+          {mainListItems}
+        </List>
 
-        </Drawer>
-      </>
-    );
-  }
+        <Divider />
+
+        <List>
+          <>
+            <Dialog open={dopen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
+              <DialogTitle id="alert-dialog-title">{"Deseja sair?"}</DialogTitle>
+
+              <DialogContent>
+
+                <DialogContentText id="alert-dialog-description">
+                  Você será redirecionado para a página de Login.
+                </DialogContentText>
+
+              </DialogContent>
+
+              <DialogActions>
+
+                <Button onClick={handleClose} color="primary">
+                  Cancelar
+                </Button>
+
+                <Button onClick={() => {
+                  logout();
+                }} color="primary" autoFocus>
+                  Sair
+                </Button>
+
+              </DialogActions>
+
+            </Dialog>
+
+            <div>
+              <ListSubheader inset>Opções rápidas</ListSubheader>
+
+              <ListItem button={true} onClick={handleClickOpen}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Sair" />
+              </ListItem>
+              
+            </div>
+          </>
+        </List>
+      </Drawer>
+    </>
+  );
+}

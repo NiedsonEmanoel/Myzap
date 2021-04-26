@@ -73,21 +73,6 @@ export const mainListItems = (
 );
 
 export const secondaryListItems = (
-  <div>
-    <ListSubheader inset>Opções rápidas</ListSubheader>
-
-    <ListItem button={true} onClick={(e) => {
-      let s = window.confirm('Deseja sair?');
-      if (s) {
-        logout();
-        window.location.href = "/admin/login";
-      }
-    }}>
-      <ListItemIcon>
-        <ExitToAppIcon />
-      </ListItemIcon>
-      <ListItemText primary="Sair" />
-    </ListItem>
-
-  </div>
+  <>
+  </>
 );

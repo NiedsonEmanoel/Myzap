@@ -54,7 +54,7 @@ const Forme = (props) => {
                     <Grid xs={1} align="center">
                         <input style={{ display: "none" }} id="envi" type="submit" />
                         <label htmlFor="envi">
-                            <Fab color="primary" aria-label="upload picture" component="span" style={{marginLeft: "30%"}}>
+                            <Fab color="primary" aria-label="upload picture" component="span" style={{marginLeft: "25%"}}>
                                 <SendIcon />
                             </Fab>
                         </label>

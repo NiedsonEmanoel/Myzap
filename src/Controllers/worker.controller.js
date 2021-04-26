@@ -1,5 +1,6 @@
 const Workers = require('../Models/worker.model');
 const jwt = require("jsonwebtoken");
+const index = require('../index');
 const secret = process.env.SECRET;
 
 module.exports = {
@@ -33,6 +34,94 @@ module.exports = {
             });
         } catch (error) {
             next(error);
+        }
+    },
+
+    async createTokenToRecover(req, res, next) {
+        try {
+            const { email_usuario } = req.body;
+
+            Worker = await Workers.findOne({ email_usuario }, (err, user) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ "error": err });
+                } else if (!user) {
+                    res.status(201).json({ "message": "success" });
+                } else {
+
+                    const _id = {
+                        "id": user._id
+                    };
+
+                    let httt = process.env.useHTTPS == '0' ? 'http://' : 'https://'
+
+                    let port = process.env.PORT == '80' ? '' : process.env.PORT == '443' ? '' : `:${process.env.PORT}`;
+
+                    let stringSite;
+
+                    if (!process.env.PRODUCTION_LINK) {
+                        stringSite = `${httt}${process.env.HOST}${port}`;
+                    }else{
+                        stringSite = process.env.PRODUCTION_LINK
+                    }
+
+                    const token = jwt.sign(_id, secret + 'recuperation', {
+                        expiresIn: '300000'
+                    });
+
+                    index.sendEmail({
+                        "from": process.env.USER_MAIL,
+                        "to": email_usuario,
+                        "subject": "Recuperação de senha - MYZAP",
+                        "text": `Olá ${user.nome_usuario}, esse é um e-mail para recuperação de sua senha no MYZAP e válido por 5 minutos.\nPara prosseguir clique no link abaixo:\n\n${stringSite}/recovery.pass/${token}\nCaso você não tenha solicitado uma alteração de senha ignore esse e-mail.\n\nCopyright © Niedson Emanoel & Apoastro ${new Date().getFullYear()}`
+                    });
+                    res.status(200).json({ "message": "success" });
+                }
+            });
+
+        } catch (e) {
+            next(e)
+        }
+    },
+
+    async changePasswordByToken(req, res, next) {
+        try {
+            const { token, password } = req.body;
+            jwt.verify(token, secret + 'recuperation', async (err, decoded) => {
+                if (err) {
+                    next(err);
+                }
+
+                let Worker;
+
+                try {
+                    Worker = await Workers.findById({ _id: decoded.id }).lean();
+                } catch (e) {
+                    res.status(500).send({ "message": "outOfTime" });
+                }
+
+
+                if (!Worker) {
+                    res.status(404).send({
+                        "message": "userNotFound",
+                        "status": 0
+                    });
+                }
+                console.log(Worker.senha_usuario)
+                Worker.senha_usuario = password;
+
+
+
+                const response = await Workers.findByIdAndUpdate(decoded.id, Worker);
+
+                res.status(200).send({
+                    "message": "success",
+                    "status": 1
+                })
+
+            })
+        } catch (e) {
+            next(e);
         }
     },
 
@@ -104,14 +193,14 @@ module.exports = {
 
     async login(req, res) {
         const { email, senha } = req.body;
-        Workers.findOne({ email_usuario: email }, function (err, user) {
+        Workers.findOne({ email_usuario: email }, (err, user) => {
             if (err) {
                 console.log(err);
-                res.status(500).json({ "error":err  });
+                res.status(500).json({ "error": err });
             } else if (!user) {
                 res.status(200).json({ status: 2, "error": 'Access denied' });
             } else {
-                user.isCorrectPassword(senha, async function (err, same) {
+                user.isCorrectPassword(senha, async (err, same) => {
                     if (err) {
                         res.status(500).json({ error: err });
                     } else if (!same) {
@@ -122,10 +211,9 @@ module.exports = {
                             expiresIn: '24h'
                         })
                         res.cookie('token', token);
-                        res.status(200).json({ status: 1, auth: true, token: token, user: user});
+                        res.status(200).json({ status: 1, auth: true, token: token, user: user });
                     }
                 })
-
             }
         })
     },
@@ -135,7 +223,7 @@ module.exports = {
         if (!token) {
             res.status(200).json({ status: 401, msg: 'Access denied' });
         } else {
-            jwt.verify(token, secret,  function(err, decoded) {
+            jwt.verify(token, secret, (err, decoded) => {
                 if (err) {
                     res.status(200).json({ status: 401, msg: 'Access denied' });
                 } else {

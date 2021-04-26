@@ -64,6 +64,7 @@ export default function SignInSide() {
   const [senha, setSenha] = useState("");
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [isRecovery, setRecovery] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleClickOpen = () => {
@@ -75,12 +76,12 @@ export default function SignInSide() {
     Draw();
     setEmail('');
     setSenha('');
+    setRecovery(false);
   };
 
   const classes = useStyles();
 
-  async function Login(event) {
-    event.preventDefault();
+  async function requestLogin() {
     try {
       const response = await api.post('/api/login', { email, senha });
       if (response.data.status == 1) {
@@ -89,7 +90,7 @@ export default function SignInSide() {
         setProfileLinkUsuario(response.data.user.foto_perfil);
         setNomeUsuario(response.data.user.nome_usuario);
         setTipoUsuario(response.data.user.tipo_usuario);
-        if(!getMenuPreference()){
+        if (!getMenuPreference()) {
           setMenuPreference('true');
         }
         window.location.href = '/admin'
@@ -104,7 +105,22 @@ export default function SignInSide() {
       setMessage("Ocorreu um erro interno no servidor, tente novamente mais tarde!");
       handleClickOpen();
     }
+  }
 
+  async function requestPassword() {
+    const response = await api.post('/api/login/create.recovery', { email_usuario: email });
+    setTitle("Verifique seu email!");
+    setMessage("Se o seu e-mail estiver cadastrado no sistema você receberá um link válido por 5 minutos para redefinir a senha.");
+    handleClickOpen();
+  }
+
+  function Login(event) {
+    event.preventDefault();
+    if (isRecovery == false) {
+      requestLogin();
+    } else {
+      requestPassword();
+    }
   }
 
   function Draw() {
@@ -144,7 +160,7 @@ export default function SignInSide() {
             </Avatar>
 
             <Typography component="h1" variant="h5">
-              Login
+              {isRecovery ? 'Recuperar senha' : 'Login'}
             </Typography>
 
             <form className={classes.form} id="form" onSubmit={Login} >
@@ -164,8 +180,7 @@ export default function SignInSide() {
                 autoComplete="email"
                 autoFocus
               />
-
-              <TextField
+              {isRecovery ? <></> : <TextField
                 variant="outlined"
                 margin="normal"
                 required
@@ -177,7 +192,8 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-              />
+              />}
+
               <label htmlFor="sub">
                 <Button
                   type="submit"
@@ -186,7 +202,7 @@ export default function SignInSide() {
                   color="primary"
                   className={classes.submit}
                 >
-                  Login
+                  {isRecovery ? 'Recuperar senha' : 'Login'}
                 </Button>
               </label>
 
@@ -194,8 +210,10 @@ export default function SignInSide() {
               <Grid container>
                 <Grid item xs>
 
-                  <Link href="#" variant="body2">
-                    Esqueceu a senha?
+                  <Link onClick={() => {
+                    setRecovery(!isRecovery);
+                  }} variant="body2">
+                    {isRecovery ? 'Fazer login' : 'Esqueceu a senha?'}
                   </Link>
 
                 </Grid>
