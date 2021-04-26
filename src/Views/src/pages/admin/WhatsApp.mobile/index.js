@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import api from '../../../services/api';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
 import io from '../../../services/socket.io';
 
 import {
     Grid,
-    Tab,
-    Tabs,
+    IconButton,
     AppBar,
     Typography,
     Toolbar,
@@ -34,6 +34,15 @@ function WhatsMobile() {
 
     useEffect(() => {
         requestList();
+
+        io.on('newAttendace', (e) => {
+            return requestList();
+        });
+
+        io.on('userChanged', (e) => {
+            return requestList();
+        });
+
     }, []);
 
     function isValidLast(message) {
@@ -53,7 +62,7 @@ function WhatsMobile() {
     function getLeftList() {
         return (list.map(item => (
             <>
-                <Link to={'/admin/whatsapp/' + item._id} style={{textDecoration: "none"}}>
+                <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none" }}>
                     <ListItem button={false} >
                         <Avatar src={item.profileUrl}></Avatar>
                         <ListItemText style={{
@@ -76,6 +85,13 @@ function WhatsMobile() {
                         <Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
                             {`WhatsApp`}
                         </Typography>
+
+                        <Link to="/admin/" style={{ textDecoration: "none" }}>
+                            <IconButton >
+                                <ArrowBackIcon />
+                            </IconButton>
+                        </Link>
+
                     </Toolbar>
                 </AppBar>
             </div>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import api from '../../../services/api';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { useParams } from 'react-router-dom';
 import useStyles from './style';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'react-router-dom';
+import Forme from '../../../components/form';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import CancelIcon from '@material-ui/icons/Cancel';
 import './fonts.css'
@@ -18,21 +20,17 @@ import io from '../../../services/socket.io';
 
 import {
     Grid,
-    Tab,
-    Tabs,
-    AppBar,
-    Typography,
-    Toolbar,
-    ListItem,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    DialogTitle,
+    Button,
     CardContent,
     IconButton,
-    ListItemText,
-    Divider,
     Avatar,
     CardHeader,
     Paper,
-    GridList,
-    List
+    GridList
 } from '@material-ui/core';
 
 import { getNomeUsuario } from '../../../services/auth';
@@ -41,13 +39,36 @@ function UserChat() {
     const [contact, setContact] = useState({});
     const { idChat } = useParams();
     const [messagesList, setMessagesList] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [open, setOpen] = useState(false);
     const classes = useStyles();
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
 
     useEffect(() => {
         async function loadClient() {
             let response = await api.get('/api/clients/details/' + idChat);
             let client = response.data.Client[0];
+
+            if (client.inAttendace == false) {
+                window.location.href = '/admin/whatsapp';
+            }
+
             setContact(client)
         }
         loadClient();
@@ -61,6 +82,21 @@ function UserChat() {
     }
 
     useEffect(getMessages, [contact]);
+
+    useEffect(() => {
+        io.on('newMessage', (e) => {
+            if (e.from == contact.chatId) {
+                getMessages();
+            }
+        });
+
+        io.on('newFile', (e) => {
+            if (e.from == contact.chatId) {
+                getMessages();
+                setOpen(false);
+            }
+        });
+    }, [contact]);
 
     function getRightList() {
         return (
@@ -109,6 +145,7 @@ function UserChat() {
                                 let classMessage = message.isServer == true ? classes.sent : classes.received;
                                 return (
                                     <AudioMessage
+                                        a={true}
                                         classe={classMessage}
                                         src={message.fileLink}
                                         date={new Date(message.createdAt).toLocaleString('pt-BR')}
@@ -173,6 +210,44 @@ function UserChat() {
 
     return (
         <>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Enviar Arquivo</DialogTitle>
+                <DialogContent>
+                    <form>
+                        <input
+                            type="file"
+                            onChange={(e) => setSelectedFile(e.target.files[0])}
+                        />
+                    </form>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={() => {
+                        console.log(selectedFile)
+                        getBase64(selectedFile).then(async (data) => {
+                            let type = selectedFile.type.split('/', 1);
+                            let ext = selectedFile.type.split('/', 2);
+                            ext = ext[1];
+                            if (type == 'aplication') {
+                                type = 'document'
+                            }
+                            let dados = {
+                                "base64": data,
+                                "type": type,
+                                "numbers": contact.chatId,
+                                "ext": ext,
+                                "name": selectedFile.name
+                            };
+
+                            await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
+                        })
+                    }} color="primary">
+                        Enviar
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Grid container>
                 <Grid item xs={12}>
 
@@ -183,12 +258,16 @@ function UserChat() {
                             }
                             action={
                                 <>
-                                
+
                                     <Link to="/admin/whatsapp" style={{ textDecoration: "none" }}>
                                         <IconButton >
                                             <ArrowBackIcon />
                                         </IconButton>
                                     </Link>
+
+                                    <IconButton onClick={handleClickOpen}>
+                                        <AttachFileIcon />
+                                    </IconButton>
 
                                     <IconButton onClick={async () => {
                                         let data = {
@@ -215,7 +294,7 @@ function UserChat() {
 
                         <GridList cols={1} style={{
                             marginTop: "0%",
-                            height: "75vh",
+                            height: "68vh",
                             backgroundImage: 'url(/wall.png)',
                             backgroundRepeat: 'repeat-y',
                             backgroundSize: 'cover',
@@ -224,7 +303,7 @@ function UserChat() {
                             <CardContent style={{
                                 display: "flex",
                                 flexDirection: "column-reverse",
-                                height: "75vh",
+                                height: "68vh",
                                 flexGrow: 1,
                                 width: "100%",
                                 overflow: 'auto',
@@ -238,6 +317,11 @@ function UserChat() {
                     </Paper>
                 </Grid>
             </Grid>
+
+            <div style={{ marginTop: "5%" }}>
+                <Forme number={contact} worker={getNomeUsuario()} />
+            </div>
+
         </>
     );
 }

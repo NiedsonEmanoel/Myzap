@@ -24,7 +24,7 @@ receivedAudio: {
 sentImg: {
     width: "48%",
     marginTop: "5px",
-    maxHeight: "500px",
+    maxHeight: "50px",
     maxWidth: "500px",
     marginBottom: "5px",
     marginLeft: "50%",

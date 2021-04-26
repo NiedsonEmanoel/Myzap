@@ -31,7 +31,7 @@ export const AudioMessage = (props) => {
 
 export const VideoMessage = (props) => {
     return (
-        <Card className={props.classe}>
+        <Card className={props.classe} style={{maxHeight: "400px"}}>
             <CardContent style={{}}>
                 <video style={{ height: "100%", width: "100%" }} src={props.src} controls="true"></video>
             </CardContent>
@@ -44,8 +44,8 @@ export const VideoMessage = (props) => {
 
 export const ImageMessage = (props) => {
     return (
-        <Card className={props.classe}>
-            <img style={{ height: "100%", width: "100%", }} src={props.src}></img>
+        <Card className={props.classe} style={{maxHeight: "400px"}} onClick={()=>{window.open(props.src, '_blank');}}>
+            <img style={{ height: "100%", width: "100%"}} src={props.src}></img>
             <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
                 {props.date}
             </Typography>
