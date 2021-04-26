@@ -3,10 +3,12 @@ import api from '../../../services/api';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
+import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
 
 import {
     Grid,
+    Box,
     IconButton,
     AppBar,
     Typography,
@@ -124,6 +126,9 @@ function WhatsMobile() {
 
                 </Grid>
             </Grid>
+            <Box pt={1}>
+                <Copyright />
+            </Box>
         </>
     );
 }

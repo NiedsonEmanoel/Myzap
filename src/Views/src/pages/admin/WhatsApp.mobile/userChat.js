@@ -3,6 +3,7 @@ import api from '../../../services/api';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { useParams } from 'react-router-dom';
 import useStyles from './style';
+import Copyright from '../../../components/footer';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Link } from 'react-router-dom';
 import Forme from '../../../components/form';
@@ -21,6 +22,7 @@ import io from '../../../services/socket.io';
 import {
     Grid,
     Dialog,
+    Box,
     DialogContent,
     DialogActions,
     DialogTitle,
@@ -276,12 +278,10 @@ function UserChat() {
                                         if (contact.firstAttendace !== undefined) {
                                             if (contact.firstAttendace == false) {
                                                 await api.put('/api/clients/' + contact._id, data);
-                                                setContact({})
+                                                window.location.href = '/admin/whatsapp';
                                             } else {
                                                 await api.patch('/api/clients/first/?_id=' + contact._id, data);
-                                                let tempCont = contact;
-                                                tempCont.firstAttendace = !tempCont.firstAttendace;
-                                                setContact(tempCont)
+                                                window.location.reload();
                                             }
                                         }
                                     }}>
@@ -322,6 +322,9 @@ function UserChat() {
                 <Forme number={contact} worker={getNomeUsuario()} />
             </div>
 
+            <Box pt={3}>
+                <Copyright />
+            </Box>
         </>
     );
 }
