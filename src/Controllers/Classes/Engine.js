@@ -160,8 +160,11 @@ module.exports = class {
             if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
-                    await this.Client.reply(message.from, `Olá ${auxFunctions.Greetings()}, você ainda não está cadastrado em nosso sistema.`, message.id.toString());
-                    await this.Client.sendText(message.from, 'Para podermos lhe atender com uma experiência completa, digite seu nome e sobrenome.');
+                    const messageOne = process.env.MESSAGE_ONE_USER_NOT_FOUND.replace('%GREETING%', auxFunctions.Greetings());
+                    const messageTwo = process.env.MESSAGE_TWO_USER_NOT_FOUND;
+                    
+                    await this.Client.reply(message.from, messageOne, message.id.toString());
+                    await this.Client.sendText(message.from, MESSAGE_TWO_USER_NOT_FOUND);
                     return;
                 } else {
                     if (message.type === 'chat') {
