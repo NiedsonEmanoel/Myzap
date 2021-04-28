@@ -163,7 +163,7 @@ export default function WhatsApp() {
         if (!queryText) {
             results = list
         } else {
-            results = list.filter(item => item.fullName.toLowerCase().indexOf(queryText) !== -1)
+            results = list.filter(item => item.fullName.toLowerCase().indexOf(queryText.toLowerCase()) !== -1)
         }
         setResultList(results);
     }
@@ -331,12 +331,12 @@ export default function WhatsApp() {
                                                 style={{
                                                     display: 'flex',
                                                     width: "100%",
-                                                    marginBottom: "1%"
+                                                    marginBottom: "5px"
                                                 }}>
 
                                                 <InputBase
                                                     className={classes.input}
-                                                    placeholder="Pesquisar por conversa da lista"
+                                                    placeholder="Pesquisar por contato"
                                                     value={queryText}
                                                     onChangeCapture={(e) => {
                                                         if (!e.target.value) {
@@ -347,7 +347,7 @@ export default function WhatsApp() {
                                                         }
 
                                                     }}
-                                                    inputProps={{ 'aria-label': 'Pesquisar por conversa da lista' }}
+                                                    inputProps={{ 'aria-label': 'Pesquisar por contato' }}
                                                     style={{
                                                         width: "100%",
                                                         marginLeft: "20px"
