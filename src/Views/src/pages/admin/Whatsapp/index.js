@@ -22,6 +22,11 @@ import api from '../../../services/api'
 import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth';
 import useStyles from './style';
 
+import InputBase from '@material-ui/core/InputBase';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import DirectionsIcon from '@material-ui/icons/Directions';
+
 import {
     Paper,
     Grid,
@@ -48,6 +53,8 @@ export default function WhatsApp() {
     const [contact, setContact] = useState({});
     const [worker, setWorker] = useState("");
     const [list, setList] = useState([]);
+    const [resultList, setResultList] = useState([]);
+    const [queryText, setQueryText] = useState('');
     const [messagesList, setMessagesList] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
@@ -69,13 +76,6 @@ export default function WhatsApp() {
             reader.onerror = error => reject(error);
         });
     }
-
-    useEffect(() => {
-        if (window.screen.width <= 700) {
-            if (window.screen.height <= 500)
-                window.location.href = '/admin/whatsapp/mobile';
-        }
-    }, [contact, list, messagesList, selectedFile, open])
 
 
     useEffect(() => {
@@ -110,8 +110,10 @@ export default function WhatsApp() {
     async function upgrade() {
         setWorker(getNomeUsuario());
         const response = await api.get('/api/clients/attendance');
+
         if (response) {
             setList(response.data.Client);
+            setResultList(response.data.Client)
             if (response.data.Client[0] !== undefined) {
                 console.log('ok')
             } else {
@@ -119,12 +121,17 @@ export default function WhatsApp() {
             }
         } else {
             setList([]);
+            setResultList([])
         }
     }
 
     async function uptodate() {
         const response = await api.get('/api/clients/attendance');
         setList(response.data.Client);
+
+        if (queryText == '') {
+            setResultList(response.data.Client);
+        }
     }
 
     async function getMessages() {
@@ -150,15 +157,19 @@ export default function WhatsApp() {
         }
     }
 
+    function handleOnQuery(event) {
+        event.preventDefault();
+        let results;
+        if (!queryText) {
+            results = list
+        } else {
+            results = list.filter(item => item.fullName.toLowerCase().indexOf(queryText) !== -1)
+        }
+        setResultList(results);
+    }
 
     function getLeftList() {
-        let ArrLis = [];
-        for (let key in list) {
-            if ((list[key].attendaceBy == "aw") || (list[key].attendaceBy == worker)) {
-                ArrLis.push(list[key]);
-            }
-        }
-        return (list.map(item => (
+        return (resultList.map(item => (
             <>
                 <ListItem button={true} onClick={(e) => { setContact(item) }}>
                     <Avatar src={item.profileUrl}></Avatar>
@@ -304,7 +315,7 @@ export default function WhatsApp() {
                                     <Grid container>
                                         <Grid item xs={3}>
 
-                                            <Paper elevation={3} style={{ marginBottom: "2%" }}>
+                                            <Paper elevation={3} style={{ marginBottom: "1%" }}>
                                                 <CardHeader
                                                     className={classes.rightBorder}
                                                     avatar={
@@ -312,6 +323,40 @@ export default function WhatsApp() {
                                                     }
                                                     title={getNomeUsuario()}
                                                 />
+                                            </Paper>
+
+                                            <Paper component="form"
+                                                onChange={handleOnQuery}
+                                                onSubmit={handleOnQuery}
+                                                style={{
+                                                    display: 'flex',
+                                                    width: "100%",
+                                                    marginBottom: "1%"
+                                                }}>
+
+                                                <InputBase
+                                                    className={classes.input}
+                                                    placeholder="Pesquisar por conversa da lista"
+                                                    value={queryText}
+                                                    onChangeCapture={(e) => {
+                                                        if (!e.target.value) {
+                                                            setQueryText('');
+                                                            setResultList(list)
+                                                        } else {
+                                                            setQueryText(e.target.value)
+                                                        }
+
+                                                    }}
+                                                    inputProps={{ 'aria-label': 'Pesquisar por conversa da lista' }}
+                                                    style={{
+                                                        width: "100%",
+                                                        marginLeft: "20px"
+                                                    }}
+                                                />
+                                                <IconButton type="submit" className={classes.iconButton} aria-label="search">
+                                                    <SearchIcon />
+                                                </IconButton>
+                                                <Divider className={classes.divider} orientation="vertical" />
                                             </Paper>
 
                                             <Paper elevation={2}>
