@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import SendIcon from "@material-ui/icons/Send";
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import api from '../services/api'
 
@@ -17,14 +19,15 @@ const Forme = (props) => {
 
                 if (props.number.chatId) {
                     if (text) {
+                        let message = `${text} `;
                         let data = {
                             numbers: props.number.chatId.replace('@c.us', ''),
                             worker: props.worker,
-                            messages: text
+                            messages: message
                         }
-
-                        await api.post('/api/whatsapp/message?id=0', data);
+                        
                         setText('');
+                        await api.post('/api/whatsapp/message?id=0', data);
                     }
                 }
             }}>
@@ -54,7 +57,7 @@ const Forme = (props) => {
                     <Grid xs={1} align="center">
                         <input style={{ display: "none" }} id="envi" type="submit" />
                         <label htmlFor="envi">
-                            <Fab color="primary" aria-label="upload picture" component="span" style={{marginLeft: "25%"}}>
+                            <Fab color="primary" aria-label="upload picture" component="span" style={{ marginLeft: "25%" }}>
                                 <SendIcon />
                             </Fab>
                         </label>

@@ -39,9 +39,9 @@ module.exports = {
 
     async createTokenToRecover(req, res, next) {
         try {
-            const { email_usuario } = req.body;
+            const { email_usuario, server_location } = req.body;
 
-            Worker = await Workers.findOne({ email_usuario }, (err, user) => {
+            let Worker = await Workers.findOne({ email_usuario }, (err, user) => {
                 if (err) {
                     console.log(err);
                     res.status(500).json({ "error": err });
@@ -53,18 +53,6 @@ module.exports = {
                         "id": user._id
                     };
 
-                    let httt = process.env.useHTTPS == '0' ? 'http://' : 'https://'
-
-                    let port = process.env.PORT == '80' ? '' : process.env.PORT == '443' ? '' : `:${process.env.PORT}`;
-
-                    let stringSite;
-
-                    if (!process.env.PRODUCTION_LINK) {
-                        stringSite = `${httt}${process.env.HOST}${port}`;
-                    }else{
-                        stringSite = process.env.PRODUCTION_LINK
-                    }
-
                     const token = jwt.sign(_id, secret + 'recuperation', {
                         expiresIn: '300000'
                     });
@@ -73,7 +61,7 @@ module.exports = {
                         "from": process.env.USER_MAIL,
                         "to": email_usuario,
                         "subject": "Recuperação de senha - MYZAP",
-                        "text": `Olá ${user.nome_usuario}, esse é um e-mail para recuperação de sua senha no MYZAP e válido por 5 minutos.\nPara prosseguir clique no link abaixo:\n\n${stringSite}/recovery.pass/${token}\nCaso você não tenha solicitado uma alteração de senha ignore esse e-mail.\n\nCopyright © Niedson Emanoel & Apoastro ${new Date().getFullYear()}`
+                        "text": `Olá ${user.nome_usuario}, esse é um e-mail para recuperação de sua senha no MYZAP e válido por 5 minutos.\nPara prosseguir clique no link abaixo:\n\n${server_location}/recovery.pass/${token}\nCaso você não tenha solicitado uma alteração de senha ignore esse e-mail.\n\nCopyright © Niedson Emanoel & Apoastro ${new Date().getFullYear()}`
                     });
                     res.status(200).json({ "message": "success" });
                 }
@@ -107,10 +95,8 @@ module.exports = {
                         "status": 0
                     });
                 }
-                console.log(Worker.senha_usuario)
+
                 Worker.senha_usuario = password;
-
-
 
                 const response = await Workers.findByIdAndUpdate(decoded.id, Worker);
 

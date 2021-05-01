@@ -202,9 +202,10 @@ export default function UsuariosListagem() {
               <ButtonGroup size="small" aria-label="small button group">
                 <Button variant="contained" color="primary" onClick={async () => {
                   let data = {
-                    worker: "aw",
+                    _id: row._id,
+                    worker: "no-one",
                   }
-                  await api.put('/api/clients/' + row._id, data);
+                  await api.patch('/api/clients/', data);
                 }}>{Attendace(row.inAttendace)}</Button>
 
                 <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />

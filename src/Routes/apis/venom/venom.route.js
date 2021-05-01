@@ -13,6 +13,8 @@ Router.get('/sessions.details/:id', jwtPasser, Venom.verifySession);// sessions.
 Router.post('/sessions', jwtPasser, trustID_SESSION, Venom.initializeSession); // /sessions?id=1
 Router.delete('/sessions', jwtPasser, trustID, Venom.closeSession); // /sessions?id=1
 
+Router.delete('/chats/:chatId', Venom.deleteChatMessages); // /chats/558796845?id=1
+
 Router.get('/chats', jwtPasser, trustID, Venom.receberChatsNovos);// /?id=1
 Router.get('/chats/:number', jwtPasser, trustID, Venom.todosAsMensagensDoNumero); // /558796574896id=1&includeMe=true
 

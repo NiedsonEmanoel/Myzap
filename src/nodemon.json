@@ -1,7 +1,7 @@
 {
     "ignore": [
         "tokens/*",
-        "views/src/"
+        "views/*"
     ],
     "delay": "150"
 }

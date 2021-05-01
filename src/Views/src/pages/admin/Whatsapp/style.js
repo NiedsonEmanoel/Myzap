@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 999,
         position: "relative"
     },
+    drawerPaper: {
+        width: 300
+    },
     toolbar: {
         paddingRight: 24, // keep right padding when drawer closed
     },

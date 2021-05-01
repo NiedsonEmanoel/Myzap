@@ -4,12 +4,15 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import PanToolIcon from '@material-ui/icons/PanTool';
-import CancelIcon from '@material-ui/icons/Cancel';
+
+import Typography from "@material-ui/core/Typography";
+import PersonPinIcon from '@material-ui/icons/PersonPin';
 import Copyright from '../../../components/footer';
+import DoneIcon from '@material-ui/icons/Done';
+
 import GridList from '@material-ui/core/GridList';
 import Button from '@material-ui/core/Button';
 import Forme from '../../../components/form'
-import Fab from "@material-ui/core/Fab";
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import io from '../../../services/socket.io';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -19,18 +22,20 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
-import { getNomeUsuario, getProfileLinkUsuario } from '../../../services/auth';
+import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario } from '../../../services/auth';
 import useStyles from './style';
 
 import InputBase from '@material-ui/core/InputBase';
-import MenuIcon from '@material-ui/icons/Menu';
+import SwapHorizontalCircleIcon from '@material-ui/icons/SwapHorizontalCircle';
+import DeleteIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
 
 import {
     Paper,
     Grid,
     Card,
+    DialogContentText,
+    Chip,
     CardHeader,
     CardContent,
     Avatar,
@@ -58,6 +63,10 @@ export default function WhatsApp() {
     const [messagesList, setMessagesList] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
+    const [openExclude, setOpenExclude] = useState(false)
+
+    const [title, setTitle] = useState('');
+    const [message, setMessage] = useState('');
 
     const handleClickOpen = () => {
         if (contact.chatId)
@@ -66,6 +75,7 @@ export default function WhatsApp() {
 
     const handleClose = () => {
         setOpen(false);
+        setOpenExclude(false)
     };
 
     function getBase64(file) {
@@ -110,10 +120,26 @@ export default function WhatsApp() {
     async function upgrade() {
         setWorker(getNomeUsuario());
         const response = await api.get('/api/clients/attendance');
+        const arrResponse = response.data.Client;
+        let listA = [];
+
+        for (let key in arrResponse) {
+            if ((getTipoUsuario() != '3')&&(getTipoUsuario() != '2')) {
+                if (arrResponse[key].WorkerAttendance == 'no-one') {
+                    listA.push(arrResponse[key]);
+                } else {
+                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                        listA.push(arrResponse[key]);
+                    }
+                }
+            } else {
+                listA = arrResponse;
+            }
+        }
 
         if (response) {
-            setList(response.data.Client);
-            setResultList(response.data.Client)
+            setList(listA);
+            setResultList(listA)
             if (response.data.Client[0] !== undefined) {
                 console.log('ok')
             } else {
@@ -127,10 +153,27 @@ export default function WhatsApp() {
 
     async function uptodate() {
         const response = await api.get('/api/clients/attendance');
-        setList(response.data.Client);
+        const arrResponse = response.data.Client;
+        let listA = [];
+
+        for (let key in arrResponse) {
+            if (getTipoUsuario() != '3') {
+                if (arrResponse[key].WorkerAttendance == 'no-one') {
+                    listA.push(arrResponse[key]);
+                } else {
+                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                        listA.push(arrResponse[key]);
+                    }
+                }
+            } else {
+                listA = arrResponse;
+            }
+        }
+
+        setList(listA);
 
         if (queryText == '') {
-            setResultList(response.data.Client);
+            setResultList(listA);
         }
     }
 
@@ -315,6 +358,37 @@ export default function WhatsApp() {
                                     <Grid container>
                                         <Grid item xs={3}>
 
+                                            <Dialog open={openExclude} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
+                                                <DialogTitle id="alert-dialog-title">{"Deseja excluir essa conversa?"}</DialogTitle>
+
+                                                <DialogContent>
+
+                                                    <DialogContentText id="alert-dialog-description">
+                                                        Não será possível desfazer essa ação.
+                                                    </DialogContentText>
+
+                                                </DialogContent>
+
+                                                <DialogActions>
+
+                                                    <Button onClick={handleClose} color="primary">
+                                                        Sair
+                                                    </Button>
+
+                                                    <Button onClick={async () => {
+                                                        if (contact.chatId) {
+                                                            await api.delete('/api/messages/' + contact.chatId);
+                                                            await api.delete('/api/whatsapp/chats/' + contact.chatId + '?id=0');
+                                                            handleClose();
+                                                        }
+                                                    }} color="primary" autoFocus>
+                                                        Excluir
+                                                    </Button>
+
+                                                </DialogActions>
+
+                                            </Dialog>
+
                                             <Paper elevation={3} style={{ marginBottom: "1%" }}>
                                                 <CardHeader
                                                     className={classes.rightBorder}
@@ -367,6 +441,17 @@ export default function WhatsApp() {
                                                     flexWrap: 'nowrap'
                                                 }} cols={1} cellHeight={((window.innerHeight / 4.50) * list.length)}>
                                                     <List className={classes.list}>
+
+                                                        {/*
+                                                            <ListItem button={true} onClick={(e) => { console.log('a')}}>
+                                                                <Avatar src={'/attendance.png'}></Avatar>
+                                                                <ListItemText className={classes.list} primary={'Chat Atendentes'} secondary={'last message'} />
+                                                                <PersonPinIcon/>
+                                                             </ListItem>
+                                                        
+                                                             <Divider variant="inset" component="li" /> 
+                                                        */}
+
                                                         {getLeftList()}
                                                     </List>
                                                 </GridList>
@@ -381,26 +466,53 @@ export default function WhatsApp() {
                                                         <Avatar aria-label="Recipe" className={classes.avatar} src={contact.profileUrl}></Avatar>
                                                     }
                                                     action={
-                                                        <IconButton onClick={async () => {
-                                                            let data = {
-                                                                "worker": worker
-                                                            }
-                                                            if (contact.firstAttendace !== undefined) {
-                                                                if (contact.firstAttendace == false) {
-                                                                    await api.put('/api/clients/' + contact._id, data);
-                                                                    setContact({})
-                                                                } else {
-                                                                    await api.patch('/api/clients/first/?_id=' + contact._id, data);
-                                                                    let tempCont = contact;
-                                                                    tempCont.firstAttendace = !tempCont.firstAttendace;
-                                                                    setContact(tempCont)
-                                                                }
-                                                            }
-                                                        }}>
-                                                            {contact.firstAttendace ? <AssignmentTurnedInIcon /> : <CancelIcon />}
-                                                        </IconButton>
+                                                        contact.WorkerAttendance != undefined ? <>
+                                                            <IconButton>
+                                                                <SwapHorizontalCircleIcon />
+                                                            </IconButton>
+
+                                                            {contact.firstAttendace ? <></> : <IconButton onClick={handleClickOpen}>
+                                                                <AttachFileIcon />
+                                                            </IconButton>}
+
+                                                            {contact.firstAttendace ? <></> : <IconButton onClick={()=>{setOpenExclude(true)}}>
+                                                                <DeleteIcon />
+                                                            </IconButton>}
+
+                                                            <Chip
+                                                                icon={contact.firstAttendace ? <AssignmentTurnedInIcon /> : <DoneIcon />}
+                                                                label={contact.firstAttendace ? "Atender" : "Finalizar"}
+                                                                onClick={async () => {
+                                                                    let data = {
+                                                                        "worker": worker
+                                                                    }
+                                                                    if (contact.firstAttendace !== undefined) {
+                                                                        if (contact.firstAttendace == false) {
+                                                                            await api.put('/api/clients/' + contact._id, data);
+                                                                            setContact({})
+                                                                        } else {
+                                                                            await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                                                                            let tempCont = contact;
+                                                                            tempCont.firstAttendace = !tempCont.firstAttendace;
+                                                                            setContact(tempCont)
+                                                                        }
+                                                                    }
+                                                                }}
+                                                                clickable
+                                                            />
+                                                        </> : <></>
+
                                                     }
                                                     title={contact.fullName}
+                                                    subheader={
+                                                        contact.WorkerAttendance != undefined ?
+                                                            contact.WorkerAttendance != 'no-one' ?
+                                                                `Sendo atendido por: ${contact.WorkerAttendance}`
+                                                                :
+                                                                ""
+                                                            :
+                                                            "Selecione alguma conversa."
+                                                    }
                                                 />
                                             </Paper>
 
@@ -452,24 +564,10 @@ export default function WhatsApp() {
                                                     </Button>
                                                 </DialogActions>
                                             </Dialog>
-                                            <Grid
-                                                container
-                                                direction="row"
-                                                justify="space-evenly"
-                                                alignItems="center"
-                                            >
 
-                                                {contact.firstAttendace ? <></> : <Grid style={{ paddingLeft: "5px", marginTop: '1%' }} container item xs={1}>
-                                                    <Fab style={{ marginLeft: 0, paddingLeft: 0 }} color="primary" aria-label="upload picture" component="span" onClick={handleClickOpen}  >
-                                                        <AttachFileIcon />
-                                                    </Fab>
-                                                </Grid>}
-
-                                                <Grid style={{ margin: "0 0 0 0" }} item xs={11}>
-                                                    <Forme number={contact} worker={worker} />
-                                                </Grid>
-
-                                            </Grid>
+                                            <div style={{ width: "100%" }}>
+                                                <Forme number={contact} worker={worker} />
+                                            </div>
 
                                         </Grid>
 

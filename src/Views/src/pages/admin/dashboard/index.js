@@ -150,7 +150,7 @@ export default function Dashboard() {
                 }}>
 
                   <Typography component="h2" variant="h6" color="primary" gutterBottom style={{paddingBottom: "6%", marginTop: 0}}>
-                    {"Atendimentos"}
+                    {"Em atendimento"}
                   </Typography>
 
                   <Typography component="p" variant="h3" >

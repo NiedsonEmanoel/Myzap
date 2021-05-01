@@ -4,5 +4,6 @@ const Router = express.Router();
 
 Router.get('/', messageController.index);
 Router.get('/:chatId', messageController.details);
+Router.delete('/:chatId', messageController.deleteManyMessages)
 
 module.exports = Router;

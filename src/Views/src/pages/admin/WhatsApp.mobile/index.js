@@ -5,7 +5,7 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-
+import {getTipoUsuario} from '../../../services/auth'
 
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -46,17 +46,51 @@ function WhatsMobile() {
 
     async function requestList() {
         const response = await api.get('/api/clients/attendance');
-        setList(response.data.Client);
+        const arrResponse = response.data.Client;
+        let listA = [];
+
+        for (let key in arrResponse) {
+            if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
+                if (arrResponse[key].WorkerAttendance == 'no-one') {
+                    listA.push(arrResponse[key]);
+                } else {
+                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                        listA.push(arrResponse[key]);
+                    }
+                }
+            } else {
+                listA = arrResponse;
+            }
+        }
+
+        setList(listA);
 
         if (queryText == '') {
-            setResultList(response.data.Client);
+            setResultList(listA);
         }
     }
 
     async function initList() {
         const response = await api.get('/api/clients/attendance');
-        setList(response.data.Client);
-        setResultList(response.data.Client);
+        const arrResponse = response.data.Client;
+        let listA = [];
+
+        for (let key in arrResponse) {
+            if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
+                if (arrResponse[key].WorkerAttendance == 'no-one') {
+                    listA.push(arrResponse[key]);
+                } else {
+                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                        listA.push(arrResponse[key]);
+                    }
+                }
+            } else {
+                listA = arrResponse;
+            }
+        }
+
+        setList(listA);
+        setResultList(listA);
     }
 
     useEffect(() => {

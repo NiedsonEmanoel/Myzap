@@ -1,6 +1,5 @@
 const Messages = require('../Models/messages.model');
-const Clients = require('../Models/client.model');
-const Client = require('../Models/client.model');
+const io = require('../index')
 
 module.exports = {
     async index(req, res, next) {
@@ -35,6 +34,35 @@ module.exports = {
             });
         } catch (error) {
             next(error);
+        }
+    },
+
+    async deleteManyMessages(req, res, next) {
+        try {
+            let { chatId } = req.params;
+            chatId = chatId.replace('@c.us', '');
+            chatId = chatId + '@c.us';
+
+            if (!chatId) {
+                const error = new Error('_ID not specified');
+                error.status = 400;
+                next(error);
+            }
+
+            await Messages.deleteMany({ chatId }, (err, data)=>{
+                if(err){
+                    next(err);
+                }
+
+                io.emit('newMessage', { "from": chatId });
+                
+                res.status(200).send({
+                    data,
+                    "message": "success"
+                });
+            });
+        } catch (e) {
+            next(e);
         }
     },
 

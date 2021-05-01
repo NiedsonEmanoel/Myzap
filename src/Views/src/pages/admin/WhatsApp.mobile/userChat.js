@@ -250,7 +250,7 @@ function UserChat() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Grid container>
+            <Grid container style={{ overflow: 'hidden' }}>
                 <Grid item xs={12}>
 
                     <Paper elevation={5} style={{ width: "100%" }}>
@@ -290,11 +290,20 @@ function UserChat() {
                                 </>
                             }
                             title={contact.fullName}
+                            subheader={
+                                contact.WorkerAttendance != undefined ?
+                                    contact.WorkerAttendance != 'no-one' ?
+                                        `Sendo atendido por: ${contact.WorkerAttendance}`
+                                        :
+                                        ""
+                                    :
+                                    "Selecione alguma conversa."
+                            }
                         />
-
                         <GridList cols={1} style={{
                             marginTop: "0%",
                             height: "68vh",
+                            overflow: 'hidden',
                             backgroundImage: 'url(/wall.png)',
                             backgroundRepeat: 'repeat-y',
                             backgroundSize: 'cover',

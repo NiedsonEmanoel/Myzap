@@ -108,7 +108,11 @@ export default function SignInSide() {
   }
 
   async function requestPassword() {
-    const response = await api.post('/api/login/create.recovery', { email_usuario: email });
+    let port = window.location.port == '' ? '' : ':' + window.location.port;
+
+    let proxy = `${window.location.protocol}//${window.location.hostname}${port}`
+
+    const response = await api.post('/api/login/create.recovery', { email_usuario: email, server_location: proxy});
     setTitle("Verifique seu email!");
     setMessage("Se o seu e-mail estiver cadastrado no sistema você receberá um link válido por 5 minutos para redefinir a senha.");
     handleClickOpen();

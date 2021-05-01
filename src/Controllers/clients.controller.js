@@ -5,32 +5,6 @@ const io = require('../index');
 const fs = require('fs');
 //const interControl = require('./multisession.controller')
 module.exports = {
-
-    async SwitchFist(req, res) {
-        async function switchAttendance(user, worker) {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
-
-            firstAttendace = false;
-
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-
-            let Client = await Clients.findByIdAndUpdate({ _id }, data, { new: true });
-
-            return inAttendace;
-        }
-
-        const { _id } = req.query;
-        console.log(_id)
-        const worker = req.body.worker;
-        const user = await Clients.findOne({ _id }).lean();
-
-        await switchAttendance(user, worker);
-        io.emit('userChanged');
-        return res.status(200).send({
-            "message": "ok"
-        });
-    },
-
     async index(req, res, next) {
         try {
             let Client = await Clients.find();
@@ -41,6 +15,55 @@ module.exports = {
         } catch (error) {
             next(error);
         }
+    },
+
+    async SwitchFist(req, res) {
+        const { _id } = req.query;
+        const worker = req.body.worker;
+
+        let userChanges = await Clients.findById({ _id }).lean();
+
+        userChanges.firstAttendace = false;
+        userChanges.WorkerAttendance = worker;
+
+        let Client = Clients.findByIdAndUpdate(_id, userChanges, (err, data) => {
+            if (err) {
+                next(err);
+            }
+
+            io.emit('userChanged');
+
+            return res.status(200).send({
+                data,
+                "message": "ok"
+            });
+
+        });
+
+    },
+
+    async togle(req, res, next) {
+
+        const { _id, worker } = req.body;
+
+        let clientChanges = await Clients.findById(_id).lean();
+
+        clientChanges.WorkerAttendance = worker || 'no-one';
+        clientChanges.inAttendace = !clientChanges.inAttendace;
+
+        let finalClientes = await Clients.findByIdAndUpdate(_id, clientChanges, (err, data) => {
+            if (err) {
+                next(err)
+            }
+            
+            io.emit('userChanged');
+
+            return res.status(200).send({
+                data,
+                "message": "ok"
+            });
+
+        })
     },
 
     async details(req, res, next) {
@@ -200,22 +223,30 @@ module.exports = {
         }
     },
 
-    async switchAt(req, res) {
+    async switchAt(req, res, next) {
+        try {
+            const { _id } = req.params;
+            let userChanges = await Clients.findById({ _id }).lean();
 
-        async function switchAttendance(user) {
-            let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
-            inAttendace = inAttendace === true ? false : true;
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findByIdAndUpdate({ _id }, data);
-            return inAttendace;
+            userChanges.inAttendace = false;
+            userChanges.firstAttendace = true;
+            userChanges.WorkerAttendance = 'no-one';
+
+            let Client = Clients.findByIdAndUpdate(_id, userChanges, (err, data) => {
+                if (err) {
+                    next(err);
+                }
+
+                io.emit('userChanged');
+
+                return res.status(200).send({
+                    data,
+                    "message": "ok"
+                });
+            })
+        } catch (e) {
+            next(e);
         }
-        const { _id } = req.params;
-        const user = await Clients.findOne({ _id }).lean();
-        await switchAttendance(user);
-        io.emit('userChanged');
-        return res.status(200).send({
-            "message": "ok"
-        });
     },
 
     async switchFirst(user) {

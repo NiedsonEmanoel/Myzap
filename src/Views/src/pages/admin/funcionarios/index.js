@@ -131,7 +131,6 @@ export default function UsuariosListagem() {
   useEffect(() => {
     async function loadUsuarios() {
       const response = await api.get('/api/workers');
-      console.log(response)
       setUsuarios(response.data.Workers);
     }
     loadUsuarios();

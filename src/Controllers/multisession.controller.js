@@ -240,6 +240,25 @@ module.exports = {
         await sessions[0].Client.sendText(chatid, message);
     },
 
+    async deleteChatMessages(req, res, next) {
+        let id = req.query.id;
+        let { chatId } = req.params;
+        chatId = chatId.replace('@c.us', '');
+        chatId = chatId + '@c.us';
+
+        if (!id) {
+            const error = new Error('ID not specified');
+            error.status = 400;
+            next(error);
+        }
+
+        sessions[id].Client.deleteChat(chatId);
+
+        res.status(200).send({
+            "message": "success"
+        });
+    },
+
     async inputDeviceInfo(req, res, next) {
         try {
             let id = req.query.id;
