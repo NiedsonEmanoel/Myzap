@@ -72,7 +72,6 @@ module.exports = {
         }
         let data = { type, author, body, chatId, isServer };
         Message = await Messages.create(data);
-        console.log('criado')
         return;
     },
 
@@ -80,7 +79,6 @@ module.exports = {
         let body = type;
         let data = { type, author, fileName, fileLink, chatId, fileLinkDownload, body, isServer };
         Message = await Messages.create(data);
-        console.log('criado')
         return;
     }
 }
