@@ -35,7 +35,7 @@ import {
     GridList
 } from '@material-ui/core';
 
-import { getNomeUsuario } from '../../../services/auth';
+import { getNomeUsuario, getToken } from '../../../services/auth';
 
 function UserChat() {
     const [contact, setContact] = useState({});
@@ -246,7 +246,8 @@ function UserChat() {
                                 "type": type,
                                 "numbers": contact.chatId,
                                 "ext": ext,
-                                "name": selectedFile.name
+                                "name": selectedFile.name,
+                                "token": getToken()
                             };
 
                             await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);

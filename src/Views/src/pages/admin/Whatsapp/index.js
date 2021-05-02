@@ -23,7 +23,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
-import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario } from '../../../services/auth';
+import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, getToken } from '../../../services/auth';
 import useStyles from './style';
 
 import InputBase from '@material-ui/core/InputBase';
@@ -562,7 +562,8 @@ export default function WhatsApp() {
                                                                 "type": type,
                                                                 "numbers": contact.chatId,
                                                                 "ext": ext,
-                                                                "name": selectedFile.name
+                                                                "name": selectedFile.name,
+                                                                "token": getToken()
                                                             };
 
                                                             await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
