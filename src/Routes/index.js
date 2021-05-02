@@ -13,7 +13,7 @@ app.get('/files/:id', (req, res, next) => { // localhost:3000/files/8796755665?f
         let download = req.query.download;
         id = id;
 
-        const file = path.resolve('./', 'Uploads', id, fileQuery);
+        const file = path.resolve(__dirname, '../Uploads/', id, fileQuery);
 
         switch (download) {
             case 'true':

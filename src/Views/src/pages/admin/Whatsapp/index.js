@@ -7,6 +7,7 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 
 import Typography from "@material-ui/core/Typography";
 import PersonPinIcon from '@material-ui/icons/PersonPin';
+
 import Copyright from '../../../components/footer';
 import DoneIcon from '@material-ui/icons/Done';
 
@@ -108,6 +109,13 @@ export default function WhatsApp() {
             return uptodate();
         });
 
+        io.on('newMessageSent', (e) => {
+            if (e.from == contact.chatId) {
+                getMessages();
+            }
+            return uptodate();
+        });
+
         io.on('newFile', (e) => {
             if (e.from == contact.chatId) {
                 getMessages();
@@ -124,7 +132,7 @@ export default function WhatsApp() {
         let listA = [];
 
         for (let key in arrResponse) {
-            if ((getTipoUsuario() != '3')&&(getTipoUsuario() != '2')) {
+            if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
                 if (arrResponse[key].WorkerAttendance == 'no-one') {
                     listA.push(arrResponse[key]);
                 } else {
@@ -475,7 +483,7 @@ export default function WhatsApp() {
                                                                 <AttachFileIcon />
                                                             </IconButton>}
 
-                                                            {contact.firstAttendace ? <></> : <IconButton onClick={()=>{setOpenExclude(true)}}>
+                                                            {contact.firstAttendace ? <></> : <IconButton onClick={() => { setOpenExclude(true) }}>
                                                                 <DeleteIcon />
                                                             </IconButton>}
 

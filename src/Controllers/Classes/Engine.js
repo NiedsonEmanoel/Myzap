@@ -61,7 +61,7 @@ module.exports = class {
                         'type': "error",
                         'message': 'Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.'
                     });
-                  //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                    //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }
             }, 1000 * 60 * 10);
             io.emit('sessionChanged', {});
@@ -100,7 +100,7 @@ module.exports = class {
                         'type': "error",
                         'message': 'Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.'
                     });
-                  //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
+                    //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }
             }, 1000 * 60 * 10);
             io.emit('sessionChanged', {});
@@ -114,6 +114,7 @@ module.exports = class {
             "mediaText": "kkkkkkkkkkkk",
             "mediaName": "foto"
         }
+
     */
     async processPayload(fulfillmentMessages, fullName, message) {
         for (let responses of fulfillmentMessages) {
@@ -160,18 +161,18 @@ module.exports = class {
             if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
-                    const messageOne = process.env.MESSAGE_ONE_USER_NOT_FOUND.replace('%GREETING%', auxFunctions.Greetings());
-                    const messageTwo = process.env.MESSAGE_TWO_USER_NOT_FOUND;
-                    
+                    const messageOne = process.env.MESSAGE_ONE.replace('%GREETING%', auxFunctions.Greetings());
+                    const messageTwo = process.env.MESSAGE_TWO;
+
                     await this.Client.reply(message.from, messageOne, message.id.toString());
-                    await this.Client.sendText(message.from, MESSAGE_TWO_USER_NOT_FOUND);
+                    await this.Client.sendText(message.from, messageTwo);
                     return;
                 } else {
                     if (message.type === 'chat') {
                         let fullName = message.body;
 
                         await clientHelper.createInternal(fullName, message.sender.profilePicThumbObj.eurl, message.from).then(() => {
-                            fs.mkdir(path.resolve('./', 'Uploads') + '/' + message.from, { recursive: true }, () => { });
+                            fs.mkdir(path.resolve(__dirname, '../../Uploads/') + '/' + message.from, { recursive: true }, () => { });
                         });
                         let index = this.#IntenalAwaiting.indexOf(message.from) + 1;
                         this.#IntenalAwaiting = this.#IntenalAwaiting.splice(index, 1);
@@ -204,7 +205,7 @@ module.exports = class {
                     let type = message.type;
                     let author = User.fullName;
                     let chatId = message.from;
-                    let dirF = path.resolve('./', 'Uploads') + '/' + message.from;
+                    let dirF = path.resolve(__dirname, '../../Uploads/') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
                     let link = `http://${process.env.HOST}:${process.env.PORT}/files/${message.from}?file=${fileName}`;
                     let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${message.from}?file=${fileName}&download=true`;
@@ -270,7 +271,7 @@ module.exports = class {
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
                 io.emit('newNotification', {
                     'type': "info",
-                    'message': 'Um novo cliente solicitou atendimento'
+                    'message': 'Um novo cliente solicitou atendimento',
                 });
 
             }

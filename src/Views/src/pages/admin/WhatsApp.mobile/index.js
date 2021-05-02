@@ -5,7 +5,10 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-import {getTipoUsuario} from '../../../services/auth'
+import { getTipoUsuario, getNotifPreference, setNotifPreference } from '../../../services/auth'
+
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -32,6 +35,17 @@ function WhatsMobile() {
     const [list, setList] = useState([]);
     const [resultList, setResultList] = useState([]);
     const [queryText, setQueryText] = useState('');
+    const [notif, setNotif] = React.useState(getNotifPreference() == 'true');
+
+    const handleNotif = () => {
+        if (notif == true) {
+            setNotifPreference('false')
+            setNotif(false)
+        } else {
+            setNotifPreference('true')
+            setNotif(true)
+        }
+    }
 
     function handleOnQuery(event) {
         event.preventDefault();
@@ -155,11 +169,14 @@ function WhatsMobile() {
                             {`WhatsApp`}
                         </Typography>
 
-                        <Link to="/admin/" style={{ textDecoration: "none" }}>
-                            <IconButton >
-                                <ArrowBackIcon />
-                            </IconButton>
-                        </Link>
+
+                        <IconButton color="inherit" onClick={() => { window.location.href = '/admin' }}>
+                            <ArrowBackIcon />
+                        </IconButton>
+
+                        <IconButton color="inherit" onClick={handleNotif}>
+                            {notif ? <NotificationsActiveIcon /> : <NotificationsOffIcon />}
+                        </IconButton>
 
                     </Toolbar>
                 </AppBar>

@@ -3,8 +3,8 @@ import api from './api';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import io from './socket.io'
-import { logout, getToken } from './auth';
-import { useSnackbar} from 'notistack';
+import { logout, getToken, getNotifPreference } from './auth';
+import { useSnackbar } from 'notistack';
 import { Route, Redirect } from 'react-router-dom';
 
 export default function WAuth({ component: Component, ...rest }) {
@@ -20,10 +20,12 @@ export default function WAuth({ component: Component, ...rest }) {
                 title: notification.title,
                 autoHideDuration: notification.timeOut,
                 onClick: notification.callback
-            })
-            audioNotify.play();
+            });
+            if (getNotifPreference() == 'true') {
+                audioNotify.play();
+            }
         });
-    
+
 
         (async () => {
             let res = await api.get('/api/login/checktoken/' + getToken());
@@ -45,7 +47,7 @@ export default function WAuth({ component: Component, ...rest }) {
 
                 (
                     <>
-                            <Component {...props} />
+                        <Component {...props} />
                     </>
                 )
 

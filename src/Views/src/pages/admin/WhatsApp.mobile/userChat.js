@@ -92,6 +92,12 @@ function UserChat() {
             }
         });
 
+        io.on('newMessageSent', (e) => {
+            if (e.from == contact.chatId) {
+                getMessages();
+            }
+        });
+
         io.on('newFile', (e) => {
             if (e.from == contact.chatId) {
                 getMessages();

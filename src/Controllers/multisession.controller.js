@@ -219,7 +219,7 @@ module.exports = {
                     let from = arrNumbers[key] + '@c.us';
                     let mess = arrMessages[key].replace(`*${worker}:*`, '')
                     await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
-                    io.emit('newMessage', { "from": from });
+                    io.emit('newMessageSent', { "from": from });
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
                 }
             }
@@ -327,7 +327,8 @@ module.exports = {
                         arrNumbers[key] = `${part1}${part2}`
                     }
 
-                    let dirF = path.resolve('./', 'Uploads') + '/' + arrNumbers[key];
+                    let dirF = path.resolve(__dirname, '../Uploads') + '/' + arrNumbers[key];
+                
                     let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
                     let link = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}?file=${fileName}`;
                     let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${arrNumbers[key]}?file=${fileName}&download=true`;

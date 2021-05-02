@@ -11,13 +11,17 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import logo from '../assets/img/logo-empresa.png';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
+
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+
 import { logout } from '../services/auth'
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { getProfileLinkUsuario, setMenuPreference, getMenuPreference } from '../services/auth';
+import { getProfileLinkUsuario, setMenuPreference, getMenuPreference, getNotifPreference, setNotifPreference } from '../services/auth';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import { mainListItems } from './list-menu-admin';
@@ -111,6 +115,17 @@ export default function MenuAdmin(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(getMenuPreference() == 'true');
   const [dopen, setDOpen] = React.useState(false);
+  const [notif, setNotif] = React.useState(getNotifPreference() == 'true');
+
+  const handleNotif = () => {
+    if (notif == true) {
+      setNotifPreference('false')
+      setNotif(false)
+    } else {
+      setNotifPreference('true')
+      setNotif(true)
+    }
+  }
 
   const handleDrawerOpen = () => {
     setMenuPreference('true');
@@ -149,6 +164,10 @@ export default function MenuAdmin(props) {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             {props.name}
           </Typography>
+
+          <IconButton color="inherit" onClick={handleNotif}>
+            {notif ? <NotificationsActiveIcon /> : <NotificationsOffIcon />}
+          </IconButton>
 
           <IconButton color="inherit">
 
@@ -225,7 +244,7 @@ export default function MenuAdmin(props) {
                 </ListItemIcon>
                 <ListItemText primary="Sair" />
               </ListItem>
-              
+
             </div>
           </>
         </List>

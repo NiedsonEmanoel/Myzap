@@ -18,7 +18,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { login, setIdUsuario, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario, setMenuPreference, getMenuPreference } from '../../../services/auth'
+import { login, setNotifPreference, setIdUsuario, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario, setMenuPreference, getMenuPreference } from '../../../services/auth'
 
 import api from '../../../services/api';
 
@@ -93,6 +93,7 @@ export default function SignInSide() {
         if (!getMenuPreference()) {
           setMenuPreference('true');
         }
+        setNotifPreference('true')
         window.location.href = '/admin'
       }
       else {
@@ -112,7 +113,7 @@ export default function SignInSide() {
 
     let proxy = `${window.location.protocol}//${window.location.hostname}${port}`
 
-    const response = await api.post('/api/login/create.recovery', { email_usuario: email, server_location: proxy});
+    const response = await api.post('/api/login/create.recovery', { email_usuario: email, server_location: proxy });
     setTitle("Verifique seu email!");
     setMessage("Se o seu e-mail estiver cadastrado no sistema você receberá um link válido por 5 minutos para redefinir a senha.");
     handleClickOpen();

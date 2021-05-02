@@ -177,6 +177,8 @@ export default function UsuariosListagem() {
               <Button onClick={async () => {
                 try {
                   const response = await api.delete('/api/clients/' + row._id);
+                  await api.delete('/api/messages/' + row.chatId);
+                  await api.delete('/api/whatsapp/chats/' + row.chatId + '?id=0');
                   handleClose();
                 } catch (e) {
                   console.log(e);
