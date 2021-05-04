@@ -12,6 +12,15 @@ var urlsToCache = [
     '/static/js/1.chunk.js',
     '/static/js/0.chunk.js',
     '/favicon.ico',
+    '/static/css/main.51722f45.chunk.css',
+    '/static/js/2.24e3552f.chunk.js',
+    '/static/js/main.46f083bb.chunk.js',
+    '/wall.png',
+    '/notify.mp3',
+    '/manifest.json',
+    '/android-chrome-192x192.png',
+    '/sw.js',
+    '/notify2.mp3',
     '/css?family=Open+Sans',
     '/icon?family=Material+Icons'
 ];

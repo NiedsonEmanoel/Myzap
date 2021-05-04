@@ -207,8 +207,8 @@ module.exports = class {
                     let chatId = message.from;
                     let dirF = path.resolve(__dirname, '../../Uploads/') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
-                    let link = `http://${process.env.HOST}:${process.env.PORT}/files/${message.from}?file=${fileName}`;
-                    let fileLinkDownload = `http://${process.env.HOST}:${process.env.PORT}/files/${message.from}?file=${fileName}&download=true`;
+                    let link = `${process.env.PRODUCTION_LINK}/files/${message.from}?file=${fileName}`;
+                    let fileLinkDownload = `${process.env.PRODUCTION_LINK}/files/${message.from}?file=${fileName}&download=true`;
                     let dirN = dirF + '/' + fileName;
 
                     fs.mkdir(dirF, { recursive: true }, () => { });

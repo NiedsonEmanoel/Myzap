@@ -553,6 +553,8 @@ export default function WhatsApp() {
                                                         getBase64(selectedFile).then(async (data) => {
                                                             let type = selectedFile.type.split('/', 1);
                                                             let ext = selectedFile.type.split('/', 2);
+                                                            let port = window.location.port == '' ? '' : ':' + window.location.port;
+                                                            let proxy = `${window.location.protocol}//${window.location.hostname}${port}`
                                                             ext = ext[1];
                                                             if (type == 'aplication') {
                                                                 type = 'document'
@@ -562,6 +564,7 @@ export default function WhatsApp() {
                                                                 "type": type,
                                                                 "numbers": contact.chatId,
                                                                 "ext": ext,
+                                                                "proxy": proxy,
                                                                 "name": selectedFile.name,
                                                                 "token": getToken()
                                                             };
