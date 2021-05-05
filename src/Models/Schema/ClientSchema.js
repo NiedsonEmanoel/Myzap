@@ -14,6 +14,11 @@ const ClientSchema = new mongoose.Schema({
         type: String,
     },
 
+    NameAttendance: {
+        type: String,
+        default: ""
+    },
+
     chatId: {
         type: String,
         required: true

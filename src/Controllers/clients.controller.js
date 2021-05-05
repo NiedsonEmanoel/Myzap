@@ -20,11 +20,13 @@ module.exports = {
     async SwitchFist(req, res) {
         const { _id } = req.query;
         const worker = req.body.worker;
+        const name = req.body.name
 
         let userChanges = await Clients.findById({ _id }).lean();
 
         userChanges.firstAttendace = false;
         userChanges.WorkerAttendance = worker;
+        userChanges.NameAttendance = name;
 
         let Client = Clients.findByIdAndUpdate(_id, userChanges, (err, data) => {
             if (err) {

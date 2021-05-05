@@ -20,7 +20,7 @@ import Sessions from './pages/admin/sessions'
 import PrivateRoute from './services/wAuth';
 
 function decideWhatsApp() {
-    if (window.screen.width <= 799) {
+    if (window.screen.width <= 899) {
         return <WhatsMobile />;
     } else if (window.screen.height <= 500) {
         return <WhatsMobile />;

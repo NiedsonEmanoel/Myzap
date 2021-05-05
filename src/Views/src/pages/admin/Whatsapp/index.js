@@ -7,6 +7,8 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 
 import Typography from "@material-ui/core/Typography";
 import PersonPinIcon from '@material-ui/icons/PersonPin';
+import Popper from '@material-ui/core/Popper';
+import Fade from '@material-ui/core/Fade';
 
 import Copyright from '../../../components/footer';
 import DoneIcon from '@material-ui/icons/Done';
@@ -23,7 +25,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
-import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, getToken } from '../../../services/auth';
+import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, getToken, getIdUsuario } from '../../../services/auth';
 import useStyles from './style';
 
 import InputBase from '@material-ui/core/InputBase';
@@ -68,6 +70,16 @@ export default function WhatsApp() {
 
     const [title, setTitle] = useState('');
     const [message, setMessage] = useState('');
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
+    };
+
+    const openK = Boolean(anchorEl);
+    const id = openK ? 'transitions-popper' : undefined;
+
 
     const handleClickOpen = () => {
         if (contact.chatId)
@@ -136,7 +148,7 @@ export default function WhatsApp() {
                 if (arrResponse[key].WorkerAttendance == 'no-one') {
                     listA.push(arrResponse[key]);
                 } else {
-                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
                         listA.push(arrResponse[key]);
                     }
                 }
@@ -169,7 +181,7 @@ export default function WhatsApp() {
                 if (arrResponse[key].WorkerAttendance == 'no-one') {
                     listA.push(arrResponse[key]);
                 } else {
-                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
                         listA.push(arrResponse[key]);
                     }
                 }
@@ -208,6 +220,23 @@ export default function WhatsApp() {
         }
     }
 
+    function lastDate(message) {
+        try {
+            if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
+                let date = new Date(message.lastMessage.createdAt)
+                let hour = date.toLocaleTimeString('pt-br')
+                let arrHour = hour.split(":", 2)
+                return(`${arrHour[0]}:${arrHour[1]}`);
+            }
+            else{
+                return ('');
+            }
+        }
+        catch {
+            return ('')
+        }
+    }
+
     function handleOnQuery(event) {
         event.preventDefault();
         let results;
@@ -225,7 +254,13 @@ export default function WhatsApp() {
                 <ListItem button={true} onClick={(e) => { setContact(item) }}>
                     <Avatar src={item.profileUrl}></Avatar>
                     <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
-                    {item.firstAttendace ? <PanToolIcon /> : <></>}
+                    {
+                        item.firstAttendace ?
+                            <PanToolIcon />
+                            :
+                            <>{lastDate(item)}</>
+                    }
+
                 </ListItem>
                 <Divider variant="inset" component="li" />
             </>
@@ -475,12 +510,13 @@ export default function WhatsApp() {
                                                     }
                                                     action={
                                                         contact.WorkerAttendance != undefined ? <>
-                                                            <IconButton>
+                                                            <IconButton aria-describedby={id} onClick={() => { console.log('kkkk') }}>
                                                                 <SwapHorizontalCircleIcon />
                                                             </IconButton>
 
                                                             {contact.firstAttendace ? <></> : <IconButton onClick={handleClickOpen}>
                                                                 <AttachFileIcon />
+
                                                             </IconButton>}
 
                                                             {contact.firstAttendace ? <></> : <IconButton onClick={() => { setOpenExclude(true) }}>
@@ -492,7 +528,8 @@ export default function WhatsApp() {
                                                                 label={contact.firstAttendace ? "Atender" : "Finalizar"}
                                                                 onClick={async () => {
                                                                     let data = {
-                                                                        "worker": worker
+                                                                        "worker": getIdUsuario(),
+                                                                        "name": getNomeUsuario()
                                                                     }
                                                                     if (contact.firstAttendace !== undefined) {
                                                                         if (contact.firstAttendace == false) {
@@ -515,7 +552,7 @@ export default function WhatsApp() {
                                                     subheader={
                                                         contact.WorkerAttendance != undefined ?
                                                             contact.WorkerAttendance != 'no-one' ?
-                                                                `Sendo atendido por: ${contact.WorkerAttendance}`
+                                                                `Sendo atendido por: ${contact.NameAttendance}`
                                                                 :
                                                                 ""
                                                             :

@@ -35,7 +35,7 @@ import {
     GridList
 } from '@material-ui/core';
 
-import { getNomeUsuario, getToken } from '../../../services/auth';
+import { getNomeUsuario, getToken, getIdUsuario } from '../../../services/auth';
 
 function UserChat() {
     const [contact, setContact] = useState({});
@@ -280,7 +280,8 @@ function UserChat() {
 
                                     <IconButton onClick={async () => {
                                         let data = {
-                                            "worker": getNomeUsuario()
+                                            "worker": getIdUsuario(),
+                                            "name": getNomeUsuario()
                                         }
                                         if (contact.firstAttendace !== undefined) {
                                             if (contact.firstAttendace == false) {
@@ -300,7 +301,7 @@ function UserChat() {
                             subheader={
                                 contact.WorkerAttendance != undefined ?
                                     contact.WorkerAttendance != 'no-one' ?
-                                        `Sendo atendido por: ${contact.WorkerAttendance}`
+                                        `Sendo atendido por: ${contact.NameAttendance}`
                                         :
                                         ""
                                     :

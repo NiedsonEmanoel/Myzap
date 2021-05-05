@@ -5,7 +5,7 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-import { getTipoUsuario, getNotifPreference, setNotifPreference } from '../../../services/auth'
+import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario } from '../../../services/auth'
 
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
@@ -68,7 +68,7 @@ function WhatsMobile() {
                 if (arrResponse[key].WorkerAttendance == 'no-one') {
                     listA.push(arrResponse[key]);
                 } else {
-                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
                         listA.push(arrResponse[key]);
                     }
                 }
@@ -84,6 +84,23 @@ function WhatsMobile() {
         }
     }
 
+    function lastDate(message) {
+        try {
+            if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
+                let date = new Date(message.lastMessage.createdAt)
+                let hour = date.toLocaleTimeString('pt-br')
+                let arrHour = hour.split(":", 2)
+                return(`${arrHour[0]}:${arrHour[1]}`);
+            }
+            else{
+                return ('');
+            }
+        }
+        catch {
+            return ('')
+        }
+    }
+
     async function initList() {
         const response = await api.get('/api/clients/attendance');
         const arrResponse = response.data.Client;
@@ -94,7 +111,7 @@ function WhatsMobile() {
                 if (arrResponse[key].WorkerAttendance == 'no-one') {
                     listA.push(arrResponse[key]);
                 } else {
-                    if (arrResponse[key].WorkerAttendance == getNomeUsuario()) {
+                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
                         listA.push(arrResponse[key]);
                     }
                 }
@@ -152,7 +169,7 @@ function WhatsMobile() {
                             width: '100%',
                             paddingLeft: 15
                         }} primary={item.fullName} secondary={isValidLast(item)} />
-                        {item.firstAttendace ? <PanToolIcon /> : <></>}
+                        {item.firstAttendace ? <PanToolIcon /> : <>{lastDate(item)}</>}
                     </ListItem>
                     <Divider variant="inset" component="li" />
                 </Link>
