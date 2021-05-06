@@ -72,9 +72,6 @@ MONGO=mongodb://localhost:27017/yourdatabase
 #A notação abaixo é a mesma coisa de: /Myzap/src/seuarquivo.json
 JSON_LOCATION =./seuarquivo.json
 
-#Nome do seu projeto Google
-GCP_PROJECT_NAME=name
-
 #Idioma do BOT
 LANGUAGE_CODE=pt-BR
 
@@ -109,8 +106,30 @@ CHAR_LIMIT_PER_MESSAGE=256
 SEND_NO_PISHING=0
 
 #Limite de sessões simultâneas
-#Mantenha acima de 1
 SESSION_LIMIT=16
+
+#HostAplicação
+HOST=localhost
+
+#Seviço de NODEMAILER
+USER_MAIL=
+PASSWORD_MAIL=
+SERVICE_MAIL=
+
+#Define qual engine usar: VENOM - WPPCONNECT
+ENGINE=VENOM
+
+#COLOQUE O LINK E PORTA DE PRODUÇÃO DA Aplicação
+PRODUCTION_LINK=http://10.0.1.103
+
+
+#Mensagem 01 - User não cadastrado
+MESSAGE_ONE_USER_NOT_FOUND=Olá %GREETING%, você ainda não está cadastrado em nosso sistema.
+
+#Mensagem 02 - User não cadastrado
+MESSAGE_TWO_USER_NOT_FOUND=Para podermos lhe atender com uma experiência completa, digite seu nome e sobrenome.
+
+
 ```
 
 #

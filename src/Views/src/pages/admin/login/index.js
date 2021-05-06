@@ -18,7 +18,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { login, setNotifPreference, setIdUsuario, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario, setMenuPreference, getMenuPreference } from '../../../services/auth'
+import { login, setNotifPreference, setIdUsuario, getAttendanceCount, setToZeroAttendanceCount, setNomeUsuario, setProfileLinkUsuario, setTipoUsuario, setMenuPreference, getMenuPreference } from '../../../services/auth'
 
 import api from '../../../services/api';
 
@@ -92,6 +92,9 @@ export default function SignInSide() {
         setTipoUsuario(response.data.user.tipo_usuario);
         if (!getMenuPreference()) {
           setMenuPreference('true');
+        }
+        if(!getAttendanceCount){
+          setToZeroAttendanceCount();
         }
         setNotifPreference('true')
         window.location.href = '/admin'

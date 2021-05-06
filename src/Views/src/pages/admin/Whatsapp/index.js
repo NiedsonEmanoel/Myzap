@@ -7,6 +7,7 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 
 import Typography from "@material-ui/core/Typography";
 import PersonPinIcon from '@material-ui/icons/PersonPin';
+import Badge from '@material-ui/core/Badge';
 import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
 
@@ -25,7 +26,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
-import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, getToken, getIdUsuario } from '../../../services/auth';
+import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, getToken, getIdUsuario, getAttendanceCount, setAttendanceCountOnePlus, setToZeroAttendanceCount } from '../../../services/auth';
 import useStyles from './style';
 
 import InputBase from '@material-ui/core/InputBase';
@@ -66,7 +67,18 @@ export default function WhatsApp() {
     const [messagesList, setMessagesList] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
-    const [openExclude, setOpenExclude] = useState(false)
+    const [openExclude, setOpenExclude] = useState(false);
+    const [count, setCount] = useState(parseInt(getAttendanceCount()));
+
+    function countPlus() {
+        setAttendanceCountOnePlus();
+        setCount(count + 1)
+    }
+
+    function countZero() {
+        setToZeroAttendanceCount();
+        setCount(0);
+    }
 
     const [title, setTitle] = useState('');
     const [message, setMessage] = useState('');
@@ -99,7 +111,6 @@ export default function WhatsApp() {
             reader.onerror = error => reject(error);
         });
     }
-
 
     useEffect(() => {
         upgrade();
@@ -226,9 +237,9 @@ export default function WhatsApp() {
                 let date = new Date(message.lastMessage.createdAt)
                 let hour = date.toLocaleTimeString('pt-br')
                 let arrHour = hour.split(":", 2)
-                return(`${arrHour[0]}:${arrHour[1]}`);
+                return (`${arrHour[0]}:${arrHour[1]}`);
             }
-            else{
+            else {
                 return ('');
             }
         }
@@ -266,8 +277,6 @@ export default function WhatsApp() {
             </>
         )));
     }
-
-
 
     function getRightList() {
         return (
@@ -438,7 +447,7 @@ export default function WhatsApp() {
                                                     avatar={
                                                         <Avatar aria-label="Recipe" className={classes.avatar} src={getProfileLinkUsuario()}></Avatar>
                                                     }
-                                                    title={getNomeUsuario()}
+
                                                 />
                                             </Paper>
 
@@ -484,17 +493,6 @@ export default function WhatsApp() {
                                                     flexWrap: 'nowrap'
                                                 }} cols={1} cellHeight={((window.innerHeight / 4.50) * list.length)}>
                                                     <List className={classes.list}>
-
-                                                        {/*
-                                                            <ListItem button={true} onClick={(e) => { console.log('a')}}>
-                                                                <Avatar src={'/attendance.png'}></Avatar>
-                                                                <ListItemText className={classes.list} primary={'Chat Atendentes'} secondary={'last message'} />
-                                                                <PersonPinIcon/>
-                                                             </ListItem>
-                                                        
-                                                             <Divider variant="inset" component="li" /> 
-                                                        */}
-
                                                         {getLeftList()}
                                                     </List>
                                                 </GridList>
@@ -510,7 +508,7 @@ export default function WhatsApp() {
                                                     }
                                                     action={
                                                         contact.WorkerAttendance != undefined ? <>
-                                                            <IconButton aria-describedby={id} onClick={() => { console.log('kkkk') }}>
+                                                            <IconButton onClick={() => { }}>
                                                                 <SwapHorizontalCircleIcon />
                                                             </IconButton>
 
@@ -556,7 +554,10 @@ export default function WhatsApp() {
                                                                 :
                                                                 ""
                                                             :
-                                                            "Selecione alguma conversa."
+                                                            contact.chatId == "attendance@c.us" ?
+                                                                ""
+                                                                :
+                                                                "Selecione alguma conversa."
                                                     }
                                                 />
                                             </Paper>

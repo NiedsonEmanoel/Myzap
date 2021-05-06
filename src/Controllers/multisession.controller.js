@@ -187,6 +187,12 @@ module.exports = {
                 next(error);
             }
 
+            if (numbers == "attendance@c.us") {
+                await messageHelper.createText('chat', worker, mess, "attendance" + '@c.us', false);
+                io.emit('newAttendanceChat', { "from": "attendance@c.us" });
+                return res.status(200).send({ "message": "success" })
+            }
+
             if (!worker) {
                 const error = new Error('Worker not specified');
                 error.status = 400;
@@ -328,7 +334,7 @@ module.exports = {
                     }
 
                     let dirF = path.resolve(__dirname, '../Uploads') + '/' + arrNumbers[key];
-                
+
                     let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
                     let link = `${process.env.PRODUCTION_LINK}/files/${arrNumbers[key]}?file=${fileName}`;
                     let fileLinkDownload = `${process.env.PRODUCTION_LINK}/files/${arrNumbers[key]}?file=${fileName}&download=true`;
@@ -342,7 +348,9 @@ module.exports = {
                     let from = arrNumbers[key];
                     await messageHelper.createMedia(type[0], fileName, link, "", arrNumbers[key], fileLinkDownload, true);
                     io.emit('newFile', { "from": from });
-                    await sessions[id].Client.sendFileFromBase64(arrNumbers[key], base64, name, message);
+                    if (from != "attendance@c.us") {
+                        await sessions[id].Client.sendFileFromBase64(arrNumbers[key], base64, name, message);
+                    }
                 } catch (e) {
                     console.log(e)
                     res.status(400).send({
