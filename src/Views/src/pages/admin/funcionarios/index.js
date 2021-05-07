@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useSnackbar } from 'notistack';
 import io from '../../../services/socket.io'
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
 import AddIcon from '@material-ui/icons/Add';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -135,6 +136,19 @@ export default function UsuariosListagem() {
     }
     loadUsuarios();
   }, []);
+
+  useEffect(()=>{
+    async function s(){
+      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      setTipoUsuario(`${res}`);
+      if((getTipoUsuario() != '3')){
+        window.location.href='/admin'
+      }
+    }
+    s();
+  }, [])
+
+
 
   const classes = useStyles();
   return (

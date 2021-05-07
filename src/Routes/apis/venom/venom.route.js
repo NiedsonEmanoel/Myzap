@@ -11,7 +11,7 @@ Router.get('/sessions', jwtPasser, Venom.getMax); // []
 Router.get('/alias', trustID, jwtPasser, Venom.getAlias)
 Router.get('/sessions.details/:id', jwtPasser, Venom.verifySession);// sessions.details/1
 Router.post('/sessions', jwtPasser, trustID_SESSION, Venom.initializeSession); // /sessions?id=1
-Router.delete('/sessions', jwtPasser, trustID, Venom.closeSession); // /sessions?id=1
+Router.delete('/sessions', jwtPasser, trustID_SESSION, Venom.closeSession); // /sessions?id=1
 
 Router.delete('/chats/:chatId', Venom.deleteChatMessages); // /chats/558796845?id=1
 

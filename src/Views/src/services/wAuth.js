@@ -3,7 +3,7 @@ import api from './api';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import io from './socket.io'
-import { logout, getToken, getNotifPreference } from './auth';
+import { logout, getToken, getNotifPreference, getIdUsuario, setTipoUsuario } from './auth';
 import { useSnackbar } from 'notistack';
 import { Route, Redirect } from 'react-router-dom';
 
@@ -30,8 +30,15 @@ export default function WAuth({ component: Component, ...rest }) {
         (async () => {
             let res = await api.get('/api/login/checktoken/' + getToken());
             if (res.data.status == 200) {
+                try{
                 setLoading(false);
                 setRedirect(false);
+                }catch{
+                    logout();
+                    setLoading(false);
+                    setRedirect(true);
+                }
+
             } else {
                 logout();
                 setLoading(false);

@@ -44,7 +44,7 @@ module.exports = class {
                     fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
                 }
             }, {
-                autoClose: 60 * 1000 * 10, updatesLog: false, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
+                autoClose: 0, updatesLog: false, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
             }).catch(e => {
                 console.error('Erro ao iniciar sessão ' + e);
             });
@@ -79,7 +79,7 @@ module.exports = class {
                     let buffer = new Buffer.from(matches[2], 'base64');
                     fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
                 }),
-                autoClose: 1000 * 60 * 10,
+                autoClose: 0,
                 updatesLog: false,
                 headless: true,
                 disableSpins: true,

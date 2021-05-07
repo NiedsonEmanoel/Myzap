@@ -21,7 +21,7 @@ module.exports = {
     },
 
     getLimit() {
-        return limit;
+        return sessions.length;
     },
 
     setCredential(credential, id, alias) {
@@ -252,6 +252,8 @@ module.exports = {
         chatId = chatId.replace('@c.us', '');
         chatId = chatId + '@c.us';
 
+        fs.rmdir(path.resolve('./', 'Uploads', chatId), {recursive: true}, ()=>{});
+
         if (!id) {
             const error = new Error('ID not specified');
             error.status = 400;
@@ -401,17 +403,21 @@ module.exports = {
     async closeSession(req, res, next) {
         try {
             let id = req.query.id;
-            if (id == 0) {
-                res.status(400).send({
-                    "message": "It isn't possible to close the main section."
-                });
-            } else if (!started.includes(id)) {
+            if (!started.includes(id)) {
                 res.status(404).send({
                     "message": "Unable to close an uninitialized session."
                 });
             }
             else {
                 try {
+                    try {
+                        fs.unlink(path.resolve('./', 'tokens', 'MyZAP' + id + '.data.json'), () => { });
+                        fs.unlink(path.resolve('./', 'tokens', 'MyZAP ' + id + '.data.json'), () => { });
+                    } catch (e) {
+                        console.clear()
+                        console.log(e)
+                    }
+
                     io.emit('sessionChanged', {});
                     started.splice(id, 1);
                     await sessions[id].Client.close();

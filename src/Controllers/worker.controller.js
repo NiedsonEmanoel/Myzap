@@ -26,7 +26,7 @@ module.exports = {
                 next(error);
             }
 
-            let Worker = await Workers.find({ _id });
+            let Worker = await Workers.find({ _id }).lean();
 
             res.status(200).send({
                 "Worker": Worker,

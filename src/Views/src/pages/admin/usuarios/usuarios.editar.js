@@ -14,6 +14,7 @@ import api from '../../../services/api';
 import io from '../../../services/socket.io';
 import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
 
 const drawerWidth = 240;
 
@@ -114,6 +115,17 @@ export default function Dashboard() {
     setProfileUrl(client.profileUrl);
     setChatId(client.chatId);
   }, []);
+
+  useEffect(()=>{
+    async function s(){
+      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      setTipoUsuario(`${res}`);
+      if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
+        window.location.href='/admin'
+      }
+    }
+    s();
+  }, [])
 
   async function handleSubmit() {
     try {

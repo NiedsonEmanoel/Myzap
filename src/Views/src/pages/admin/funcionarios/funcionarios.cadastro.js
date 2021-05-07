@@ -4,6 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
 import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
@@ -79,6 +80,17 @@ export default function Dashboard() {
             }
         }
     }
+    
+    useEffect(()=>{
+        async function s(){
+          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+          setTipoUsuario(`${res}`);
+          if((getTipoUsuario() != '3')){
+            window.location.href='/admin'
+          }
+        }
+        s();
+      }, [])
 
     const classes = useStyles();
     return (

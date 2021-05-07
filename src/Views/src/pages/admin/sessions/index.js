@@ -3,7 +3,8 @@ import useStyles from './theme';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-import { useSnackbar} from 'notistack';
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
+import { useSnackbar } from 'notistack';
 import api from '../../../services/api'
 
 import {
@@ -81,6 +82,17 @@ export default function Sessions() {
         });
     }, []);
 
+    useEffect(()=>{
+        async function s(){
+          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+          setTipoUsuario(`${res}`);
+          if((getTipoUsuario() != '3')){
+            window.location.href='/admin'
+          }
+        }
+        s();
+      }, [])
+
     useEffect(() => {
         (async () => {
             const handler = await api.get('/api/whatsapp/sessions');
@@ -93,17 +105,17 @@ export default function Sessions() {
                 let alias
                 try {
                     phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
-                    alias = active == true ? await (await api.get('/api/whatsapp/alias?id=' + i)).data.alias : '-'
+                    //  alias = active == true ? await (await api.get('/api/whatsapp/alias?id=' + i)).data.alias : '-'
                 }
                 catch (e) {
                     phone = 'Aguardando...';
-                    alias = '-';
+                    //alias = '-';
                 }
                 let tempAux = {
                     "Session": i,
                     "active": active,
                     "device": phone,
-                    "alias": alias
+                    "alias": "Credencial Interna" // alias
                 }
                 sessionsTemp.push(tempAux);
             }
@@ -114,7 +126,6 @@ export default function Sessions() {
     function getData() {
         return (
             sessions.map((value) => {
-                console.log(value)
                 return (
                     <TableRow>
                         <TableCell>
@@ -138,17 +149,17 @@ export default function Sessions() {
                         </TableCell>
 
                         <TableCell align="center">
-                            {value.alias}
+                            {value.alias == "" ? "Credencial Interna" : value.alias}
                         </TableCell>
 
                         <TableCell align="right">
                             <ButtonGroup size="small" aria-label="small button group">
                                 {value.active ?
                                     <Button onClick={async () => {
-                                        if (value.Session != 0) {
-                                            const r = await api.delete('/api/whatsapp/sessions?id=' + value.Session);
-                                            return ('');
-                                        }
+
+                                        const r = await api.delete('/api/whatsapp/sessions?id=' + value.Session);
+                                        return ('');
+
                                     }}>
                                         Desabilitar
                                         <ClearIcon />
@@ -171,7 +182,7 @@ export default function Sessions() {
                                         handleClickOpen();
                                     }}>
                                         QRCode
-                                        <WhatsAppIcon />
+                                        <img style={{ height: "100%", paddingLeft: '3px' }} src={'/qrcode.svg'}></img>
                                     </Button>
 
                                     :
@@ -216,7 +227,7 @@ export default function Sessions() {
                                 justify="space-between"
                                 alignItems="flex-start"
                             >
-                                <h2>Controle do Multisessão</h2>
+                                <h2>Controle da Sessão</h2>
                             </Grid>
 
 

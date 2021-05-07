@@ -21,6 +21,7 @@ import { Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import io from '../../../services/socket.io';
+import {getIdUsuario, setTipoUsuario, getTipoUsuario} from '../../../services/auth';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -138,6 +139,16 @@ export default function UsuariosListagem() {
     }
   }
 
+  useEffect(()=>{
+    async function s(){
+      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      setTipoUsuario(`${res}`);
+      if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
+        window.location.href='/admin'
+      }
+    }
+    s();
+  }, [])
 
   useEffect(() => {
     loadUsuarios();

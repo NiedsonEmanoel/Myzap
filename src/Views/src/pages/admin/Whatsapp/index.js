@@ -21,7 +21,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../services/api'
-import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, getToken, getIdUsuario, getAttendanceCount, setAttendanceCountOnePlus, setToZeroAttendanceCount } from '../../../services/auth';
+import { getNomeUsuario, getProfileLinkUsuario, getTipoUsuario, setTipoUsuario, getToken, getIdUsuario, getAttendanceCount, setAttendanceCountOnePlus, setToZeroAttendanceCount } from '../../../services/auth';
 import useStyles from './style';
 
 import InputBase from '@material-ui/core/InputBase';
@@ -112,13 +112,26 @@ export default function WhatsApp() {
                     "Id": response.data.Workers[key]._id,
                     "Type": getTipo(response.data.Workers[key].tipo_usuario)
                 }
-                if (object.Id != getIdUsuario())
+                if (object.Id != getIdUsuario()) {
                     arr.push(object)
+                }else{
+                    object.Type = 'Você'
+                    arr.push(object)
+                }
+
             }
-            console.log(arr)
+           
             setUsers(arr)
         })()
     }, [])
+
+    useEffect(()=>{
+        async function s(){
+          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+          setTipoUsuario(`${res}`);
+        }
+        s();
+      }, [])
 
     useEffect(() => {
         upgrade();
@@ -282,7 +295,7 @@ export default function WhatsApp() {
                     <ListItemText className={classes.list} primary={item.Name} secondary={item.Type} />
                 </ListItem>
 
-                <Divider/>
+                <Divider />
             </>
         )));
     }
@@ -490,27 +503,12 @@ export default function WhatsApp() {
 
                                             </Dialog>
 
-                                            <Dialog
-                                                open={openQR}
-                                                onClose={handleClose}
-                                            >
-                                                <DialogContent>
-                                                    <iframe style={{ height: '269px', width: '269px' }} src={`/api/whatsapp/qrcode?id=0`}></iframe>
-                                                </DialogContent>
-                                            </Dialog>
-
                                             <Paper elevation={3} style={{ marginBottom: "1%" }}>
                                                 <CardHeader
                                                     className={classes.rightBorder}
                                                     avatar={
                                                         <Avatar aria-label="Recipe" className={classes.avatar} src={getProfileLinkUsuario()}></Avatar>
                                                     }
-                                                    action={
-                                                        <IconButton style={{ textAlign: 'center' }} onClick={() => { setQR(true) }}>
-                                                            <img style={{ height: "100%" }} src={'/qrcode.svg'}></img>
-                                                        </IconButton>
-                                                    }
-
                                                 />
                                             </Paper>
 
@@ -650,7 +648,7 @@ export default function WhatsApp() {
                                                         Cancelar
                                                     </Button>
                                                     <Button onClick={() => {
-                                                        console.log(selectedFile)
+                                                    
                                                         getBase64(selectedFile).then(async (data) => {
                                                             let type = selectedFile.type.split('/', 1);
                                                             let ext = selectedFile.type.split('/', 2);

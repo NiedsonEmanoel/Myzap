@@ -11,7 +11,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
-import io from '../../../services/socket.io';
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
 import { useSnackbar } from 'notistack';
 
 const drawerWidth = 240;
@@ -101,6 +101,17 @@ export default function Dashboard() {
   const [fullName, setFullName] = useState('');
   const [profileUrl, setProfileUrl] = useState('');
   const [chatId, setChatId] = useState('');
+
+  useEffect(()=>{
+    async function s(){
+      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      setTipoUsuario(`${res}`);
+      if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
+        window.location.href='/admin'
+      }
+    }
+    s();
+  }, [])
 
   async function handleSubmit() {
     try {

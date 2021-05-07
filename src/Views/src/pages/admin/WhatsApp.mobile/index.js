@@ -5,7 +5,7 @@ import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario } from '../../../services/auth'
+import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario, setTipoUsuario } from '../../../services/auth'
 
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
@@ -144,6 +144,14 @@ function WhatsMobile() {
         });
 
     }, []);
+
+    useEffect(()=>{
+        async function s(){
+          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+          setTipoUsuario(`${res}`);
+        }
+        s();
+      }, [])
 
     function isValidLast(message) {
         try {

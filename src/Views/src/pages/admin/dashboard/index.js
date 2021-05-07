@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import Card from '../../../components/cards'
 import Container from '@material-ui/core/Container';
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import api from '../../../services/api'
@@ -113,6 +114,17 @@ export default function Dashboard() {
     setUsersInFirstAttendance(first);
     setUsersInAttendance(response);
   }
+
+  useEffect(()=>{
+    async function s(){
+      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      setTipoUsuario(`${res}`);
+      if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
+        window.location.href='/admin/whatsapp'
+      }
+    }
+    s();
+  }, [])
 
   useEffect(() => {
     io.on('userChanged', (e) => {

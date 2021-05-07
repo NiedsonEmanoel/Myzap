@@ -13,6 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
@@ -56,6 +57,17 @@ export default function Dashboard() {
         S();
 
     }, []);
+
+    useEffect(()=>{
+        async function s(){
+          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+          setTipoUsuario(`${res}`);
+          if((getTipoUsuario() != '3')){
+            window.location.href='/admin'
+          }
+        }
+        s();
+      }, [])
 
     async function handleSubmit() {
 
