@@ -59,7 +59,7 @@ module.exports = class {
                 if (battery <= 5) {
                     io.emit('newNotification', {
                         'type': "error",
-                        'message': 'Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.'
+                        'message': 'Bateria baixa, convém ligar o celular ao carregador.'
                     });
                     //  notifier.notify('Bateria baixa, convém ligar o celular da sessão: ' + this.#index + ' ao carregador.');
                 }

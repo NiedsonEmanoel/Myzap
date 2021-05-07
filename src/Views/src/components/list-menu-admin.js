@@ -60,14 +60,18 @@ export const mainListItems = (
       </ListItem>
     </Link>
 
-    <Link to='/admin/sessions' style={{ textDecorationLine: 'none' }}>
-      <ListItem component="a">
-        <ListItemIcon>
-          <BarChartIcon />
-        </ListItemIcon>
-        <ListItemText primary="Sessões" />
-      </ListItem>
-    </Link>
+    {
+      /*
+       <Link to='/admin/sessions' style={{ textDecorationLine: 'none' }}>
+          <ListItem component="a">
+            <ListItemIcon>
+              <BarChartIcon />
+            </ListItemIcon>
+          <ListItemText primary="Sessões" />
+          </ListItem>
+        </Link>
+      */
+    }
 
   </div>
 );

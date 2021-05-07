@@ -4,16 +4,11 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import PanToolIcon from '@material-ui/icons/PanTool';
-
-import Typography from "@material-ui/core/Typography";
-import PersonPinIcon from '@material-ui/icons/PersonPin';
-import Badge from '@material-ui/core/Badge';
-import Popper from '@material-ui/core/Popper';
-import Fade from '@material-ui/core/Fade';
+import Icon from '@material-ui/core/Icon';
 
 import Copyright from '../../../components/footer';
 import DoneIcon from '@material-ui/icons/Done';
-
+import getTipo from '../../../functions/getTipo';
 import GridList from '@material-ui/core/GridList';
 import Button from '@material-ui/core/Button';
 import Forme from '../../../components/form'
@@ -68,7 +63,11 @@ export default function WhatsApp() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
     const [openExclude, setOpenExclude] = useState(false);
+    const [openChange, setOpenChange] = useState(false);
+    const [openQR, setQR] = useState(false);
     const [count, setCount] = useState(parseInt(getAttendanceCount()));
+
+    const [users, setUsers] = useState([])
 
     function countPlus() {
         setAttendanceCountOnePlus();
@@ -80,19 +79,6 @@ export default function WhatsApp() {
         setCount(0);
     }
 
-    const [title, setTitle] = useState('');
-    const [message, setMessage] = useState('');
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event) => {
-        setAnchorEl(anchorEl ? null : event.currentTarget);
-    };
-
-    const openK = Boolean(anchorEl);
-    const id = openK ? 'transitions-popper' : undefined;
-
-
     const handleClickOpen = () => {
         if (contact.chatId)
             setOpen(true);
@@ -100,8 +86,11 @@ export default function WhatsApp() {
 
     const handleClose = () => {
         setOpen(false);
+        setOpenChange(false)
         setOpenExclude(false)
+        setQR(false)
     };
+
 
     function getBase64(file) {
         return new Promise((resolve, reject) => {
@@ -111,6 +100,25 @@ export default function WhatsApp() {
             reader.onerror = error => reject(error);
         });
     }
+
+    useEffect(() => {
+        (async () => {
+            const response = await api.get('/api/workers');
+            let arr = [];
+            for (let key in response.data.Workers) {
+                let object = {
+                    "Name": response.data.Workers[key].nome_usuario,
+                    "ProfilePic": response.data.Workers[key].foto_perfil,
+                    "Id": response.data.Workers[key]._id,
+                    "Type": getTipo(response.data.Workers[key].tipo_usuario)
+                }
+                if (object.Id != getIdUsuario())
+                    arr.push(object)
+            }
+            console.log(arr)
+            setUsers(arr)
+        })()
+    }, [])
 
     useEffect(() => {
         upgrade();
@@ -172,7 +180,6 @@ export default function WhatsApp() {
             setList(listA);
             setResultList(listA)
             if (response.data.Client[0] !== undefined) {
-                console.log('ok')
             } else {
                 setContact([{}])
             }
@@ -257,6 +264,27 @@ export default function WhatsApp() {
             results = list.filter(item => item.fullName.toLowerCase().indexOf(queryText.toLowerCase()) !== -1)
         }
         setResultList(results);
+    }
+
+    function getUsersToAblyChange() {
+        return (users.map(item => (
+            <>
+                <ListItem button={true} onClick={async (e) => {
+                    let data = {
+                        "worker": item.Id,
+                        "name": item.Name
+                    }
+                    const response = await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                    setContact({});
+                    handleClose();
+                }}>
+                    <Avatar src={item.ProfilePic}></Avatar>
+                    <ListItemText className={classes.list} primary={item.Name} secondary={item.Type} />
+                </ListItem>
+
+                <Divider/>
+            </>
+        )));
     }
 
     function getLeftList() {
@@ -441,11 +469,46 @@ export default function WhatsApp() {
 
                                             </Dialog>
 
+
+                                            <Dialog open={openChange} onClose={handleClose} >
+                                                <DialogTitle id="alert-dialog-title">{"Deseja transferir essa conversa?"}</DialogTitle>
+
+                                                <DialogContent>
+                                                    <DialogContentText>
+                                                        Escolha para quem a conversa será transferida.
+                                                    </DialogContentText>
+                                                    {getUsersToAblyChange()}
+                                                </DialogContent>
+
+                                                <DialogActions>
+
+                                                    <Button onClick={handleClose} color="primary">
+                                                        Sair
+                                                    </Button>
+
+                                                </DialogActions>
+
+                                            </Dialog>
+
+                                            <Dialog
+                                                open={openQR}
+                                                onClose={handleClose}
+                                            >
+                                                <DialogContent>
+                                                    <iframe style={{ height: '269px', width: '269px' }} src={`/api/whatsapp/qrcode?id=0`}></iframe>
+                                                </DialogContent>
+                                            </Dialog>
+
                                             <Paper elevation={3} style={{ marginBottom: "1%" }}>
                                                 <CardHeader
                                                     className={classes.rightBorder}
                                                     avatar={
                                                         <Avatar aria-label="Recipe" className={classes.avatar} src={getProfileLinkUsuario()}></Avatar>
+                                                    }
+                                                    action={
+                                                        <IconButton style={{ textAlign: 'center' }} onClick={() => { setQR(true) }}>
+                                                            <img style={{ height: "100%" }} src={'/qrcode.svg'}></img>
+                                                        </IconButton>
                                                     }
 
                                                 />
@@ -508,7 +571,7 @@ export default function WhatsApp() {
                                                     }
                                                     action={
                                                         contact.WorkerAttendance != undefined ? <>
-                                                            <IconButton onClick={() => { }}>
+                                                            <IconButton onClick={() => { setOpenChange(true) }}>
                                                                 <SwapHorizontalCircleIcon />
                                                             </IconButton>
 
