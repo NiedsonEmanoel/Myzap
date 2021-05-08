@@ -128,11 +128,12 @@ function UserChat() {
                             return (function () {
                                 let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
                                 return (
-                                    <ImageMessage
-                                        classe={classMessage}
-                                        src={message.fileLink}
-                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
-                                    />
+                                        <ImageMessage
+                                            mobile='s'
+                                            classe={classMessage}
+                                            src={message.fileLink}
+                                            date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                        />
                                 );
                             }());
 
@@ -310,8 +311,7 @@ function UserChat() {
                         />
                         <GridList cols={1} style={{
                             marginTop: "0%",
-                            height: "68vh",
-                            overflow: 'hidden',
+                            height: "66vh",
                             backgroundImage: 'url(/wall.png)',
                             backgroundRepeat: 'repeat-y',
                             backgroundSize: 'cover',
@@ -320,7 +320,7 @@ function UserChat() {
                             <CardContent style={{
                                 display: "flex",
                                 flexDirection: "column-reverse",
-                                height: "68vh",
+                                height: "66vh",
                                 flexGrow: 1,
                                 width: "100%",
                                 overflow: 'auto',
@@ -338,10 +338,6 @@ function UserChat() {
             <div style={{ marginTop: "5%" }}>
                 <Forme number={contact} worker={getNomeUsuario()} />
             </div>
-
-            <Box pt={3}>
-                <Copyright />
-            </Box>
         </>
     );
 }

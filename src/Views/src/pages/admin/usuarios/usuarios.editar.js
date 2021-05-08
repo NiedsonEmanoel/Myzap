@@ -142,7 +142,7 @@ export default function Dashboard() {
         setChatId('');
         setFullName('');
         setProfileUrl('');
-        window.location.href = '/admin/usuarios'
+        window.location.href = '/admin/contatos'
         return (alert('Atualização efetuada!'));
       }
     } catch (e) {
@@ -156,7 +156,7 @@ export default function Dashboard() {
     <div className={classes.root}>
       <CssBaseline />
 
-      <MenuAdmin name="Atualização de Usuários" image={'https://avatars.githubusercontent.com/u/25508594?s=88&u=5b5d48594bf2e0858c8e35ea14ca670bed657b05&v=4'} />
+      <MenuAdmin name="Atualização de Contatos" image={'https://avatars.githubusercontent.com/u/25508594?s=88&u=5b5d48594bf2e0858c8e35ea14ca670bed657b05&v=4'} />
 
       <main className={classes.content}>
 

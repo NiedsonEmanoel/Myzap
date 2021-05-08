@@ -10,6 +10,7 @@ import WhatsMobile from './pages/admin/WhatsApp.mobile/index'
 import { SnackbarProvider } from 'notistack';
 import Collapse from '@material-ui/core/Collapse';
 import Login from './pages/admin/login';
+import Pedidos from './pages/admin/pedidos/index'
 import Recovery from './pages/admin/login/recovery';
 import Funcionarios from './pages/admin/funcionarios/index'
 import FuncionariosEditar from './pages/admin/funcionarios/funcionarios.editar';
@@ -54,12 +55,13 @@ export default function Routes() {
                         <Route path="/recovery.pass/:tokenUser" exact={true} component={Recovery} />
 
                         <PrivateRoute path="/admin/whatsapp" exact={true} component={decideWhatsApp} />
-
                         <PrivateRoute path="/admin/whatsapp/:idChat" exact={true} component={WhatsChatMobile} />
 
-                        <PrivateRoute path="/admin/usuarios" exact={true} component={Usuarios} />
-                        <PrivateRoute path="/admin/usuarios/cadastrar" exact component={UsuariosCadastrar} />
-                        <PrivateRoute path="/admin/usuarios/editar/:idUsuario" exact component={UsuariosEditar} />
+                        <PrivateRoute path="/admin/pedidos" exact={true} component={Pedidos} />
+
+                        <PrivateRoute path="/admin/contatos" exact={true} component={Usuarios} />
+                        <PrivateRoute path="/admin/contatos/cadastrar" exact component={UsuariosCadastrar} />
+                        <PrivateRoute path="/admin/contatos/editar/:idUsuario" exact component={UsuariosEditar} />
 
                         <PrivateRoute path="/admin/funcionarios" exact={true} component={Funcionarios} />
                         <PrivateRoute path="/admin/funcionarios/editar/:idFuncionario" exact component={FuncionariosEditar} />

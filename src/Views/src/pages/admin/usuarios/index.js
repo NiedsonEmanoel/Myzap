@@ -169,7 +169,7 @@ export default function UsuariosListagem() {
       usuarios.map((row) => (
         <>
           <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" >
-            <DialogTitle id="alert-dialog-title">{"Deseja excluir esse Usuário?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Deseja excluir esse Contato?"}</DialogTitle>
 
             <DialogContent>
 
@@ -237,7 +237,7 @@ export default function UsuariosListagem() {
     <div className={classes.root}>
       <CssBaseline />
 
-      <MenuAdmin name="Usuários" />
+      <MenuAdmin name="Contatos" />
 
       <main className={classes.content}>
 
@@ -253,9 +253,9 @@ export default function UsuariosListagem() {
                 justify="space-between"
                 alignItems="flex-start"
               >
-                <h2>Listagem de Usuários</h2>
+                <h2>Listagem de Contatos</h2>
 
-                <Button variant="contained" className={classes.btnSuccess} href={'/admin/usuarios/cadastrar'}><AddIcon />Cadastrar</Button>
+                <Button variant="contained" className={classes.btnSuccess} href={'/admin/contatos/cadastrar'}><AddIcon />Cadastrar</Button>
               </Grid>
 
 

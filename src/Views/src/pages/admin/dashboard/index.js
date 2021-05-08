@@ -119,9 +119,6 @@ export default function Dashboard() {
     async function s(){
       let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
-      if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
-        window.location.href='/admin/whatsapp'
-      }
     }
     s();
   }, [])

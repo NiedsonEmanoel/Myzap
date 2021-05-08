@@ -25,7 +25,7 @@ sentImg: {
     width: "48%",
     marginTop: "5px",
     maxHeight: "50px",
-    maxWidth: "500px",
+    maxWidth: "150px",
     marginBottom: "5px",
     marginLeft: "50%",
     backgroundColor: "#DCF8C6"
@@ -39,26 +39,28 @@ received: {
 },
 receivedImg: {
     width: "48%",
-    maxHeight: "500px",
+    maxHeight: "50px",
     marginTop: "5px",
     marginBottom: "5px",
-    maxWidth: "500px",
+    maxWidth: "150px",
     marginLeft: "0%",
     backgroundColor: "#ffffff"
 },
 sentVideo: {
     width: "48%",
     marginTop: "5px",
-    maxWidth: "500px",
+    maxWidth: "150px",
     marginBottom: "5px",
+    maxHeight: '50px',
     marginLeft: "50%",
     backgroundColor: "#DCF8C6"
 },
 receivedVideo: {
     width: "48%",
+    maxHeight: '50px',
     height: "100%",
     width: "100%",
-    maxWidth: "500px",
+    maxWidth: "150px",
     marginTop: "5px",
     marginBottom: "5px",
     marginLeft: "0%",
@@ -66,7 +68,7 @@ receivedVideo: {
 },
 receivedSticker: {
     width: "48%",
-    maxHeight: "150px",
+    maxHeight: '50px',
     marginTop: "5px",
     marginBottom: "5px",
     maxWidth: "150px",
@@ -75,7 +77,7 @@ receivedSticker: {
 },
 sentSticker: {
     width: "48%",
-    maxHeight: "150px",
+    maxHeight: '50px',
     marginTop: "5px",
     marginBottom: "5px",
     maxWidth: "150px",

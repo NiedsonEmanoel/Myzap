@@ -16,16 +16,16 @@ import { Link } from 'react-router-dom'
 
 export const mainListItems = (
   <div>
-    {getTipoUsuario() == '3' ? <Link to='/admin' style={{ textDecorationLine: 'none' }}>
+    <Link to='/admin' style={{ textDecorationLine: 'none' }}>
       <ListItem component="a">
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItem>
-    </Link> : <></>}
+    </Link>
 
-    <Link to='/admin' style={{ textDecorationLine: 'none' }}>
+    <Link to='/admin/pedidos' style={{ textDecorationLine: 'none' }}>
       <ListItem component="a">
         <ListItemIcon>
           <BusinessCenterIcon />
@@ -36,22 +36,22 @@ export const mainListItems = (
 
     {
       getTipoUsuario() == '3' ?
-        <Link to='/admin/usuarios' style={{ textDecorationLine: 'none' }}>
+        <Link to='/admin/contatos' style={{ textDecorationLine: 'none' }}>
           <ListItem component="a" >
             <ListItemIcon>
               <EmojiPeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Usuários" />
+            <ListItemText primary="Contatos" />
           </ListItem>
         </Link>
         :
         getTipoUsuario() == '2' ?
-          <Link to='/admin/usuarios' style={{ textDecorationLine: 'none' }}>
+          <Link to='/admin/contatos' style={{ textDecorationLine: 'none' }}>
             <ListItem component="a" >
               <ListItemIcon>
                 <EmojiPeopleIcon />
               </ListItemIcon>
-              <ListItemText primary="Usuários" />
+              <ListItemText primary="Contatos" />
             </ListItem>
           </Link>
           :

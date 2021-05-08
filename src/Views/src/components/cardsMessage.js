@@ -43,8 +43,9 @@ export const VideoMessage = (props) => {
 }
 
 export const ImageMessage = (props) => {
+    let max = props.mobile == 's' ? '150px':'400px';
     return (
-        <Card className={props.classe} style={{maxHeight: "400px"}} onClick={()=>{window.open(props.src, '_blank');}}>
+        <Card className={props.classe} style={{maxHeight: max}} onClick={()=>{window.open(props.src, '_blank');}}>
             <img style={{ height: "100%", width: "100%"}} src={props.src}></img>
             <Typography style={{ marginLeft: "3%", marginBottom: "3%" }} variant="subtitle2">
                 {props.date}
