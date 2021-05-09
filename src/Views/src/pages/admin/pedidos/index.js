@@ -7,10 +7,15 @@ import api from '../../../services/api'
 import io from '../../../services/socket.io'
 
 import {
+    Add as AddIcon,
+} from '@material-ui/icons';
+
+import {
     Grid,
     makeStyles,
     CssBaseline,
     Box,
+    Paper,
     Button,
     Card,
     CardMedia,
@@ -29,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
+    },
+    paper: {
+        padding: theme.spacing(2),
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column',
     },
     container: {
         paddingTop: theme.spacing(2),
@@ -53,6 +64,13 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
+    btnSuccess: {
+        backgroundColor: "green",
+        color: "#fff",
+        "&:hover": {
+            backgroundColor: "#12b912"
+        }
+    }
 }));
 
 export default function Dashboard() {
@@ -72,44 +90,56 @@ export default function Dashboard() {
                 <Container maxWidth="lg" className={classes.container}>
                     <main>
                         <Container className={classes.cardGrid} maxWidth="md">
+                            <Paper className={classes.paper}>
 
-                            <Grid container spacing={4}>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="space-between"
+                                    alignItems="flex-start"
+                                >
+                                    <h2>Pedidos Realizados</h2>
 
-                                {cards.map((card) => (
-                                    <Grid item key={card} xs={12} sm={6} md={4}>
+                                    <Button variant="contained" className={classes.btnSuccess} href={'/admin/contatos/cadastrar'}><AddIcon />Novo Pedido</Button>
+                                </Grid>
 
-                                        <Card className={classes.card}>
-                                            <CardMedia
-                                                className={classes.cardMedia}
-                                                image="https://source.unsplash.com/random"
-                                                title="Image title"
-                                            />
+                                <Grid container spacing={4}>
 
-                                            <CardContent className={classes.cardContent}>
-                                                <Typography gutterBottom variant="h5" component="h2">
-                                                    Heading
-                                                </Typography>
-                                                <Typography>
-                                                    This is a media card. You can use this section to describe the content.
-                                                </Typography>
-                                            </CardContent>
+                                    {cards.map((card) => (
+                                        <Grid item key={card} xs={12} sm={6} md={4}>
 
-                                            <CardActions>
-                                                <Button size="small" color="primary">
-                                                    View
-                                                </Button>
-                                                <Button size="small" color="primary">
-                                                    Edit
-                                                </Button>
-                                            </CardActions>
+                                            <Card className={classes.card}>
+                                                <CardMedia
+                                                    className={classes.cardMedia}
+                                                    image="https://source.unsplash.com/random"
+                                                    title="Image title"
+                                                />
 
-                                        </Card>
+                                                <CardContent className={classes.cardContent}>
+                                                    <Typography gutterBottom variant="h5" component="h2">
+                                                        Heading
+                                                    </Typography>
+                                                    <Typography>
+                                                        This is a media card. You can use this section to describe the content.
+                                                    </Typography>
+                                                </CardContent>
 
-                                    </Grid>
-                                ))}
+                                                <CardActions>
+                                                    <Button size="small" color="primary">
+                                                        View
+                                                    </Button>
+                                                    <Button size="small" color="primary">
+                                                        Edit
+                                                    </Button>
+                                                </CardActions>
 
-                            </Grid>
+                                            </Card>
 
+                                        </Grid>
+                                    ))}
+
+                                </Grid>
+                            </Paper>
                         </Container>
                     </main>
                     <Box pt={4}>
@@ -119,6 +149,6 @@ export default function Dashboard() {
                 </Container>
 
             </main>
-        </div>
+        </div >
     );
 }

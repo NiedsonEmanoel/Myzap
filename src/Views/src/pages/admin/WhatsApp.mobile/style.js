@@ -7,6 +7,7 @@ sent: {
     marginLeft: "50%",
     backgroundColor: "#DCF8C6"
 },
+
 sentAudio: {
     width: "98%",
     marginTop: "5px",
@@ -14,6 +15,7 @@ sentAudio: {
     marginLeft: "2%",
     backgroundColor: "#DCF8C6"
 },
+
 receivedAudio: {
     width: "98%",
     marginLeft: "0%",
@@ -21,6 +23,7 @@ receivedAudio: {
     marginBottom: "5px",
     backgroundColor: "#ffffff"
 },
+
 sentImg: {
     width: "48%",
     marginTop: "5px",
@@ -30,6 +33,7 @@ sentImg: {
     marginLeft: "50%",
     backgroundColor: "#DCF8C6"
 },
+
 received: {
     width: "48%",
     marginLeft: "0%",
@@ -37,6 +41,7 @@ received: {
     marginBottom: "5px",
     backgroundColor: "#ffffff"
 },
+
 receivedImg: {
     width: "48%",
     maxHeight: "50px",
@@ -46,6 +51,7 @@ receivedImg: {
     marginLeft: "0%",
     backgroundColor: "#ffffff"
 },
+
 sentVideo: {
     width: "48%",
     marginTop: "5px",
@@ -55,6 +61,7 @@ sentVideo: {
     marginLeft: "50%",
     backgroundColor: "#DCF8C6"
 },
+
 receivedVideo: {
     width: "48%",
     maxHeight: '50px',
@@ -66,6 +73,7 @@ receivedVideo: {
     marginLeft: "0%",
     backgroundColor: "#ffffff"
 },
+
 receivedSticker: {
     width: "48%",
     maxHeight: '50px',
@@ -75,6 +83,7 @@ receivedSticker: {
     marginLeft: "0%",
     backgroundColor: "#ffffff"
 },
+
 sentSticker: {
     width: "48%",
     maxHeight: '50px',
@@ -84,6 +93,7 @@ sentSticker: {
     marginLeft: "50%",
     backgroundColor: "#ffffff"
 }
+
 }));
 
 export default useStyles;

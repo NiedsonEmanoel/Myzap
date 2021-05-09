@@ -2,16 +2,15 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import { makeStyles } from '@material-ui/core/styles';
+
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import { getTipoUsuario } from '../services/auth'
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
-import { logout } from '../services/auth';
 import { Link } from 'react-router-dom'
 
 export const mainListItems = (
