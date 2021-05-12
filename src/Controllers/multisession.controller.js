@@ -338,8 +338,8 @@ module.exports = {
                     let dirF = path.resolve(__dirname, '../Uploads') + '/' + arrNumbers[key];
 
                     let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
-                    let link = `${process.env.PRODUCTION_LINK}/files/${arrNumbers[key]}?file=${fileName}`;
-                    let fileLinkDownload = `${process.env.PRODUCTION_LINK}/files/${arrNumbers[key]}?file=${fileName}&download=true`;
+                    let link = `/files/${arrNumbers[key]}?file=${fileName}`;
+                    let fileLinkDownload = `/files/${arrNumbers[key]}?file=${fileName}&download=true`;
                     let dirN = dirF + '/' + fileName;
 
                     let matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);

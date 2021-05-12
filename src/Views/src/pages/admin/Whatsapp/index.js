@@ -114,24 +114,24 @@ export default function WhatsApp() {
                 }
                 if (object.Id != getIdUsuario()) {
                     arr.push(object)
-                }else{
+                } else {
                     object.Type = 'Você'
                     arr.push(object)
                 }
 
             }
-           
+
             setUsers(arr)
         })()
     }, [])
 
-    useEffect(()=>{
-        async function s(){
-          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
-          setTipoUsuario(`${res}`);
+    useEffect(() => {
+        async function s() {
+            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            setTipoUsuario(`${res}`);
         }
         s();
-      }, [])
+    }, [])
 
     useEffect(() => {
         upgrade();
@@ -440,6 +440,7 @@ export default function WhatsApp() {
                 <div className={classes.appBarSpacer} />
 
                 <Container maxWidth="100%" maxHeight="100%" className={classes.container}>
+
                     <Grid>
 
                         <Grid container className={classes.fila}>
@@ -578,9 +579,9 @@ export default function WhatsApp() {
 
                                                             </IconButton>}
 
-                                                            {contact.firstAttendace ? <></> : <IconButton onClick={() => { setOpenExclude(true) }}>
+                                                            {contact.firstAttendace ? <></> : getTipoUsuario() == '3' ? <IconButton onClick={() => { setOpenExclude(true) }}>
                                                                 <DeleteIcon />
-                                                            </IconButton>}
+                                                            </IconButton> : <></>}
 
                                                             <Chip
                                                                 icon={contact.firstAttendace ? <AssignmentTurnedInIcon /> : <DoneIcon />}
@@ -648,7 +649,7 @@ export default function WhatsApp() {
                                                         Cancelar
                                                     </Button>
                                                     <Button onClick={() => {
-                                                    
+
                                                         getBase64(selectedFile).then(async (data) => {
                                                             let type = selectedFile.type.split('/', 1);
                                                             let ext = selectedFile.type.split('/', 2);

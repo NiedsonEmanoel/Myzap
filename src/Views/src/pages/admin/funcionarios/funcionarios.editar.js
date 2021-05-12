@@ -13,7 +13,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useParams } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
+import { getIdUsuario, getTipoUsuario, setTipoUsuario } from '../../../services/auth';
 import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
@@ -38,6 +38,7 @@ export default function Dashboard() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [tipo, setTipo] = useState('');
     const [foto, setFoto] = useState('');
 
@@ -58,18 +59,22 @@ export default function Dashboard() {
 
     }, []);
 
-    useEffect(()=>{
-        async function s(){
-          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
-          setTipoUsuario(`${res}`);
-          if((getTipoUsuario() != '3')){
-            window.location.href='/admin'
-          }
+    useEffect(() => {
+        async function s() {
+            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            setTipoUsuario(`${res}`);
+            if ((getTipoUsuario() != '3')) {
+                window.location.href = '/admin'
+            }
         }
         s();
-      }, [])
+    }, [])
 
     async function handleSubmit() {
+
+        if ((!nome) || (!email) || (!senha) || (!tipo)) {
+            return (enqueueSnackbar('Prencha todos os campos!', { variant: "warning" }));
+        }
 
         let data = {
             nome_usuario: nome,
@@ -80,9 +85,9 @@ export default function Dashboard() {
         }
 
         await api.put('/api/workers/' + idFuncionario, data, { timeout: 3000 }).then(() => {
-            alert('Atualização efetuada com sucesso')
+            enqueueSnackbar('Atualização efetuada com sucesso!', { variant: "success" });
         }).catch(() => {
-            alert('Erro, tente novamente mais tarde.');
+            return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "error" }))
         })
 
     }

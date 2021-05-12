@@ -10,9 +10,8 @@ module.exports = {
             useCreateIndex: true
         }, (err) => {
             if (err) {
-                console.error(' - Error on MongoDB');
-                console.log(' - Reconnecting...');
-                this.Connect();
+                console.error(err);
+                process.exit(1)
             } else {
                 console.info('- MongoDB connected.');
                 mongoose.Promise = global.Promise;

@@ -191,7 +191,16 @@ module.exports = class {
                 }
             }
 
+
             let User = RequestMongo.User;
+
+            let lastUpdateDate = parseInt(`${new Date(User.updatedAt).getTime()}`);
+            let dateNow = parseInt(`${new Date().getTime()}`)
+            
+            if(((dateNow - lastUpdateDate) >= 2*86400000)){
+                console.log('\nAtualizando foto de perfil de '+User.fullName)
+                await clientHelper.updateProfilePicInternal(User, message.sender.profilePicThumbObj.eurl);
+            }
 
             if (User.inAttendace === true) {
                 if (message.type == 'chat') {
@@ -207,8 +216,8 @@ module.exports = class {
                     let chatId = message.from;
                     let dirF = path.resolve(__dirname, '../../Uploads/') + '/' + message.from;
                     let fileName = auxFunctions.WriteFileMime(message.from, message.mimetype)
-                    let link = `${process.env.PRODUCTION_LINK}/files/${message.from}?file=${fileName}`;
-                    let fileLinkDownload = `${process.env.PRODUCTION_LINK}/files/${message.from}?file=${fileName}&download=true`;
+                    let link = `/files/${message.from}?file=${fileName}`;
+                    let fileLinkDownload = `/files/${message.from}?file=${fileName}&download=true`;
                     let dirN = dirF + '/' + fileName;
 
                     fs.mkdir(dirF, { recursive: true }, () => { });
@@ -219,7 +228,6 @@ module.exports = class {
                 }
 
                 return (io.emit('newMessage', { "from": message.from }));
-
             }
 
             if ((message.type === 'chat') && (message.body.length > (process.env.CHAR_LIMIT_PER_MESSAGE ? process.env.CHAR_LIMIT_PER_MESSAGE : 256))) {

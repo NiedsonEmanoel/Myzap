@@ -119,6 +119,7 @@ module.exports = {
 
     async findInternal(chatId) {
         let User = await Clients.findOne({ chatId });
+        console.log(User)
         try {
             let s = User.fullName;
             let user = User;
@@ -180,6 +181,18 @@ module.exports = {
         }
     },
 
+    async updateProfilePicInternal(User, profileUrl){
+        User.profileUrl = profileUrl;
+        let update = Clients.findByIdAndUpdate(User._id, User, (err, data)=>{
+            if(err){
+                console.log('Erro na atualização da foto');
+            }
+            else{
+                return;
+            }
+        })
+    },
+
 
     async delete(req, res, next) {
         try {
@@ -205,6 +218,7 @@ module.exports = {
         try {
             const { _id } = req.params;
             const { fullName, profileUrl, chatId } = req.body;
+            let Client
 
             if (!_id) {
                 const error = new Error('_ID not specified');
@@ -212,14 +226,22 @@ module.exports = {
                 next(error);
             }
 
-            data = { fullName, profileUrl, chatId };
+            let userBefore = await Clients.findById(_id).lean();
+            userBefore.fullName = fullName;
+            userBefore.profileUrl = profileUrl;
+            userBefore.chatId = chatId;
 
-            const Client = await Clients.findOneAndUpdate({ _id }, data, { new: true });
-
-            res.status(200).send({
-                Client,
-                "message": "success"
+            Client = await Clients.findByIdAndUpdate(_id, userBefore, (err, data)=>{
+                if(err){
+                    next(err)
+                }else{
+                    res.status(200).send({
+                        data,
+                        "message": "success"
+                    });
+                }
             });
+
         } catch (error) {
             next(error);
         }

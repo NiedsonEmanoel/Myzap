@@ -7,6 +7,7 @@ import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -21,7 +22,7 @@ import { Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import io from '../../../services/socket.io';
-import {getIdUsuario, setTipoUsuario, getTipoUsuario} from '../../../services/auth';
+import { getIdUsuario, setTipoUsuario, getTipoUsuario } from '../../../services/auth';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -139,12 +140,12 @@ export default function UsuariosListagem() {
     }
   }
 
-  useEffect(()=>{
-    async function s(){
-      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+  useEffect(() => {
+    async function s() {
+      let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
-      if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
-        window.location.href='/admin'
+      if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
+        window.location.href = '/admin'
       }
     }
     s();

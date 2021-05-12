@@ -102,6 +102,7 @@ export default function Dashboard() {
 
   const [fullName, setFullName] = useState('');
   const [profileUrl, setProfileUrl] = useState('');
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [chatId, setChatId] = useState('');
 
   const { idUsuario } = useParams();
@@ -132,22 +133,18 @@ export default function Dashboard() {
       const data = { fullName, profileUrl, chatId };
 
       if ((!fullName) || (!profileUrl) || (!chatId)) {
-        return (alert('Prencha todos os campos'));
+        return (enqueueSnackbar('Prencha todos os campos!', { variant: "warning" }));
       }
 
-      const response = await api.put('/api/clients/' + idUsuario, data);
+      const response = await api.put('/api/clients/update/' + idUsuario, data);
       console.log(response);
 
       if (response.status == 200) {
-        setChatId('');
-        setFullName('');
-        setProfileUrl('');
-        window.location.href = '/admin/contatos'
-        return (alert('Atualização efetuada!'));
+        enqueueSnackbar('Atualização efetuada com sucesso!', { variant: "success" });
       }
     } catch (e) {
       console.log(e);
-      alert('Erro, tente novamente mais tarde!');
+      return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "error" }))
     }
   }
 

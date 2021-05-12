@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -250,7 +251,7 @@ export default function UsuariosListagem() {
                               <TableCell align="right">
 
                                 <ButtonGroup size="small" aria-label="small button group">
-                                  <Button variant="contained" color="primary" href={'/admin/funcionarios/editar/' + row._id}>Atualizar</Button>
+                                  <Button variant="contained" color="primary" href={'/admin/funcionarios/editar/' + row._id}>ATUALIZAR</Button>
 
                                   <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
                                   </Button>

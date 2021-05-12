@@ -6,8 +6,8 @@ function Copyright() {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
-        <Link color="inherit">
-          Niedson Emanoel & Apoastro
+        <Link target='_new_blank' color="inherit" href="https://nmsoft.com.br/">
+          Nm Soft
         </Link>{' '}
         {new Date().getFullYear()}
         {''}
