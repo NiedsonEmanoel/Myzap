@@ -47,18 +47,29 @@ module.exports = {
                     let CreatedAT = moment(Avaliations[key].createdAt);
                     if (CreatedAT.diff(dateLimit, 'days') == 0) {
                         len++;
-            
+
                         soma = soma + Avaliations[key].Avaliation
                     }
                 }
                 let total = len == 0 ? 1 : len;
                 response.push({
                     "Media": soma / total,
-                    "Data": new Date(dateLimit).toLocaleDateString('pt-BR')
+                    "Data": new Date(dateLimit).toLocaleDateString('pt-BR'),
                 })
 
             }
-            res.send(response)
+            let chart = []
+
+            for (let key in response) {
+                chart.push(
+                    {
+                        "Data": response[key].Data,
+                        "Média": response[key].Media
+                    }
+                )
+            }
+
+            res.send(chart)
         } catch (e) {
             next(e)
         }

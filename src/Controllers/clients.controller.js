@@ -27,6 +27,7 @@ module.exports = {
         userChanges.firstAttendace = false;
         userChanges.WorkerAttendance = worker;
         userChanges.NameAttendance = name;
+        userChanges.inGrant = false;
 
         let Client = Clients.findByIdAndUpdate(_id, userChanges, (err, data) => {
             if (err) {
@@ -52,6 +53,7 @@ module.exports = {
 
         clientChanges.WorkerAttendance = worker || 'no-one';
         clientChanges.inAttendace = !clientChanges.inAttendace;
+        
 
         let finalClientes = await Clients.findByIdAndUpdate(_id, clientChanges, (err, data) => {
             if (err) {
@@ -255,6 +257,7 @@ module.exports = {
             userChanges.inAttendace = false;
             userChanges.firstAttendace = true;
             userChanges.WorkerAttendance = 'no-one';
+            userChanges.inGrant = true;
 
             let Client = Clients.findByIdAndUpdate(_id, userChanges, (err, data) => {
                 if (err) {

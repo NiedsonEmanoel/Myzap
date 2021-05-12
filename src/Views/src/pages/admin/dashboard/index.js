@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
+import { useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import Card from '../../../components/cards'
 import Container from '@material-ui/core/Container';
-import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
+import { getIdUsuario, getTipoUsuario, setTipoUsuario } from '../../../services/auth';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import api from '../../../services/api'
@@ -98,8 +99,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
+  const theme = useTheme();
   const classes = useStyles();
   const [usersInAttendance, setUsersInAttendance] = useState([]);
+  const [data, setData] = useState([])
+  const [Media, setMedia] = useState({})
   const [usersInFirstAttendance, setUsersInFirstAttendance] = useState([]);
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -115,12 +119,27 @@ export default function Dashboard() {
     setUsersInAttendance(response);
   }
 
-  useEffect(()=>{
-    async function s(){
-      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+  useEffect(() => {
+    (async () => {
+      let med30 = await (await api.get('/api/clients/avaliations?days=30')).data.Media;
+      let Medias = { "m30": med30.toFixed(1) }
+      setMedia(Medias)
+    })()
+  }, [])
+
+  useEffect(() => {
+    async function s() {
+      let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
     }
     s();
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      let res = await (await api.get('/api/clients/avaliations.graph?days=30')).data;
+      setData(res)
+    })()
   }, [])
 
   useEffect(() => {
@@ -132,6 +151,12 @@ export default function Dashboard() {
   useEffect(() => {
     getUsers();
   }, [])
+
+  const Graph = (props) => {
+    return (
+      <></>
+    );
+  }
 
   return (
     <div className={classes.root}>
@@ -154,13 +179,18 @@ export default function Dashboard() {
                 direction="row"
                 justify="space-evenly"
                 alignItems="center"
+
               >
+
                 <Card
                   className={fixedHeightPaper}
                   title={'Em atendimento'}
                   value={`${usersInAttendance.length}`}
                   date={`${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`}
                 />
+
+
+
 
                 <Card
                   className={fixedHeightPaper}
@@ -169,11 +199,21 @@ export default function Dashboard() {
                   date={`${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`}
                 />
 
+
+
+
                 <Card
                   className={fixedHeightPaper}
                   title={"Com designação"}
                   value={`${usersInAttendance.length - usersInFirstAttendance.length}`}
                   date={`${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`}
+                />
+
+                <Card
+                  className={fixedHeightPaper}
+                  title={"Nota do atendimento"}
+                  value={Media.m30}
+                  date={`Últimos 30 dias.`}
                 />
 
 

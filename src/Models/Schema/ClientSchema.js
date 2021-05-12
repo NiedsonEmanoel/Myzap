@@ -29,6 +29,11 @@ const ClientSchema = new mongoose.Schema({
         default: false
     },
 
+    inGrant: {
+        type: Boolean,
+        default: false
+    },
+
     firstAttendace: {
         type: Boolean,
         default: true
