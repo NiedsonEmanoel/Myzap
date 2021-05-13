@@ -158,6 +158,7 @@ function WhatsMobile() {
             if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
                 let mess = new String(message.lastMessage.body)
                 mess = mess.replace(`*${getNomeUsuario()}:*`, '')
+                mess.replace('Seu atendimento foi finalizado com sucesso.', '');
                 return ('' + mess);
             } else {
                 return ('');

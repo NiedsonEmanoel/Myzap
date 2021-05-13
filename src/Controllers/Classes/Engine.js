@@ -44,7 +44,7 @@ module.exports = class {
                     fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
                 }
             }, {
-                autoClose: 1000 * 60 * 15, updatesLog: false, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
+                autoClose: 1000 * 60 * 15, updatesLog: true, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
             }).catch(e => {
                 console.error('Erro ao iniciar sessão ' + e);
             });
@@ -80,7 +80,7 @@ module.exports = class {
                     fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
                 }),
                 autoClose: 1000 * 60 * 15,
-                updatesLog: false,
+                updatesLog: true,
                 headless: true,
                 disableSpins: true,
                 browserArgs: auxFunctions.Flags
@@ -191,15 +191,34 @@ module.exports = class {
                 }
             }
 
-
             let User = RequestMongo.User;
 
             let lastUpdateDate = parseInt(`${new Date(User.updatedAt).getTime()}`);
             let dateNow = parseInt(`${new Date().getTime()}`)
-            
-            if(((dateNow - lastUpdateDate) >= 2*86400000)){
-                console.log('\nAtualizando foto de perfil de '+User.fullName)
+
+            if (((dateNow - lastUpdateDate) >= 2 * 86400000)) {
+                console.log('\nAtualizando foto de perfil de ' + User.fullName)
                 await clientHelper.updateProfilePicInternal(User, message.sender.profilePicThumbObj.eurl);
+            }
+
+            if (User.inGrant == true) {
+                let avaliation = parseInt(message.body)
+                if (avaliation != NaN) {
+                    if (avaliation >= 10) {
+                        avaliation = 10;
+                    }
+                    if (avaliation <= 0) {
+                        avaliation = 0;
+                    }
+                    const AvController = require('../avaliations.controller');
+                    await AvController.createAvaliation(User.fullName, avaliation);
+                    await clientHelper.disableGrantMode(User);
+                    await this.Client.sendText(message.from, 'Obrigado pelo contato!');
+                    return;
+                } else {
+                    await this.Client.sendText(message.from, 'Digite um número entre 0 e 10.');
+                    return;
+                }
             }
 
             if (User.inAttendace === true) {

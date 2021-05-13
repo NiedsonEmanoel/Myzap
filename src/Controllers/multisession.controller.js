@@ -223,8 +223,12 @@ module.exports = {
                         arrNumbers[key] = `${part1}${part2}`
                     }
                     let from = arrNumbers[key] + '@c.us';
-                    let mess = arrMessages[key].replace(`*${worker}:*`, '')
-                    await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
+                    let mess = arrMessages[keyM].replace(`*${worker}:*`, '')
+
+                    if (keyM == 0) {
+                        await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
+                    }
+                    
                     io.emit('newMessageSent', { "from": from });
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
                 }
@@ -252,7 +256,7 @@ module.exports = {
         chatId = chatId.replace('@c.us', '');
         chatId = chatId + '@c.us';
 
-        fs.rmdir(path.resolve('./', 'Uploads', chatId), {recursive: true}, ()=>{});
+        fs.rmdir(path.resolve('./', 'Uploads', chatId), { recursive: true }, () => { });
 
         if (!id) {
             const error = new Error('ID not specified');

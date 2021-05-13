@@ -286,7 +286,13 @@ function UserChat() {
                                         }
                                         if (contact.firstAttendace !== undefined) {
                                             if (contact.firstAttendace == false) {
+                                                let MessDATA = {
+                                                    numbers: contact.chatId.replace('@c.us', ''),
+                                                    worker:  getNomeUsuario(),
+                                                    messages: 'Seu atendimento foi finalizado com sucesso./:end:/Por favor nos avalie com uma nota de 0 a 10.'
+                                                }
                                                 await api.put('/api/clients/' + contact._id, data);
+                                                await api.post('/api/whatsapp/message?id=0', MessDATA);
                                                 window.location.href = '/admin/whatsapp';
                                             } else {
                                                 await api.patch('/api/clients/first/?_id=' + contact._id, data);

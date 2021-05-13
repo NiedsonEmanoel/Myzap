@@ -52,20 +52,21 @@ module.exports = {
                     }
                 }
                 let total = len == 0 ? 1 : len;
+                let sa = moment(dateLimit).format('DD/MM').toString()
                 response.push({
                     "Media": soma / total,
-                    "Data": new Date(dateLimit).toLocaleDateString('pt-BR'),
+                    "Data": sa,
                 })
 
             }
-            let chart = []
+            let chart = [["Data", "Média"]]
 
             for (let key in response) {
                 chart.push(
-                    {
-                        "Data": response[key].Data,
-                        "Média": response[key].Media
-                    }
+                    [
+                        response[key].Data,
+                        response[key].Media
+                    ]
                 )
             }
 

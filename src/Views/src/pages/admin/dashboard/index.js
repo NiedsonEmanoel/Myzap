@@ -3,11 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import { useTheme } from '@material-ui/core/styles';
+import Chart from "react-google-charts";
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import Card from '../../../components/cards'
 import Container from '@material-ui/core/Container';
-import { getIdUsuario, getTipoUsuario, setTipoUsuario } from '../../../services/auth';
+import { getIdUsuario, getTipoUsuario, setTipoUsuario, getGraphicData, setGraphicData } from '../../../services/auth';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import api from '../../../services/api'
@@ -102,7 +103,7 @@ export default function Dashboard() {
   const theme = useTheme();
   const classes = useStyles();
   const [usersInAttendance, setUsersInAttendance] = useState([]);
-  const [data, setData] = useState([])
+  const [data, setData] = useState(getGraphicData())
   const [Media, setMedia] = useState({})
   const [usersInFirstAttendance, setUsersInFirstAttendance] = useState([]);
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -137,8 +138,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      let res = await (await api.get('/api/clients/avaliations.graph?days=30')).data;
+      let res = await (await api.get('/api/clients/avaliations.graph?days=15')).data;
       setData(res)
+      setGraphicData(res);
     })()
   }, [])
 
@@ -151,12 +153,6 @@ export default function Dashboard() {
   useEffect(() => {
     getUsers();
   }, [])
-
-  const Graph = (props) => {
-    return (
-      <></>
-    );
-  }
 
   return (
     <div className={classes.root}>
@@ -216,6 +212,17 @@ export default function Dashboard() {
                   date={`Últimos 30 dias.`}
                 />
 
+                <Paper className={fixedHeightPaper}>
+                  <Chart
+                    chartType="LineChart"
+                    loader={<div>Carregando o gráfico</div>}
+                    data={data}
+                    options={{
+                      title: 'Notas do atendimento',
+                      legend: 'none',
+                    }}
+                  />
+                </Paper>
 
               </Grid>
 

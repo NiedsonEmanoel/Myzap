@@ -2,6 +2,7 @@ export const TOKEN_KEY = '&app-token';
 export const ID_USUARIO = '&id-usuario';
 export const NOME_USUARIO = '&nome-usuario';
 export const USER_TYPE = '&user-type';
+export const GRAPHIC_DATA = '&graphic-dara'
 export const PROFILE_LINK = '&profile-link';
 export const MENU_PREFERENCE = '&menu-user';
 export const COUNT_ATTENDANCE = '&count-attendance';
@@ -27,6 +28,20 @@ export const getIdUsuario = () => sessionStorage.getItem(ID_USUARIO);
 
 export const setNomeUsuario = id => sessionStorage.setItem(NOME_USUARIO, id);
 export const getNomeUsuario = () => sessionStorage.getItem(NOME_USUARIO);
+
+export const setGraphicData = (data) => {
+    let json = JSON.stringify(data);
+    localStorage.setItem(GRAPHIC_DATA, json);
+}
+
+export const getGraphicData = () => {
+    try{
+        let json = JSON.parse(localStorage.getItem(GRAPHIC_DATA));
+        return json;
+    }catch(e){
+        return [["Data","Média"], ["00/00", 0]];
+    }
+}
 
 export const setTipoUsuario = id => sessionStorage.setItem(USER_TYPE, id);
 export const getTipoUsuario = () => sessionStorage.getItem(USER_TYPE);

@@ -121,7 +121,6 @@ module.exports = {
 
     async findInternal(chatId) {
         let User = await Clients.findOne({ chatId });
-        console.log(User)
         try {
             let s = User.fullName;
             let user = User;
@@ -185,6 +184,18 @@ module.exports = {
 
     async updateProfilePicInternal(User, profileUrl){
         User.profileUrl = profileUrl;
+        let update = Clients.findByIdAndUpdate(User._id, User, (err, data)=>{
+            if(err){
+                console.log('Erro na atualização da foto');
+            }
+            else{
+                return;
+            }
+        })
+    },
+
+    async disableGrantMode(User){
+        User.inGrant = false;
         let update = Clients.findByIdAndUpdate(User._id, User, (err, data)=>{
             if(err){
                 console.log('Erro na atualização da foto');
