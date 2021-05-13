@@ -1,14 +1,12 @@
 "use strict";
-const path = require('path');
-const pathEnv = path.resolve(__dirname, '.env');
 
 //.env
-require('dotenv').config({ path: pathEnv });
+require('dotenv').config();
 
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
-const fs = require('fs');
 const Routes = require('./Routes');
 const cors = require('cors');
 const MailerClass = require('./Controllers/Classes/Mailer');
@@ -37,37 +35,10 @@ let serverRest;
 
 let io;
 (function () {
-    console.clear();
-    switch (process.env.useHTTPS) {
-        case '1':
-            let certificate;
-            let privatekey;
-
-            try {
-                certificate = fs.readFileSync(process.env.CERT_CRT);
-                privatekey = fs.readFileSync(process.env.CERT_KEY);
-            } catch (e) {
-                console.error(e);
-                serverRest = require('http').createServer(app);
-                io = require('socket.io')(serverRest);
-                serverRest.listen(process.env.PORT, process.env.HOST, () => { });
-
-                console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
-                break;
-            }
-            serverRest = require('https').createServer({ key: privatekey, cert: certificate, rejectUnauthorized: false }, app);
-            io = require('socket.io')(serverRest);
-            serverRest.listen(process.env.PORT, process.env.HOST, () => { });
-
-            console.info(`Servidor HTTPS rodando em: https://${process.env.HOST}:${process.env.PORT}/`);
-            break;
-
-        default:
-            serverRest = require('http').createServer(app);
-            io = require('socket.io')(serverRest);
-            serverRest.listen(process.env.PORT, process.env.HOST, () => { });
-            console.info(`Servidor HTTP rodando em: http://${process.env.HOST}:${process.env.PORT}/`);
-    }
+    serverRest = require('http').createServer(app);
+    io = require('socket.io')(serverRest);
+    serverRest.listen(process.env.PORT || 3000, () => { });
+    console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT || 3000}/`);
 
     app.use(cors({
         origin: '*',

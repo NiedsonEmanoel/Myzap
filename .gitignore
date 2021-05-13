@@ -110,7 +110,7 @@ dist
 *.crt
 *.key
 
-src/Uploads/
+#src/Uploads/*
 
 #MyJSON
 src/tokens/*.json

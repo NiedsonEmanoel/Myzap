@@ -61,7 +61,7 @@ export default function RecipeReviewCard(props) {
 
       <CardActions disableSpacing>
         <Button size="small" color="primary">
-          Atualizar
+          Detalhes
         </Button>
         <Button size="small" color="secondary">
           Finalizar etapa

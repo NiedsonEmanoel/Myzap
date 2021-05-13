@@ -161,8 +161,9 @@ module.exports = class {
             if (!RequestMongo.Exists) {
                 if (!this.#IntenalAwaiting.includes(message.from)) {
                     this.#IntenalAwaiting.push(message.from);
-                    const messageOne = process.env.MESSAGE_ONE.replace('%GREETING%', auxFunctions.Greetings());
-                    const messageTwo = process.env.MESSAGE_TWO;
+                    let messageOne = process.env.MESSAGE_ONE || "Olá %GREETING%, você ainda não está cadastrado em nosso sistema.";
+                    messageOne = messageOne.replace('%GREETING%', auxFunctions.Greetings());
+                    const messageTwo = process.env.MESSAGE_TWO || "Para podermos lhe atender com uma experiência completa, digite seu nome e sobrenome.";
 
                     await this.Client.reply(message.from, messageOne, message.id.toString());
                     await this.Client.sendText(message.from, messageTwo);
