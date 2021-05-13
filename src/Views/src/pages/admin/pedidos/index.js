@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
+import CardPedido from '../../../components/cardsPedidos'
 
 import api from '../../../services/api'
 import io from '../../../services/socket.io'
@@ -17,11 +18,6 @@ import {
     Box,
     Paper,
     Button,
-    Card,
-    CardMedia,
-    CardContent,
-    CardActions,
-    Typography,
     Container,
 } from '@material-ui/core';
 
@@ -49,23 +45,13 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
     },
-    card: {
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    cardMedia: {
-        paddingTop: '56.25%', // 16:9
-    },
-    cardContent: {
-        flexGrow: 1,
-    },
     footer: {
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
     btnSuccess: {
         backgroundColor: "green",
+        marginBottom: '15px',
         color: "#fff",
         "&:hover": {
             backgroundColor: "#12b912"
@@ -75,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
     const classes = useStyles();
-    const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const cards = [1, 2, 3];
 
     return (
         <div className={classes.root}>
@@ -108,33 +94,15 @@ export default function Dashboard() {
                                     {cards.map((card) => (
                                         <Grid item key={card} xs={12} sm={6} md={4}>
 
-                                            <Card className={classes.card}>
-                                                <CardMedia
-                                                    className={classes.cardMedia}
-                                                    image="https://source.unsplash.com/random"
-                                                    title="Image title"
-                                                />
-
-                                                <CardContent className={classes.cardContent}>
-                                                    <Typography gutterBottom variant="h5" component="h2">
-                                                        Heading
-                                                    </Typography>
-                                                    <Typography>
-                                                        This is a media card. You can use this section to describe the content.
-                                                    </Typography>
-                                                </CardContent>
-
-                                                <CardActions>
-                                                    <Button size="small" color="primary">
-                                                        View
-                                                    </Button>
-                                                    <Button size="small" color="primary">
-                                                        Edit
-                                                    </Button>
-                                                </CardActions>
-
-                                            </Card>
-
+                                            <CardPedido
+                                                srcIconClient="https://i.pinimg.com/280x280_RS/00/21/1b/00211b8db6839e80fde16ee7006991eb.jpg"
+                                                clientName="Niedson Emanoel"
+                                                title="Pizza 4 Queijos"
+                                                date={new Date().toLocaleString("pt-BR")}
+                                                srcCentralImage="https://material-ui.com/static/images/cards/paella.jpg"
+                                                description="Uma pizza de 4 sabores deliciosa e maestria da casa."
+                                                Obs="Sem carne"
+                                            />
                                         </Grid>
                                     ))}
 
