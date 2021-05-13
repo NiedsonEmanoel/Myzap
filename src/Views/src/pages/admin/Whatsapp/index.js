@@ -241,8 +241,8 @@ export default function WhatsApp() {
         try {
             if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
                 let mess = new String(message.lastMessage.body)
-                mess = mess.replace(`*${worker}:*`, '')
-                mess.replace('Seu atendimento foi finalizado com sucesso.', '');
+                mess = mess.trim();
+                mess = mess=='Seu atendimento foi finalizado com sucesso.'?'':mess
                 return ('' + mess);
             } else {
                 return ('');

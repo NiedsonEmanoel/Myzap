@@ -3,6 +3,7 @@ import api from '../../../services/api';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
+import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
 import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario, setTipoUsuario } from '../../../services/auth'
@@ -17,9 +18,9 @@ import {
     Grid,
     Box,
     IconButton,
-    AppBar,
-    Typography,
-    Toolbar,
+    CssBaseline,
+    Container,
+    makeStyles,
     ListItem,
     ListItemText,
     Divider,
@@ -29,9 +30,27 @@ import {
     List
 } from '@material-ui/core';
 
-import { getNomeUsuario } from '../../../services/auth';
+const drawerWidth = 240;
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+    },
+    appBarSpacer: theme.mixins.toolbar,
+    content: {
+        flexGrow: 1,
+        height: '100vh',
+        overflow: 'auto',
+    },
+    container: {
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(4),
+    },
+}));
 
 function WhatsMobile() {
+    const classes = useStyles();
     const [list, setList] = useState([]);
     const [resultList, setResultList] = useState([]);
     const [queryText, setQueryText] = useState('');
@@ -90,9 +109,9 @@ function WhatsMobile() {
                 let date = new Date(message.lastMessage.createdAt)
                 let hour = date.toLocaleTimeString('pt-br')
                 let arrHour = hour.split(":", 2)
-                return(`${arrHour[0]}:${arrHour[1]}`);
+                return (`${arrHour[0]}:${arrHour[1]}`);
             }
-            else{
+            else {
                 return ('');
             }
         }
@@ -145,20 +164,20 @@ function WhatsMobile() {
 
     }, []);
 
-    useEffect(()=>{
-        async function s(){
-          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
-          setTipoUsuario(`${res}`);
+    useEffect(() => {
+        async function s() {
+            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            setTipoUsuario(`${res}`);
         }
         s();
-      }, [])
+    }, [])
 
     function isValidLast(message) {
         try {
             if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
                 let mess = new String(message.lastMessage.body)
-                mess = mess.replace(`*${getNomeUsuario()}:*`, '')
-                mess.replace('Seu atendimento foi finalizado com sucesso.', '');
+                mess = mess.trim();
+                mess = mess == 'Seu atendimento foi finalizado com sucesso.' ? '' : mess
                 return ('' + mess);
             } else {
                 return ('');
@@ -187,83 +206,76 @@ function WhatsMobile() {
     }
 
     return (
-        <>
-            <div style={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" color="inherit" style={{ flexGrow: 1 }}>
-                            {`WhatsApp`}
-                        </Typography>
+        <div className={classes.root}>
+            <CssBaseline />
 
+            <MenuAdmin name="WhatsApp" />
 
-                        <IconButton color="inherit" onClick={() => { window.location.href = '/admin' }}>
-                            <ArrowBackIcon />
-                        </IconButton>
+            <main className={classes.content}>
 
-                        <IconButton color="inherit" onClick={handleNotif}>
-                            {notif ? <NotificationsActiveIcon /> : <NotificationsOffIcon />}
-                        </IconButton>
+                <div className={classes.appBarSpacer} />
 
-                    </Toolbar>
-                </AppBar>
-            </div>
+                <Container maxWidth="lg" style={{paddingTop: '10px'}}>
 
-            <Grid container>
-                <Grid item xs={12}>
+                    <Grid container style={{height: '100%'}}>
+                        <Grid item xs={12}>
 
-                    <Paper component="form"
-                        onChange={handleOnQuery}
-                        onSubmit={handleOnQuery}
-                        style={{
-                            display: 'flex',
-                            width: "100%",
-                            marginTop: "2px",
-                            marginBottom: "5px"
-                        }}>
+                            <Paper component="form"
+                                onChange={handleOnQuery}
+                                onSubmit={handleOnQuery}
+                                style={{
+                                    display: 'flex',
+                                    width: "100%",
+                                    marginTop: "2px",
+                                    marginBottom: "5px"
+                                }}>
 
-                        <InputBase
-                            placeholder="Pesquisar por contato"
-                            value={queryText}
-                            onChangeCapture={(e) => {
-                                if (!e.target.value) {
-                                    setQueryText('');
-                                    setResultList(list)
-                                } else {
-                                    setQueryText(e.target.value)
-                                }
+                                <InputBase
+                                    placeholder="Pesquisar por contato"
+                                    value={queryText}
+                                    onChangeCapture={(e) => {
+                                        if (!e.target.value) {
+                                            setQueryText('');
+                                            setResultList(list)
+                                        } else {
+                                            setQueryText(e.target.value)
+                                        }
 
-                            }}
-                            inputProps={{ 'aria-label': 'Pesquisar por contato' }}
-                            style={{
-                                width: "100%",
-                                marginLeft: "20px"
-                            }}
-                        />
-                        <IconButton type="submit" aria-label="search">
-                            <SearchIcon />
-                        </IconButton>
-                        <Divider orientation="vertical" />
-                    </Paper>
+                                    }}
+                                    inputProps={{ 'aria-label': 'Pesquisar por contato' }}
+                                    style={{
+                                        width: "100%",
+                                        marginLeft: "20px"
+                                    }}
+                                />
+                                <IconButton type="submit" aria-label="search">
+                                    <SearchIcon />
+                                </IconButton>
+                                <Divider orientation="vertical" />
+                            </Paper>
 
-                    <Paper elevation={2}>
-                        <GridList style={{
-                            width: '100%',
-                            display: "flex",
-                            height: "75vh",
-                            flexWrap: 'normal'
-                        }} cols={1}>
-                            <List >
-                                {getLeftList()}
-                            </List>
-                        </GridList>
-                    </Paper>
+                            <Paper elevation={2}>
+                                <GridList style={{
+                                    width: '100%',
+                                    display: "flex",
+                                    height: "75vh",
+                                    flexWrap: 'normal'
+                                }} cols={1}>
+                                    <List >
+                                        {getLeftList()}
+                                    </List>
+                                </GridList>
+                            </Paper>
 
-                </Grid>
-            </Grid>
-            <Box pt={1}>
-                <Copyright />
-            </Box>
-        </>
+                        </Grid>
+                    </Grid>
+                    <Box pt={1}>
+                        <Copyright />
+                    </Box>
+                </Container>
+            </main>
+        </div>
+
     );
 }
 

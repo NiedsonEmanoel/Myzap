@@ -30,8 +30,9 @@ export const AudioMessage = (props) => {
 }
 
 export const VideoMessage = (props) => {
+    let max = props.mobile == 's' ? '80px':'400px';
     return (
-        <Card className={props.classe} style={{maxHeight: "400px"}}>
+        <Card className={props.classe} style={{maxHeight: max}}>
             <CardContent style={{}}>
                 <video style={{ height: "100%", width: "100%" }} src={props.src} controls="true"></video>
             </CardContent>
@@ -43,7 +44,7 @@ export const VideoMessage = (props) => {
 }
 
 export const ImageMessage = (props) => {
-    let max = props.mobile == 's' ? '150px':'400px';
+    let max = props.mobile == 's' ? '80px':'400px';
     return (
         <Card className={props.classe} style={{maxHeight: max}} onClick={()=>{window.open(props.src, '_blank');}}>
             <img style={{ height: "100%", width: "100%"}} src={props.src}></img>

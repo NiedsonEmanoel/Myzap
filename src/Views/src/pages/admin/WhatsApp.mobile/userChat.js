@@ -128,12 +128,12 @@ function UserChat() {
                             return (function () {
                                 let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
                                 return (
-                                        <ImageMessage
-                                            mobile='s'
-                                            classe={classMessage}
-                                            src={message.fileLink}
-                                            date={new Date(message.createdAt).toLocaleString('pt-BR')}
-                                        />
+                                    <ImageMessage
+                                        mobile='s'
+                                        classe={classMessage}
+                                        src={message.fileLink}
+                                        date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                    />
                                 );
                             }());
 
@@ -167,6 +167,7 @@ function UserChat() {
                                 let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
                                 return (
                                     <VideoMessage
+                                        mobile='s'
                                         classe={classMessage}
                                         src={message.fileLink}
                                         date={new Date(message.createdAt).toLocaleString('pt-BR')}
@@ -288,7 +289,7 @@ function UserChat() {
                                             if (contact.firstAttendace == false) {
                                                 let MessDATA = {
                                                     numbers: contact.chatId.replace('@c.us', ''),
-                                                    worker:  getNomeUsuario(),
+                                                    worker: getNomeUsuario(),
                                                     messages: 'Seu atendimento foi finalizado com sucesso./:end:/Por favor nos avalie com uma nota de 0 a 10.'
                                                 }
                                                 await api.put('/api/clients/' + contact._id, data);
@@ -317,7 +318,7 @@ function UserChat() {
                         />
                         <GridList cols={1} style={{
                             marginTop: "0%",
-                            height: "66vh",
+                            height: "70vh",
                             backgroundImage: 'url(/wall.png)',
                             backgroundRepeat: 'repeat-y',
                             backgroundSize: 'cover',
@@ -326,7 +327,7 @@ function UserChat() {
                             <CardContent style={{
                                 display: "flex",
                                 flexDirection: "column-reverse",
-                                height: "66vh",
+                                height: "70vh",
                                 flexGrow: 1,
                                 width: "100%",
                                 overflow: 'auto',
