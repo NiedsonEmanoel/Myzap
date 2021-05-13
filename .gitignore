@@ -120,4 +120,6 @@ src/package-lock.json
 
 package-lock.json
 
-Docker/*
+dialogflow.json
+
+Dockerfile
