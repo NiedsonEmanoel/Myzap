@@ -10,7 +10,8 @@ const messageHelper = require('./messages.controller');
 
 module.exports = {
     async createInternal() {
-        const internalCredential = require(path.resolve(process.env.JSON_LOCATION));
+        let dir = process.env.JSON_LOCATION || __dirname+'../dialogflow.json';
+        const internalCredential = require(path.resolve(dir));
         for (let index = 0; index < limit; index++) {
             sessions[index] = new Venom(index, internalCredential, process.env.LANGUAGE_CODE, 'Credencial Interna');
         }
