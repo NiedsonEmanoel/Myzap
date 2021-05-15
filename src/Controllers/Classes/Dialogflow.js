@@ -139,7 +139,7 @@ module.exports = class {
         if (deleteAtEnd == true) { fs.unlink(dir, () => { }); }
 
         const result = responses[0].queryResult;
-        console.log(`  Query: ${result.queryText}`);
+        console.log(`Query: ${result.queryText}`);
 
         if (result.fulfillmentText) {
             return responses[0];

@@ -7,7 +7,7 @@ module.exports = class {
             service: service,
             auth: {
                 user: user,
-                pass: pass
+                pass: pass,
                 // Para gerar uma senha no Gmail: 
                 // 1 - Entre na configuração de segurança da conta da Google (https://myaccount.google.com/security)
                 // 2 - Abra opção "App Passwords"

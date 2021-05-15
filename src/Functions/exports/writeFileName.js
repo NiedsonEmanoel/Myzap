@@ -12,7 +12,7 @@ module.exports = {
 
         const fileName = `${telefone}` + "-" + `${year}` + `${month}` + `${date}` + "-" + `${miliseconds}`;
         let file = `${fileName}.${extension}`;
-        console.log(file);
+
         return file;
     },
 
@@ -27,7 +27,7 @@ module.exports = {
 
         const fileName = `${telefone}` + "-" + `${year}` + `${month}` + `${date}` + "-" + `${miliseconds}`;
         let file = `${fileName}.${mime.extension(mimetype)}`;
-        console.log(file);
+
         return file;
     }
 }

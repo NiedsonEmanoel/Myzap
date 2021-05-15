@@ -1,4 +1,5 @@
-FROM ubuntu
+FROM debian
+ARG DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /usr/src/app
 
@@ -9,6 +10,8 @@ COPY /src /Myzap/src
 COPY package.json /Myzap/
 
 COPY dialogflow.json /usr/src/app/Myzap/src/dialogflow.json
+
+ENV MODE=PRODUCTION
 
 #Mongo Link
 ENV MONGO=mongodb://localhost:27017/myzap-db
@@ -25,15 +28,6 @@ ENV SECRET=86d0f103bf15d37ebb1f5a23a1a4dd06
 #Intent que redireciona o usuário para o modo de atendimento ao cliente
 ENV INTENT_SAC=Atendimento
 
-#Limites de caracteres por mensagem, 256 é o limite do dialog flow
-ENV CHAR_LIMIT_PER_MESSAGE=256
-
-#Enviar mensagem de verificação para o próprio número? 0-> Não, 1-> Sim
-ENV SEND_NO_PISHING=0
-
-#Limite de sessões simultâneas
-ENV SESSION_LIMIT=1
-
 #Seviço de NODEMAILER
 ENV USER_MAIL=
 
@@ -47,62 +41,23 @@ ENV ENGINE=VENOM
 EXPOSE 3000
 
 RUN apt-get update && apt-get install -y \
-    gconf-service \
-    libasound2 \
-    libatk1.0-0 \
-    libc6 \
-    libcairo2 \
-    libcups2 \
-    libexpat1 \
-    libfontconfig1 \
-    libgcc1 \
-    libgconf-2-4 \
-    libgdk-pixbuf2.0-0 \
-    libglib2.0-0 \
-    libgtk-3-0 \
-    libnspr4 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libstdc++6 \
-    libx11-6 \
-    libx11-xcb1 \
-    libxcb1 \
-    libxcomposite1 \
-    libxcursor1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxi6 \
-    libxrandr2 \
-    libxrender1 \
-    libxss1 \
-    libxtst6 \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator1 \
-    libnss3 \
-    lsb-release \
-    xdg-utils \
     wget \
-    build-essential \
-    apt-transport-https \
-    libgbm-dev \
-    && apt-get install -y \
+    build-essential libssl-dev \
     git \
     nodejs\
-    npm \
-    && npm cache clean -f \
-    && npm install -g n \
-    && n stable \
-    && PATH="$PATH" \
-    && npm install -g pm2 \
-    && git clone https://github.com/NiedsonEmanoel/Myzap \
-    && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && apt install ./google-chrome-stable_current_amd64.deb \
-    && rm -rf google-chrome-stable_current_amd64.deb \
-    && cd Myzap/ \
-    && npm install \
-    && cd src/ \
-    && chmod 777 Uploads/* 
+    npm 
 
-ENTRYPOINT [ "pm2 start /usr/src/app/Myzap/src/index.js" ]
+RUN npm install -g n \
+    && n stable 
+
+RUN npm install -g pm2 \
+    && wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && apt install -y ./google-chrome-stable_current_amd64.deb \
+    && rm -rf google-chrome-stable_current_amd64.deb 
+
+RUN cd /usr/src/app/Myzap/ \
+    && npm install \
+    && chmod 777 src/*
+
+CMD pm2-runtime start Myzap/src/index.js  
+

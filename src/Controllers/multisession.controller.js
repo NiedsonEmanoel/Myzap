@@ -4,16 +4,26 @@ const fs = require('fs');
 let sessions = [];
 let started = [];
 const auxFunctions = require('../Functions/index')
-let limit = new Number(process.env.SESSION_LIMIT) || 16;
+let limit = new Number(process.env.SESSION_LIMIT);
 const io = require('../index');
 const messageHelper = require('./messages.controller');
 
 module.exports = {
     async createInternal() {
-        let dir = process.env.JSON_LOCATION || __dirname+'../dialogflow.json';
+        let dir = process.env.JSON_LOCATION;
+        if (!dir) {
+            dir = path.resolve(__dirname, '../', 'dialogflow.json');
+        }
         const internalCredential = require(path.resolve(dir));
-        for (let index = 0; index < limit; index++) {
-            sessions[index] = new Venom(index, internalCredential, process.env.LANGUAGE_CODE, 'Credencial Interna');
+        if (!limit) {
+            limit = 1;
+        }
+        if (!process.env.MODE) {
+            for (let index = 0; index < limit; index++) {
+                sessions[index] = new Venom(index, internalCredential, process.env.LANGUAGE_CODE, 'Credencial Interna');
+            }
+        }else{
+            sessions[0] = new Venom(0, internalCredential, process.env.LANGUAGE_CODE, 'Credencial Interna');
         }
     },
 
@@ -229,7 +239,7 @@ module.exports = {
                     if (keyM == 0) {
                         await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
                     }
-                    
+
                     io.emit('newMessageSent', { "from": from });
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
                 }

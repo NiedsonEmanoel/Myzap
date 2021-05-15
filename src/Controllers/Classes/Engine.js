@@ -35,16 +35,21 @@ module.exports = class {
 
     async initVenom() {
         if (process.env.ENGINE !== 'WPPCONNECT') {
+            console.log('VENOM:')
             this.Client = await this.#engine.create('MyZAP ' + this.#index, (Base64QR => {
                 let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
                 let buffer = new Buffer.from(matches[2], 'base64');
                 fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
-            }), (status) => {
-                if (status == 'qrReadSuccess') {
-                    fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+            }), (statusSession, session) => {
+                if (statusSession == 'qrReadSuccess') {
+                    fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
                 }
+                io.emit('SessionStats', {
+                    "Status": statusSession,
+                    "Session": session
+                })
             }, {
-                autoClose: 1000 * 60 * 15, updatesLog: true, headless: true, disableSpins: true, browserArgs: auxFunctions.Flags
+                autoClose: 1000 * 60 * 15, updatesLog: false, headless: true, disableWelcome: true, disableSpins: true, browserArgs: auxFunctions.Flags
             }).catch(e => {
                 console.error('Erro ao iniciar sessão ' + e);
             });
@@ -271,8 +276,10 @@ module.exports = class {
                 }
 
 
-            } else if (message.hasMedia === true && message.type === 'audio' || message.type === 'ptt') {
-
+            } else if (!((message.type === 'audio') || (message.type === 'ptt'))) {
+                await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
+                return;
+            } else {
                 const Buffer = await this.Client.decryptFile(message);
                 let nameAudio = auxFunctions.WriteFileMime(message.from, message.mimetype);
                 let dir = path.join(__dirname, '/Temp', nameAudio);
@@ -289,19 +296,15 @@ module.exports = class {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                     console.info('Fallback');
                 }
-
             }
 
             if (intent === process.env.INTENT_SAC) {
-
-                console.log('Atendimento solicitado via chat');
                 await clientHelper.switchFirst(User);
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
                 io.emit('newNotification', {
                     'type': "info",
                     'message': 'Um novo cliente solicitou atendimento',
                 });
-
             }
         } catch (e) {
             console.error('Error ' + e);

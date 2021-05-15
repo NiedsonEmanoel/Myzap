@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const baseDir = path.resolve('./', 'Views', 'build');
+const baseDir = path.resolve(__dirname, '..', 'Views', 'build');
 const app = express.Router();
 
 app.use('/webhook', require('./webhooks/webhooks'));

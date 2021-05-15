@@ -1,9 +1,15 @@
 "use strict";
 
-//.env
-require('dotenv').config();
+if (!process.env.MODE) {
+    console.clear();
+    console.warn('- Iniciando em desenvolvimento')
 
-const path = require('path');
+    require('dotenv').config();
+}else{
+    console.clear();
+    console.warn('- Iniciando em produção')
+}
+
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
@@ -23,14 +29,14 @@ const app = express();
 
 const { MongoDB } = require('./Databases');
 
-const { createInternal, initilizeInternal } = require('./Controllers/multisession.controller');
+const WhatsApp = require('./Controllers/multisession.controller');
 
 let serverRest;
 
 (async function () {
     await MongoDB.Connect();
-    await createInternal();
-    await initilizeInternal();
+    await WhatsApp.createInternal();
+    await WhatsApp.initilizeInternal();
 }());
 
 let io;
@@ -38,7 +44,7 @@ let io;
     serverRest = require('http').createServer(app);
     io = require('socket.io')(serverRest);
     serverRest.listen(process.env.PORT || 3000, () => { });
-    console.info(`Servidor HTTP rodando em: http://localhost:${process.env.PORT || 3000}/`);
+    console.info(`- Servidor HTTP rodando em: http://localhost:${process.env.PORT || 3000}/`);
 
     app.use(cors({
         origin: '*',
@@ -58,7 +64,7 @@ let io;
 }());
 
 io.on('connection', socket => {
-    console.log(`Socket conectado ${socket.id}`);
+    console.log(`- Socket connected: ${socket.id}`);
 });
 
 exports.sendEmail = function (options) {
