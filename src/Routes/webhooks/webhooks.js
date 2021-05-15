@@ -1,6 +1,8 @@
 const express = require('express');
 const Router = express.Router();
 
-Router.post('/dialogflow', require('./dialogflow'));
+const { DialogflowTokenVerify } = require('../../Middlewares')
+
+Router.post('/dialogflow', DialogflowTokenVerify, require('./dialogflow'));
 
 module.exports = Router;
