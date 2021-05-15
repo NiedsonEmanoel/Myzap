@@ -5,7 +5,7 @@ if (!process.env.MODE) {
     console.warn('- Iniciando em desenvolvimento')
 
     require('dotenv').config();
-}else{
+} else {
     console.clear();
     console.warn('- Iniciando em produção')
 }
@@ -17,6 +17,10 @@ const Routes = require('./Routes');
 const cors = require('cors');
 const MailerClass = require('./Controllers/Classes/Mailer');
 
+const app = express();
+const serverRest = require('http').createServer(app);
+const io = require('socket.io')(serverRest);
+
 const Mailer = new MailerClass(
     process.env.USER_MAIL,
     process.env.PASSWORD_MAIL,
@@ -25,24 +29,17 @@ const Mailer = new MailerClass(
 
 const { Limiter } = require('./Functions');
 
-const app = express();
-
 const { MongoDB } = require('./Databases');
 
 const WhatsApp = require('./Controllers/multisession.controller');
 
-let serverRest;
-
-(async function () {
+(async () => {
     await MongoDB.Connect();
     await WhatsApp.createInternal();
     await WhatsApp.initilizeInternal();
-}());
+})();
 
-let io;
-(function () {
-    serverRest = require('http').createServer(app);
-    io = require('socket.io')(serverRest);
+(() => {
     serverRest.listen(process.env.PORT || 3000, () => { });
     console.info(`- Servidor HTTP rodando em: http://localhost:${process.env.PORT || 3000}/`);
 
@@ -61,13 +58,13 @@ let io;
     app.use(cookieParser());
 
     app.use(Routes);
-}());
+})();
 
 io.on('connection', socket => {
     console.log(`- Socket connected: ${socket.id}`);
 });
 
-exports.sendEmail = function (options) {
+exports.sendEmail = (options) => {
     Mailer.sendEmail(options, (err, info) => {
         if (err) {
             console.log('Erro no envio do email.');
@@ -75,6 +72,6 @@ exports.sendEmail = function (options) {
     })
 }
 
-exports.emit = function (event, data) {
+exports.emit = (event, data) => {
     return (io.emit(event, data));
 }
