@@ -44,6 +44,7 @@ module.exports = class {
                 if (statusSession == 'qrReadSuccess') {
                     fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
                 }
+                console.log(statusSession)
                 io.emit('SessionStats', {
                     "Status": statusSession,
                     "Session": session

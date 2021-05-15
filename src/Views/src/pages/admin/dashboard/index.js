@@ -218,7 +218,7 @@ export default function Dashboard() {
                     loader={<div>Carregando o gráfico</div>}
                     data={data}
                     options={{
-                      title: 'Notas do atendimento',
+                      title: 'Notas do atendimento - 15 dias',
                       legend: 'none',
                     }}
                   />
