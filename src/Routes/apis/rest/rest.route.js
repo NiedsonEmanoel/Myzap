@@ -1,10 +1,10 @@
 const express = require('express');
 const Router = express.Router();
-const jwtPasser = require('../../../Middlewares/verify')
+const {JwtVerify} = require('../../../Middlewares/')
 
-Router.use('/workers', require('./workers.route'));
-Router.use('/messages', jwtPasser, require('./messages.route'));
-Router.use('/clients', jwtPasser, require('./clients.route'));
-Router.use('/credentials', jwtPasser, require('./credentials.route'));
+Router.use('/workers', JwtVerify, require('./workers.route'));
+Router.use('/messages', JwtVerify, require('./messages.route'));
+Router.use('/clients', JwtVerify, require('./clients.route'));
+Router.use('/credentials', JwtVerify, require('./credentials.route'));
 
 module.exports = Router;
