@@ -26,7 +26,7 @@ module.exports = {
                 next(error);
             }
 
-            let Message = await Messages.find({ chatId });
+            let Message = await Messages.find({ chatId }).sort({createdAt:1});
 
             res.status(200).send({
                 "Message": Message,
