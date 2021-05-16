@@ -3,14 +3,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /usr/src/app
 
-RUN mkdir /Myzap
-
-COPY /src /Myzap/src
-
-COPY package.json /Myzap/
-
-COPY dialogflow.json /usr/src/app/Myzap/src/dialogflow.json
-
 ENV MODE=PRODUCTION
 
 #Mongo Link
@@ -20,10 +12,10 @@ ENV MONGO=mongodb://localhost:27017/myzap-db
 ENV LANGUAGE_CODE=pt-BR
 
 #Token para o webhook
-ENV TOKENDialogflow=eb68ebf61f2dc69f3eb084531bb5dc52
+ENV TOKENDialogflow=
 
 #Segredo do JWT:
-ENV SECRET=86d0f103bf15d37ebb1f5a23a1a4dd06
+ENV SECRET=
 
 #Intent que redireciona o usuário para o modo de atendimento ao cliente
 ENV INTENT_SAC=Atendimento
@@ -63,9 +55,14 @@ RUN npm install -g pm2 \
     && apt install -y ./google-chrome-stable_current_amd64.deb \
     && rm -rf google-chrome-stable_current_amd64.deb 
 
-RUN cd /usr/src/app/Myzap/ \
+RUN cd /usr/src/app/ \
+    && git clone https://github.com/NiedsonEmanoel/Myzap \
+    && cd Myzap/ \
     && npm install \
-    && chmod 777 src/*
+    && chmod 777 src/* \
+    && cd src/Views \
+    && rm -rf src/ \
+    && rm -rf public/ 
 
 CMD pm2-runtime start Myzap/src/index.js  
 
