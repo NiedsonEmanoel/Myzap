@@ -53,13 +53,13 @@ module.exports = {
 
         clientChanges.WorkerAttendance = worker || 'no-one';
         clientChanges.inAttendace = !clientChanges.inAttendace;
-        
+
 
         let finalClientes = await Clients.findByIdAndUpdate(_id, clientChanges, (err, data) => {
             if (err) {
                 next(err)
             }
-            
+
             io.emit('userChanged');
 
             return res.status(200).send({
@@ -159,7 +159,8 @@ module.exports = {
                 return res.status(400).send({ "message": "Client already been registered." });
             } catch {
                 data = { fullName, profileUrl, chatId };
-                fs.mkdir(path.resolve('./', 'Uploads') + '/' + chatId, { recursive: true }, () => { });
+
+                fs.mkdir(path.resolve(__dirname, '..', 'Uploads') + '/' + chatId, { recursive: true }, () => { });
                 user = await Clients.create(data);
                 io.emit('userChanged');
                 return res.status(200).send({
@@ -182,25 +183,25 @@ module.exports = {
         }
     },
 
-    async updateProfilePicInternal(User, profileUrl){
+    async updateProfilePicInternal(User, profileUrl) {
         User.profileUrl = profileUrl;
-        let update = Clients.findByIdAndUpdate(User._id, User, (err, data)=>{
-            if(err){
+        let update = Clients.findByIdAndUpdate(User._id, User, (err, data) => {
+            if (err) {
                 console.log('Erro na atualização da foto');
             }
-            else{
+            else {
                 return;
             }
         })
     },
 
-    async disableGrantMode(User){
+    async disableGrantMode(User) {
         User.inGrant = false;
-        let update = Clients.findByIdAndUpdate(User._id, User, (err, data)=>{
-            if(err){
+        let update = Clients.findByIdAndUpdate(User._id, User, (err, data) => {
+            if (err) {
                 console.log('Erro na atualização da foto');
             }
-            else{
+            else {
                 return;
             }
         })
@@ -244,10 +245,10 @@ module.exports = {
             userBefore.profileUrl = profileUrl;
             userBefore.chatId = chatId;
 
-            Client = await Clients.findByIdAndUpdate(_id, userBefore, (err, data)=>{
-                if(err){
+            Client = await Clients.findByIdAndUpdate(_id, userBefore, (err, data) => {
+                if (err) {
                     next(err)
-                }else{
+                } else {
                     res.status(200).send({
                         data,
                         "message": "success"

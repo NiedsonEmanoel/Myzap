@@ -39,12 +39,13 @@ module.exports = class {
             this.Client = await this.#engine.create('MyZAP ' + this.#index, (Base64QR => {
                 let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
                 let buffer = new Buffer.from(matches[2], 'base64');
-                fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
+
+                fs.writeFile(path.resolve(__dirname, '..', '..', 'Controllers', 'Classes', 'Temp', 'qrcode' + this.#index + '.png'), buffer, () => { });
             }), (statusSession, session) => {
                 if (statusSession == 'qrReadSuccess') {
-                    fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
+                    fs.unlink(path.resolve(__dirname, '..', '..', 'Controllers', 'Classes', 'Temp', 'qrcode' + this.#index + '.png'), () => { });
                 }
-                console.log(statusSession)
+                console.log(`- [instance: ${session}]: ${statusSession}`)
                 io.emit('SessionStats', {
                     "Status": statusSession,
                     "Session": session
@@ -55,10 +56,7 @@ module.exports = class {
                 console.error('Erro ao iniciar sessão ' + e);
             });
 
-            console.info('- [SYSTEM]: STARTING');
-
-            fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
-            console.info('- [SYSTEM]: ACTIVE');
+            fs.unlink(path.resolve(__dirname, '..', '..', 'Controllers', 'Classes', 'Temp', 'qrcode' + this.#index + '.png'), () => { });
 
             setInterval(async () => {
                 let battery = await this.Client.getBatteryLevel();
@@ -77,13 +75,13 @@ module.exports = class {
                 session: 'MyZAP ' + this.#index,
                 statusFind: (status) => {
                     if (status == 'qrReadSuccess') {
-                        fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+                        fs.unlink(path.resolve(__dirname, '..', '..', 'Controllers', 'Classes', 'Temp', 'qrcode' + this.#index + '.png'), () => { });
                     }
                 },
                 catchQR: (Base64QR => {
                     let matches = Base64QR.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
                     let buffer = new Buffer.from(matches[2], 'base64');
-                    fs.writeFile(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), buffer, () => { });
+                    fs.writeFile(path.resolve(__dirname, '..', '..', 'Controllers', 'Classes', 'Temp', 'qrcode' + this.#index + '.png'), buffer, () => { });
                 }),
                 autoClose: 1000 * 60 * 15,
                 updatesLog: true,
@@ -96,7 +94,7 @@ module.exports = class {
 
             console.info('- [SYSTEM]: STARTING');
 
-            fs.unlink(path.resolve('./Controllers/Classes/Temp/qrcode' + this.#index + '.png'), () => { });
+            fs.unlink(path.resolve(__dirname, '..', '..', 'Controllers', 'Classes', 'Temp', 'qrcode' + this.#index + '.png'), () => { });
             console.info('- [SYSTEM]: ACTIVE');
 
             setInterval(async () => {
@@ -209,22 +207,28 @@ module.exports = class {
             }
 
             if (User.inGrant == true) {
-                let avaliation = parseInt(message.body)
-                if (avaliation != NaN) {
-                    if (avaliation >= 10) {
-                        avaliation = 10;
+                try {
+                    let avaliation = parseInt(message.body)
+                    if (avaliation != NaN) {
+                        if (avaliation >= 10) {
+                            avaliation = 10;
+                        }
+                        if (avaliation <= 0) {
+                            avaliation = 0;
+                        }
+                        const AvController = require('../avaliations.controller');
+                        await AvController.createAvaliation(User.fullName, avaliation);
+                        await clientHelper.disableGrantMode(User);
+                        await this.Client.sendText(message.from, 'Obrigado pelo contato!');
+                        return;
+                    } else {
+                        await this.Client.sendText(message.from, 'Digite um número entre 0 e 10.');
+                        return;
                     }
-                    if (avaliation <= 0) {
-                        avaliation = 0;
-                    }
-                    const AvController = require('../avaliations.controller');
-                    await AvController.createAvaliation(User.fullName, avaliation);
-                    await clientHelper.disableGrantMode(User);
-                    await this.Client.sendText(message.from, 'Obrigado pelo contato!');
-                    return;
-                } else {
+                }
+                catch (e) {
                     await this.Client.sendText(message.from, 'Digite um número entre 0 e 10.');
-                    return;
+                    return
                 }
             }
 

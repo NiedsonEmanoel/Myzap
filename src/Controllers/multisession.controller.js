@@ -465,7 +465,7 @@ module.exports = {
                 next(error);
             }
 
-            const tempDir = path.resolve('./', 'Controllers', 'Classes', 'Temp')
+            const tempDir = path.resolve(__dirname, '..', 'Controllers', 'Classes', 'Temp')
             const QrCode = path.resolve(tempDir, 'qrcode' + id + '.png');
             const QrOut = path.resolve(tempDir, 'out.png');
 
