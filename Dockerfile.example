@@ -62,7 +62,9 @@ RUN cd /usr/src/app/ \
     && chmod 777 src/* \
     && cd src/Views \
     && rm -rf src/ \
-    && rm -rf public/ 
+    && rm -rf public/
 
-CMD pm2-runtime start Myzap/src/index.js  
+CMD cd Myzap/ \
+    && npm ci \
+    && pm2-runtime src/index.js
 
