@@ -4,8 +4,6 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import PanToolIcon from '@material-ui/icons/PanTool';
-import Icon from '@material-ui/core/Icon';
-
 import Copyright from '../../../components/footer';
 import DoneIcon from '@material-ui/icons/Done';
 import getTipo from '../../../functions/getTipo';
@@ -242,7 +240,7 @@ export default function WhatsApp() {
             if ((message.lastMessage.body != null) && (message.lastMessage.body != undefined)) {
                 let mess = new String(message.lastMessage.body)
                 mess = mess.trim();
-                mess = mess=='Seu atendimento foi finalizado com sucesso.'?'':mess
+                mess = mess == 'Seu atendimento foi finalizado com sucesso.' ? '' : mess
                 return ('' + mess);
             } else {
                 return ('');
@@ -596,7 +594,7 @@ export default function WhatsApp() {
                                                                         if (contact.firstAttendace == false) {
                                                                             let MessDATA = {
                                                                                 numbers: contact.chatId.replace('@c.us', ''),
-                                                                                worker:  getNomeUsuario(),
+                                                                                worker: getNomeUsuario(),
                                                                                 messages: 'Seu atendimento foi finalizado com sucesso./:end:/Por favor nos avalie com uma nota de 0 a 10.'
                                                                             }
                                                                             await api.put('/api/clients/' + contact._id, data);

@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^12.1.10",
     "aes-js": "^3.1.2",
     "axios": "^0.21.1",
+    "emoji-picker-react": "^3.4.4",
     "markdown-to-jsx": "^7.1.2",
     "material-ui-audio-player": "^1.6.1",
     "notistack": "^1.0.6",

@@ -12,6 +12,9 @@ import logo from '../assets/img/logo-empresa.png';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
+import Brightness7Icon from '@material-ui/icons/Brightness7'; // quando ta no dark
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
@@ -21,7 +24,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { getProfileLinkUsuario, setMenuPreference, getMenuPreference, getNotifPreference, setNotifPreference } from '../services/auth';
+import {
+  getProfileLinkUsuario,
+  getPreferenceColor,
+  setPreferenceColor,
+  setMenuPreference,
+  getMenuPreference,
+  getNotifPreference,
+  setNotifPreference
+} from '../services/auth';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import { mainListItems } from './list-menu-admin';
@@ -145,6 +156,15 @@ export default function MenuAdmin(props) {
     setDOpen(false);
   };
 
+  const handleColor = () => {
+    if (getPreferenceColor() == 'dark') {
+      setPreferenceColor('light');
+    } else {
+      setPreferenceColor('dark');
+    }
+    window.location.reload();
+  }
+
   return (
     <>
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -167,6 +187,10 @@ export default function MenuAdmin(props) {
 
           <IconButton color="inherit" onClick={handleNotif}>
             {notif ? <NotificationsActiveIcon /> : <NotificationsOffIcon />}
+          </IconButton>
+
+          <IconButton color="inherit" onClick={handleColor}>
+            {getPreferenceColor() == 'light' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
 
           <IconButton color="inherit">

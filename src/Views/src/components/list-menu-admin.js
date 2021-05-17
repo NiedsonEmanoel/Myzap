@@ -9,13 +9,15 @@ import PeopleIcon from '@material-ui/icons/People';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import { getTipoUsuario } from '../services/auth'
+import { getTipoUsuario, getPreferenceColor } from '../services/auth'
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import { Link } from 'react-router-dom'
 
+let colorText = getPreferenceColor() == 'dark' ? 'white' : 'black'
+
 export const mainListItems = (
   <div>
-    <Link to='/admin' style={{ textDecorationLine: 'none' }}>
+    <Link to='/admin' style={{ textDecorationLine: 'none', color: colorText, color: colorText }}>
       <ListItem component="a">
         <ListItemIcon>
           <DashboardIcon />
@@ -24,7 +26,7 @@ export const mainListItems = (
       </ListItem>
     </Link>
 
-    <Link to='/admin/pedidos' style={{ textDecorationLine: 'none' }}>
+    <Link to='/admin/pedidos' style={{ textDecorationLine: 'none', color: colorText }}>
       <ListItem component="a">
         <ListItemIcon>
           <BusinessCenterIcon />
@@ -35,7 +37,7 @@ export const mainListItems = (
 
     {
       getTipoUsuario() == '3' ?
-        <Link to='/admin/contatos' style={{ textDecorationLine: 'none' }}>
+        <Link to='/admin/contatos' style={{ textDecorationLine: 'none', color: colorText }}>
           <ListItem component="a" >
             <ListItemIcon>
               <EmojiPeopleIcon />
@@ -45,7 +47,7 @@ export const mainListItems = (
         </Link>
         :
         getTipoUsuario() == '2' ?
-          <Link to='/admin/contatos' style={{ textDecorationLine: 'none' }}>
+          <Link to='/admin/contatos' style={{ textDecorationLine: 'none', color: colorText }}>
             <ListItem component="a" >
               <ListItemIcon>
                 <EmojiPeopleIcon />
@@ -57,7 +59,7 @@ export const mainListItems = (
           <></>
     }
 
-    {getTipoUsuario() == '3' ? <Link to='/admin/funcionarios' style={{ textDecorationLine: 'none' }}>
+    {getTipoUsuario() == '3' ? <Link to='/admin/funcionarios' style={{ textDecorationLine: 'none', color: colorText }}>
       <ListItem component="a" >
         <ListItemIcon>
           <PeopleIcon />
@@ -66,7 +68,7 @@ export const mainListItems = (
       </ListItem>
     </Link> : <></>}
 
-    <Link to='/admin/whatsapp' style={{ textDecorationLine: 'none' }}>
+    <Link to='/admin/whatsapp' style={{ textDecorationLine: 'none', color: colorText }}>
       <ListItem component="a">
         <ListItemIcon>
           <WhatsAppIcon />
@@ -76,7 +78,7 @@ export const mainListItems = (
     </Link>
 
     {
-      getTipoUsuario() == '3' ? <Link to='/admin/sessions' style={{ textDecorationLine: 'none' }}>
+      getTipoUsuario() == '3' ? <Link to='/admin/sessions' style={{ textDecorationLine: 'none', color: colorText }}>
         <ListItem component="a">
           <ListItemIcon>
             <BarChartIcon />

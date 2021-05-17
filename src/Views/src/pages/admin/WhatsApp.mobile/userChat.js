@@ -343,7 +343,7 @@ function UserChat() {
             </Grid>
 
             <div style={{ marginTop: "5%" }}>
-                <Forme number={contact} worker={getNomeUsuario()} />
+                <Forme number={contact} worker={getNomeUsuario()} mobile='s' />
             </div>
         </>
     );

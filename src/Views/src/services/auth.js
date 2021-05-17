@@ -1,6 +1,7 @@
 export const TOKEN_KEY = '&app-token';
 export const ID_USUARIO = '&id-usuario';
 export const NOME_USUARIO = '&nome-usuario';
+export const COLOR_PICK = '&color-agree'
 export const USER_TYPE = '&user-type';
 export const GRAPHIC_DATA = '&graphic-dara'
 export const PROFILE_LINK = '&profile-link';
@@ -48,6 +49,9 @@ export const getTipoUsuario = () => sessionStorage.getItem(USER_TYPE);
 
 export const setProfileLinkUsuario = id => sessionStorage.setItem(PROFILE_LINK, id);
 export const getProfileLinkUsuario = () => sessionStorage.getItem(PROFILE_LINK);
+
+export const setPreferenceColor = id => localStorage.setItem(COLOR_PICK, id);
+export const getPreferenceColor = () => localStorage.getItem(COLOR_PICK);
 
 export const setMenuPreference = id => localStorage.setItem(MENU_PREFERENCE, id);
 export const getMenuPreference = () => localStorage.getItem(MENU_PREFERENCE);

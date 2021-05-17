@@ -1,7 +1,7 @@
 const RateLimit = require('express-rate-limit');
 
 let limiter = new RateLimit({
-    windowMs: 4 * 1000, // 4 seconds
+    windowMs: 3 * 1000, // 4 seconds
     max: 30,
     message: `
     <html style="height: 100%;">

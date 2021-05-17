@@ -1,4 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
+import {getPreferenceColor} from '../../../services/auth'
+
+let colorSent = getPreferenceColor() == 'dark' ? '#006161':'#DCF8C6'
+let colorReceive = getPreferenceColor() == 'dark' ? '#3c3c3e':'#FFFFFF';
+let wall = getPreferenceColor() == 'dark' ? 'wall-dark':'wall-light';
+
 const useStyles = makeStyles((theme) => ({
 sent: {
     width: "48%",

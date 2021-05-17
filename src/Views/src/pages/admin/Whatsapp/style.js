@@ -1,6 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import {getPreferenceColor} from '../../../services/auth'
 
+let colorSent = getPreferenceColor() == 'dark' ? '#006161':'#DCF8C6'
+let colorReceive = getPreferenceColor() == 'dark' ? '#3c3c3e':'#FFFFFF';
+let wall = getPreferenceColor() == 'dark' ? 'wall-dark':'wall-light';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -78,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
         background: "#7159C1"
     },
     rightContainer: {
-        backgroundImage: 'url(/wall.png)',
+        backgroundImage: `url(/${wall}.png)`,
         backgroundRepeat: 'no-repeat',
         backgroundColor:
             theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -141,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "5px",
         marginBottom: "5px",
         marginLeft: "70%",
-        backgroundColor: "#DCF8C6"
+        backgroundColor: colorSent
     },
     sentImg: {
         width: "30%",
@@ -150,14 +154,14 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: "500px",
         marginBottom: "5px",
         marginLeft: "70%",
-        backgroundColor: "#DCF8C6"
+        backgroundColor: colorSent
     },
     received: {
         width: "30%",
         marginLeft: "0%",
         marginTop: "5px",
         marginBottom: "5px",
-        backgroundColor: "#ffffff"
+        backgroundColor: colorReceive
     },
     receivedImg: {
         width: "30%",
@@ -166,7 +170,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: "5px",
         maxWidth: "500px",
         marginLeft: "0%",
-        backgroundColor: "#ffffff"
+        backgroundColor: colorReceive
     },
     sentVideo: {
         width: "30%",
@@ -174,7 +178,7 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: "500px",
         marginBottom: "5px",
         marginLeft: "70%",
-        backgroundColor: "#DCF8C6"
+        backgroundColor: colorSent
     },
     receivedVideo: {
         width: "30%",
@@ -184,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "5px",
         marginBottom: "5px",
         marginLeft: "0%",
-        backgroundColor: "#ffffff"
+        backgroundColor: colorReceive
     },
     receivedSticker: {
         width: "30%",
@@ -193,7 +197,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: "5px",
         maxWidth: "150px",
         marginLeft: "0%",
-        backgroundColor: "#ffffff"
+        backgroundColor: colorReceive
     },
     sentSticker: {
         width: "30%",
@@ -202,7 +206,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: "5px",
         maxWidth: "150px",
         marginLeft: "70%",
-        backgroundColor: "#ffffff"
+        backgroundColor: colorReceive
     }
 }));
 
