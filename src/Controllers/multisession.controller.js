@@ -245,7 +245,7 @@ module.exports = {
                     let mess = arrMessages[keyM].replace(`*${worker}:*`, '')
 
                     if (keyM == 0) {
-                        await messageHelper.createText('chat', worker, mess, arrNumbers[key] + '@c.us', true);
+                        await messageHelper.createText('chat', worker, mess.trim(), arrNumbers[key] + '@c.us', true);
                     }
 
                     io.emit('newMessageSent', { "from": from });

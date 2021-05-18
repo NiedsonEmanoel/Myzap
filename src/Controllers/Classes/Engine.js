@@ -161,6 +161,14 @@ module.exports = class {
         try {
             let bot = new dialogflow(this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
 
+            if(process.env.MODE == 'dev'){
+                if(message.from !== '558796755665@c.us'){
+                    if(message.from !== '558791478538@c.us'){
+                        return;
+                    }
+                }
+            }
+
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
             const RequestMongo = await clientHelper.findInternal(message.from);
 
@@ -202,19 +210,21 @@ module.exports = class {
 
             if (message.type == 'payment') {
                 if (message.subtype == 'send') {
-                    let amount = (message.paymentAmount1000 / 1000).toFixed(2);
-                    let body = message.paymentNoteMsg.body;
+                    let amount = parseFloat(message.paymentAmount1000 / 1000).toFixed(2);
+                    let tempAmount = parseFloat(message.paymentAmount1000 / 1000); //ok
+                    let note = message.paymentNoteMsg.body;
                     let currency = amount <= 1 ? 'REAL' : 'REAIS';
                     let author = User.fullName;
                     let chatId = message.from;
+                    let s = User.WithDrawCash 
+                    let saldo = (s+tempAmount); 
+                    console.log(saldo)
+                    await this.Client.reply(message.from, `PAGAMENTO VIA FACEBOOK PAY\n\nPAGADOR: ${new String(User.fullName).toUpperCase()}\nNÚMERO TELEFONE: ${User.chatId.replace('@c.us', '')}\nVALOR: ${amount.replace('.', ',')} ${currency}\n\nSALDO TOTAL: ${saldo.toFixed(2)}R$`, message.id.toString())
 
-                    await this.Client.reply(message.from, `PAGAMENTO VIA FACEBOOK PAY\n\nPAGADOR: ${new String(User.fullName).toUpperCase()}\nNÚMERO TELEFONE: ${User.chatId.replace('@c.us', '')}\nVALOR: ${amount.replace('.', ',')} ${Currency}`, message.id.toString())
-                    
-                    await messageHelper.createPayment(author, body, chatId, amount, currency);
-                    
-                    await this.Client.sendText(message.from, `O seu pagamento no valor de ${amount.replace('.', ',')}R$ foi recebido com sucesso.`);
+                    await messageHelper.createPayment(author, note, chatId, tempAmount, currency);
+                    await clientHelper.updateWithdraw(User, saldo)
                     await this.Client.sendText(message.from, `Obrigado pelo pagamento!`);
-                    return;
+                    return (io.emit('newMessage', { "from": message.from }));
                 } else {
                     return
                 }

@@ -35,7 +35,7 @@ export default function RecipeReviewCard(props) {
   };
 
   return (
-    <Card style={{ maxWidth: 345 }}>
+    <Card style={{ maxWidth: 345 }} variant="outlined">
       <CardHeader
         avatar={<Avatar className={classes.avatar} src={props.srcIconClient} />}
         title={props.clientName}

@@ -42,6 +42,11 @@ const ClientSchema = new mongoose.Schema({
     WorkerAttendance: {
         type: String,
         default: "no-one"
+    },
+
+    WithDrawCash: {
+        type: Number,
+        default: 0
     }
 
 }, {

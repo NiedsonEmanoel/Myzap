@@ -75,10 +75,11 @@ module.exports = {
         return;
     },
 
-    async createPayment(author, body, chatId, amount, currency) {
+    async createPayment(author, note, chatId, amount, currency) {
         let type = 'payment';
         let isServer = false;
-        let data = { type, author, body, chatId, amount, currency, isServer };
+        let body = `Pagamento: ${amount}R$`;
+        let data = { type, author, note, body, chatId, amount, currency, isServer };
         let Message = await Messages.create(data);
         return;
     },

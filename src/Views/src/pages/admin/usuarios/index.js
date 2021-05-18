@@ -209,7 +209,7 @@ export default function UsuariosListagem() {
               <Chip color="primary" avatar={<Avatar src={row.profileUrl} />} label={row.fullName} />
             </TableCell>
             <TableCell align="center">{new String(row.chatId).replace('@c.us', '')}</TableCell>
-
+            <TableCell align="center">{new String(`${row.WithDrawCash.toFixed(2)}R$`).replace('.', ',')}</TableCell>
             <TableCell align="center">{`${new Date(row.createdAt).toLocaleDateString('pt-BR')} - ${new Date(row.createdAt).toLocaleTimeString('pt-BR')}`}</TableCell>
             <TableCell align="right">
 
@@ -222,8 +222,9 @@ export default function UsuariosListagem() {
                   await api.patch('/api/clients/', data);
                 }}>{Attendace(row.inAttendace)}</Button>
 
-                <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
-                </Button>
+                {row.WithDrawCash != 0 ? <Button disabled variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
+                </Button> : <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
+                </Button>}
 
               </ButtonGroup>
 
@@ -273,6 +274,7 @@ export default function UsuariosListagem() {
                         <TableRow>
                           <TableCell>Nome</TableCell>
                           <TableCell align="center">Telefone</TableCell>
+                          <TableCell align="center">Saldo</TableCell>
                           <TableCell align="center">Data de cadastro</TableCell>
                           <TableCell align="right">Opções</TableCell>
                         </TableRow>

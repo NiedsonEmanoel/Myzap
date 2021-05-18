@@ -199,7 +199,19 @@ module.exports = {
         User.inGrant = false;
         let update = Clients.findByIdAndUpdate(User._id, User, (err, data) => {
             if (err) {
-                console.log('Erro na atualização da foto');
+                console.log('Erro na retirada da avaliação');
+            }
+            else {
+                return;
+            }
+        })
+    },
+
+    async updateWithdraw(User, amount) {
+        User.WithDrawCash = amount;
+        let update = Clients.findByIdAndUpdate(User._id, User, (err, data) => {
+            if (err) {
+                console.log('Erro na soma do saldo');
             }
             else {
                 return;
@@ -217,7 +229,10 @@ module.exports = {
                 next(error);
             }
 
-            let Client = await Clients.findByIdAndDelete({ _id });
+            let Client = await Clients.findById({ _id });
+            if(Client.WithDrawCash != 0) {
+                return res.status(500).send({"message":"não é possivel apagar um client com saldo diferente de 0"});
+            }
             io.emit('userChanged');
             return res.status(200).send({
                 Client,

@@ -46,6 +46,10 @@ const MessagesSchema = new mongoose.Schema ({
         required: false
     },
 
+    note: {
+        type: String
+    },
+
     currency: {
         type: String,
         required: false

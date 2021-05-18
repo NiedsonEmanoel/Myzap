@@ -10,9 +10,10 @@ import Forme from '../../../components/form';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import CancelIcon from '@material-ui/icons/Cancel';
 import './fonts.css'
-import {getPreferenceColor} from '../../../services/auth'
+import { getPreferenceColor } from '../../../services/auth'
 import {
     AudioMessage,
+    PaymentMessage,
     ImageMessage,
     TextMessage,
     VideoMessage,
@@ -45,7 +46,7 @@ function UserChat() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
-    let wall = getPreferenceColor() == 'dark' ? 'wall-dark':'wall-light';
+    let wall = getPreferenceColor() == 'dark' ? 'wall-dark' : 'wall-light';
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -199,6 +200,24 @@ function UserChat() {
                                         src={message.fileLink}
                                         date={new Date(message.createdAt).toLocaleString('pt-BR')}
                                     />
+                                );
+                            }());
+
+                        case 'payment':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                return (
+                                    <>
+                                        <PaymentMessage
+                                            classe={classMessage}
+                                            message={message}
+                                            currency={message.currency}
+                                            note={message.note}
+                                            amount={message.amount}
+                                            author={message.author}
+                                            date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                        />
+                                    </>
                                 );
                             }());
 

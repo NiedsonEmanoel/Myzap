@@ -45,6 +45,7 @@ import {
 import {
     AudioMessage,
     ImageMessage,
+    PaymentMessage,
     TextMessage,
     VideoMessage,
     DocumentMessage
@@ -408,6 +409,25 @@ export default function WhatsApp() {
                                     />
                                 );
                             }());
+
+                        case 'payment':
+                            return (function () {
+                                let classMessage = message.isServer == true ? classes.sent : classes.received;
+                                return (
+                                    <>
+                                        <PaymentMessage
+                                            classe={classMessage}
+                                            message={message}
+                                            currency={message.currency}
+                                            note={message.note}
+                                            amount={message.amount}
+                                            author={message.author}
+                                            date={new Date(message.createdAt).toLocaleString('pt-BR')}
+                                        />
+                                    </>
+                                );
+                            }());
+
 
                         default:
                             return (function () {
