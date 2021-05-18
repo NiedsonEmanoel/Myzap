@@ -153,13 +153,15 @@ module.exports = class {
     }
 
     async execMessages(message) {
+        if (message.from == 'status@broadcast') {
+            return;
+        }
         let intent;
 
         try {
             let bot = new dialogflow(this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
 
             if (message.isGroupMsg === true) { console.log('\nMensagem abortada: GROUP_MESSAGE\n'); return; }
-
             const RequestMongo = await clientHelper.findInternal(message.from);
 
             if (!RequestMongo.Exists) {
@@ -197,6 +199,26 @@ module.exports = class {
             }
 
             let User = RequestMongo.User;
+
+            if (message.type == 'payment') {
+                if (message.subtype == 'send') {
+                    let amount = (message.paymentAmount1000 / 1000).toFixed(2);
+                    let body = message.paymentNoteMsg.body;
+                    let currency = amount <= 1 ? 'REAL' : 'REAIS';
+                    let author = User.fullName;
+                    let chatId = message.from;
+
+                    await this.Client.reply(message.from, `PAGAMENTO VIA FACEBOOK PAY\n\nPAGADOR: ${new String(User.fullName).toUpperCase()}\nNÚMERO TELEFONE: ${User.chatId.replace('@c.us', '')}\nVALOR: ${amount.replace('.', ',')} ${Currency}`, message.id.toString())
+                    
+                    await messageHelper.createPayment(author, body, chatId, amount, currency);
+                    
+                    await this.Client.sendText(message.from, `O seu pagamento no valor de ${amount.replace('.', ',')}R$ foi recebido com sucesso.`);
+                    await this.Client.sendText(message.from, `Obrigado pelo pagamento!`);
+                    return;
+                } else {
+                    return
+                }
+            }
 
             let lastUpdateDate = parseInt(`${new Date(User.updatedAt).getTime()}`);
             let dateNow = parseInt(`${new Date().getTime()}`)

@@ -26,7 +26,7 @@ module.exports = {
                 next(error);
             }
 
-            let Message = await Messages.find({ chatId }).sort({createdAt:1});
+            let Message = await Messages.find({ chatId }).sort({ createdAt: 1 });
 
             res.status(200).send({
                 "Message": Message,
@@ -49,13 +49,13 @@ module.exports = {
                 next(error);
             }
 
-            await Messages.deleteMany({ chatId }, (err, data)=>{
-                if(err){
+            await Messages.deleteMany({ chatId }, (err, data) => {
+                if (err) {
                     next(err);
                 }
 
                 io.emit('newMessage', { "from": chatId });
-                
+
                 res.status(200).send({
                     data,
                     "message": "success"
@@ -71,7 +71,15 @@ module.exports = {
             isServer = false;
         }
         let data = { type, author, body, chatId, isServer };
-        Message = await Messages.create(data);
+        let Message = await Messages.create(data);
+        return;
+    },
+
+    async createPayment(author, body, chatId, amount, currency) {
+        let type = 'payment';
+        let isServer = false;
+        let data = { type, author, body, chatId, amount, currency, isServer };
+        let Message = await Messages.create(data);
         return;
     },
 

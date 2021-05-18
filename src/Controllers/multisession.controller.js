@@ -275,7 +275,7 @@ module.exports = {
         chatId = chatId.replace('@c.us', '');
         chatId = chatId + '@c.us';
 
-        fs.rmdir(path.resolve('./', 'Uploads', chatId), { recursive: true }, () => { });
+        fs.rm(path.resolve(__dirname, '..', 'Uploads', chatId), { recursive: true, force: true }, () => { });
 
         if (!id) {
             const error = new Error('ID not specified');

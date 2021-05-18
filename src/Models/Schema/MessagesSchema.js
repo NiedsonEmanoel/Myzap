@@ -41,6 +41,16 @@ const MessagesSchema = new mongoose.Schema ({
         ref: 'files'
     },
 
+    amount: {
+        type: String,
+        required: false
+    },
+
+    currency: {
+        type: String,
+        required: false
+    },
+
     fileName: String,
 
 }, {timestamps: true});
