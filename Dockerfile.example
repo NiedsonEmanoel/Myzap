@@ -59,10 +59,7 @@ RUN cd /usr/src/app/ \
     && git clone https://github.com/NiedsonEmanoel/Myzap \
     && cd Myzap/ \
     && npm install \
-    && chmod 777 src/* \
-    && cd src/Views \
-    && rm -rf src/ \
-    && rm -rf public/
+    && chmod 777 src/* 
 
 CMD cd Myzap/ \
     && npm ci \

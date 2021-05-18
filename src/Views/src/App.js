@@ -14,7 +14,7 @@ function App() {
   }
   const [darkState, setDarkState] = useState(getPreferenceColor() == 'dark');
   const palletType = darkState ? "dark" : "light";
-  const mainPrimaryColor = darkState ? lightBlue[500] : '#3f51b5';
+  const mainPrimaryColor = darkState ? '#0287c3' : '#3f51b5';
   const mainSecondaryColor = darkState ? '#f50057' : '#f50057';
   const darkTheme = createMuiTheme({
     palette: {

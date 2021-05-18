@@ -11,7 +11,7 @@ import Popover from '@material-ui/core/Popover';
 const Forme = (props) => {
     const [text, setText] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    let spacing = props.mobile == 's' ? '5%':'0%';
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -118,7 +118,7 @@ const Forme = (props) => {
                     </Grid>}
 
                     <Grid xs={1} align="center">
-                        <input style={{ display: "none" }} id="envi" type="submit" />
+                        <input style={{ display: "none", marginLeft: spacing }} id="envi" type="submit" />
                         <label htmlFor="envi">
                             <Fab color="primary" aria-label="upload picture" component="span" >
                                 <SendIcon color='inherit'/>

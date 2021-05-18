@@ -8,8 +8,7 @@ import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
 import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario, setTipoUsuario } from '../../../services/auth'
 
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import {getPreferenceColor} from '../../../services/auth'
 
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -55,7 +54,7 @@ function WhatsMobile() {
     const [resultList, setResultList] = useState([]);
     const [queryText, setQueryText] = useState('');
     const [notif, setNotif] = React.useState(getNotifPreference() == 'true');
-
+    let colorLink = getPreferenceColor() == 'dark' ? 'white':'black';
     const handleNotif = () => {
         if (notif == true) {
             setNotifPreference('false')
@@ -190,7 +189,7 @@ function WhatsMobile() {
     function getLeftList() {
         return (resultList.map(item => (
             <>
-                <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none" }}>
+                <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none", color: colorLink }}>
                     <ListItem button={false} >
                         <Avatar src={item.profileUrl}></Avatar>
                         <ListItemText style={{

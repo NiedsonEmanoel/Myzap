@@ -9,87 +9,59 @@ import PeopleIcon from '@material-ui/icons/People';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import { getTipoUsuario, getPreferenceColor } from '../services/auth'
+import { getTipoUsuario } from '../services/auth'
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
-import { Link } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 
-let colorText = getPreferenceColor() == 'dark' ? 'white' : 'black'
+export const MainListItems = () => {
+  let history = useHistory()
 
-export const mainListItems = (
-  <div>
-    <Link to='/admin' style={{ textDecorationLine: 'none', color: colorText, color: colorText }}>
-      <ListItem component="a">
-        <ListItemIcon>
-          <DashboardIcon />
-        </ListItemIcon>
-        <ListItemText primary="Dashboard" />
-      </ListItem>
-    </Link>
+  const ListButton = (props) => {
+    return (
+      <div>
+        <ListItem component="a" button={true} onClick={(e) => { history.push(props.link) }}>
+          <ListItemIcon>
+            {props.icon}
+          </ListItemIcon>
+          <ListItemText primary={props.name} />
+        </ListItem>
+      </div>
+    );
+  }
 
-    <Link to='/admin/pedidos' style={{ textDecorationLine: 'none', color: colorText }}>
-      <ListItem component="a">
-        <ListItemIcon>
-          <BusinessCenterIcon />
-        </ListItemIcon>
-        <ListItemText primary="Pedidos" />
-      </ListItem>
-    </Link>
+  return (
+    <div>
+      <ListButton link="/admin" name="Dashboard" icon={<DashboardIcon />} />
+      <ListButton link="/admin/pedidos" name="Pedidos" icon={<BusinessCenterIcon />} />
 
-    {
-      getTipoUsuario() == '3' ?
-        <Link to='/admin/contatos' style={{ textDecorationLine: 'none', color: colorText }}>
-          <ListItem component="a" >
-            <ListItemIcon>
-              <EmojiPeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Contatos" />
-          </ListItem>
-        </Link>
+      {getTipoUsuario() == '3' ?
+        <ListButton link="/admin/contatos" name="Contatos" icon={<EmojiPeopleIcon />} />
         :
         getTipoUsuario() == '2' ?
-          <Link to='/admin/contatos' style={{ textDecorationLine: 'none', color: colorText }}>
-            <ListItem component="a" >
-              <ListItemIcon>
-                <EmojiPeopleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Contatos" />
-            </ListItem>
-          </Link>
+          <ListButton link="/admin/contatos" name="Contatos" icon={<EmojiPeopleIcon />} />
           :
           <></>
-    }
+      }
 
-    {getTipoUsuario() == '3' ? <Link to='/admin/funcionarios' style={{ textDecorationLine: 'none', color: colorText }}>
-      <ListItem component="a" >
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Funcionários" />
-      </ListItem>
-    </Link> : <></>}
+      {
+        getTipoUsuario() == '3' ?
+          <ListButton link="/admin/funcionarios" name="Funcionários" icon={<PeopleIcon />} />
+          :
+          <></>
+      }
 
-    <Link to='/admin/whatsapp' style={{ textDecorationLine: 'none', color: colorText }}>
-      <ListItem component="a">
-        <ListItemIcon>
-          <WhatsAppIcon />
-        </ListItemIcon>
-        <ListItemText primary="WhatsApp" />
-      </ListItem>
-    </Link>
+      <ListButton link="/admin/whatsapp" name="WhatsApp" icon={<WhatsAppIcon />} />
 
-    {
-      getTipoUsuario() == '3' ? <Link to='/admin/sessions' style={{ textDecorationLine: 'none', color: colorText }}>
-        <ListItem component="a">
-          <ListItemIcon>
-            <BarChartIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sessões" />
-        </ListItem>
-      </Link> : <></>
-    }
+      {
+        getTipoUsuario() == '3' ?
+          <ListButton link="/admin/sessions" name="Sessões" icon={<BarChartIcon />} />
+          :
+          <></>
+      }
 
-  </div>
-);
+    </div>
+  );
+}
 
 export const secondaryListItems = (
   <>

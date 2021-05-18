@@ -3,7 +3,6 @@ import {getPreferenceColor} from '../../../services/auth'
 
 let colorSent = getPreferenceColor() == 'dark' ? '#006161':'#DCF8C6'
 let colorReceive = getPreferenceColor() == 'dark' ? '#3c3c3e':'#FFFFFF';
-let wall = getPreferenceColor() == 'dark' ? 'wall-dark':'wall-light';
 
 const useStyles = makeStyles((theme) => ({
 sent: {
@@ -11,7 +10,7 @@ sent: {
     marginTop: "5px",
     marginBottom: "5px",
     marginLeft: "50%",
-    backgroundColor: "#DCF8C6"
+    backgroundColor: colorSent
 },
 
 sentAudio: {
@@ -19,7 +18,7 @@ sentAudio: {
     marginTop: "5px",
     marginBottom: "5px",
     marginLeft: "2%",
-    backgroundColor: "#DCF8C6"
+    backgroundColor: colorSent
 },
 
 receivedAudio: {
@@ -27,7 +26,7 @@ receivedAudio: {
     marginLeft: "0%",
     marginTop: "5px",
     marginBottom: "5px",
-    backgroundColor: "#ffffff"
+    backgroundColor: colorReceive
 },
 
 sentImg: {
@@ -37,7 +36,7 @@ sentImg: {
     maxWidth: "150px",
     marginBottom: "5px",
     marginLeft: "50%",
-    backgroundColor: "#DCF8C6"
+    backgroundColor: colorSent
 },
 
 received: {
@@ -45,7 +44,7 @@ received: {
     marginLeft: "0%",
     marginTop: "5px",
     marginBottom: "5px",
-    backgroundColor: "#ffffff"
+    backgroundColor: colorReceive
 },
 
 receivedImg: {
@@ -55,7 +54,7 @@ receivedImg: {
     marginBottom: "5px",
     maxWidth: "150px",
     marginLeft: "0%",
-    backgroundColor: "#ffffff"
+    backgroundColor: colorReceive
 },
 
 sentVideo: {
@@ -65,7 +64,7 @@ sentVideo: {
     marginBottom: "5px",
     maxHeight: '50px',
     marginLeft: "50%",
-    backgroundColor: "#DCF8C6"
+    backgroundColor: colorSent
 },
 
 receivedVideo: {
@@ -77,7 +76,7 @@ receivedVideo: {
     marginTop: "5px",
     marginBottom: "5px",
     marginLeft: "0%",
-    backgroundColor: "#ffffff"
+    backgroundColor: colorReceive
 },
 
 receivedSticker: {
@@ -87,7 +86,7 @@ receivedSticker: {
     marginBottom: "5px",
     maxWidth: "150px",
     marginLeft: "0%",
-    backgroundColor: "#ffffff"
+    backgroundColor: colorReceive
 },
 
 sentSticker: {
@@ -97,7 +96,7 @@ sentSticker: {
     marginBottom: "5px",
     maxWidth: "150px",
     marginLeft: "50%",
-    backgroundColor: "#ffffff"
+    backgroundColor: colorReceive
 }
 
 }));

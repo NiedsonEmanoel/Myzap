@@ -10,6 +10,7 @@ import Forme from '../../../components/form';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import CancelIcon from '@material-ui/icons/Cancel';
 import './fonts.css'
+import {getPreferenceColor} from '../../../services/auth'
 import {
     AudioMessage,
     ImageMessage,
@@ -44,6 +45,7 @@ function UserChat() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
+    let wall = getPreferenceColor() == 'dark' ? 'wall-dark':'wall-light';
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -318,8 +320,8 @@ function UserChat() {
                         />
                         <GridList cols={1} style={{
                             marginTop: "0%",
-                            height: "70vh",
-                            backgroundImage: 'url(/wall.png)',
+                            height: "100%",
+                            backgroundImage: `url(/${wall}.png)`,
                             backgroundRepeat: 'repeat-y',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
@@ -327,7 +329,7 @@ function UserChat() {
                             <CardContent style={{
                                 display: "flex",
                                 flexDirection: "column-reverse",
-                                height: "70vh",
+                                height: "calc(72vh - 3vw)",
                                 flexGrow: 1,
                                 width: "100%",
                                 overflow: 'auto',
