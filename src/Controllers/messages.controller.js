@@ -14,6 +14,20 @@ module.exports = {
         }
     },
 
+    async messagesBySocket(chatId) {
+        let Message;
+        try {
+            chatId = chatId.replace('@c.us', '');
+            chatId = chatId + '@c.us';
+
+            Message = await Messages.find({ chatId }).sort({ createdAt: 1 });
+        } catch (e) {
+            Message = [];
+        }
+        return Message;
+    },
+
+
     async details(req, res, next) {
         try {
             let { chatId } = req.params;

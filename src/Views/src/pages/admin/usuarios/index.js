@@ -7,7 +7,7 @@ import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,7 +17,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Copyright from '../../../components/footer';
-import { useSnackbar } from 'notistack';
 import { Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
@@ -28,7 +27,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import api from '../../../services/api';
 
 const drawerWidth = 240;
@@ -119,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UsuariosListagem() {
   const [usuarios, setUsuarios] = useState([]);
   const [open, setOpen] = useState(false);
-
+  let history = useHistory()
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -145,7 +144,7 @@ export default function UsuariosListagem() {
       let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
       if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
-        window.location.href = '/admin'
+        history.push('/admin')
       }
     }
     s();
@@ -221,6 +220,10 @@ export default function UsuariosListagem() {
                   }
                   await api.patch('/api/clients/', data);
                 }}>{Attendace(row.inAttendace)}</Button>
+
+                <Button onClick={(e) => { history.push('/admin/whatsapp/' + row._id) }}>
+                  <FindInPageIcon />
+                </Button>
 
                 {row.WithDrawCash != 0 ? <Button disabled variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />
                 </Button> : <Button variant="contained" color="secondary" onClick={handleClickOpen} ><DeleteIcon />

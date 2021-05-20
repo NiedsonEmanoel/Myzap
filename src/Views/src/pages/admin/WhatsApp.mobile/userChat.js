@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import api from '../../../services/api';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
-import { useParams } from 'react-router-dom';
 import useStyles from './style';
+import useStylesFull from "../Whatsapp/style";
 import Copyright from '../../../components/footer';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import Forme from '../../../components/form';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -39,13 +39,31 @@ import {
 
 import { getNomeUsuario, getToken, getIdUsuario } from '../../../services/auth';
 
+const StyleDefault = window.screen.width <= 899 ?
+    useStyles
+    :
+    window.screen.height <= 500 ?
+        useStyles
+        :
+        useStylesFull;
+
 function UserChat() {
+    let history = useHistory()
     const [contact, setContact] = useState({});
     const { idChat } = useParams();
     const [messagesList, setMessagesList] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
-    const classes = useStyles();
+    const classes = StyleDefault();
+
+    const mobile = window.screen.width <= 899 ?
+        true
+        :
+        window.screen.height <= 500 ?
+            true
+            :
+            false
+
     let wall = getPreferenceColor() == 'dark' ? 'wall-dark' : 'wall-light';
 
     const handleClickOpen = () => {
@@ -67,43 +85,46 @@ function UserChat() {
 
     useEffect(() => {
         async function loadClient() {
-            let response = await api.get('/api/clients/details/' + idChat);
-            let client = response.data.Client[0];
-
-            if (client.inAttendace == false) {
-                window.location.href = '/admin/whatsapp';
+            let response
+            try{
+                response = await api.get('/api/clients/details/' + idChat);
+            }catch(e){
+                history.push('/admin/whatsapp');
             }
+
+            let client = response.data.Client[0];
 
             setContact(client)
         }
         loadClient();
     }, []);
 
-    async function getMessages() {
-        if (contact.chatId !== "0") {
-            const response = await api.get('/api/messages/' + contact.chatId)
-            setMessagesList(response.data.Message);
-        }
-    }
+    useEffect(() => {
+        io.on('receiveMessages', (e) => {
+            setMessagesList(e);
+        })
+    }, []);
 
-    useEffect(getMessages, [contact]);
+    useEffect(() => {
+        io.emit('requestMessages', { "chatId": contact.chatId })
+    }, [contact]);
 
     useEffect(() => {
         io.on('newMessage', (e) => {
             if (e.from == contact.chatId) {
-                getMessages();
+                io.emit('requestMessages', { "chatId": contact.chatId })
             }
         });
 
         io.on('newMessageSent', (e) => {
             if (e.from == contact.chatId) {
-                getMessages();
+                io.emit('requestMessages', { "chatId": contact.chatId })
             }
         });
 
         io.on('newFile', (e) => {
             if (e.from == contact.chatId) {
-                getMessages();
+                io.emit('requestMessages', { "chatId": contact.chatId })
                 setOpen(false);
             }
         });
@@ -130,9 +151,10 @@ function UserChat() {
                         case 'image':
                             return (function () {
                                 let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
+                                let s = mobile ? 's' : 'w'
                                 return (
                                     <ImageMessage
-                                        mobile='s'
+                                        mobile={s}
                                         classe={classMessage}
                                         src={message.fileLink}
                                         date={new Date(message.createdAt).toLocaleString('pt-BR')}
@@ -168,9 +190,10 @@ function UserChat() {
                         case 'video':
                             return (function () {
                                 let classMessage = message.isServer == true ? classes.sentVideo : classes.receivedVideo;
+                                let s = mobile ? 's' : 'w'
                                 return (
                                     <VideoMessage
-                                        mobile='s'
+                                        mobile={s}
                                         classe={classMessage}
                                         src={message.fileLink}
                                         date={new Date(message.createdAt).toLocaleString('pt-BR')}
@@ -289,7 +312,7 @@ function UserChat() {
                                 <Avatar aria-label="Recipe" src={contact.profileUrl}></Avatar>
                             }
                             action={
-                                <>
+                                mobile ? <>
 
                                     <Link to="/admin/whatsapp" style={{ textDecoration: "none" }}>
                                         <IconButton >
@@ -324,7 +347,7 @@ function UserChat() {
                                     }}>
                                         {contact.firstAttendace ? <AssignmentTurnedInIcon /> : <CancelIcon />}
                                     </IconButton>
-                                </>
+                                </> : <><h3>Modo de visualização</h3></>
                             }
                             title={contact.fullName}
                             subheader={
@@ -348,7 +371,7 @@ function UserChat() {
                             <CardContent style={{
                                 display: "flex",
                                 flexDirection: "column-reverse",
-                                height: "calc(72vh - 3vw)",
+                                height: mobile ? "calc(72vh - 3vw)" : "91.75vh",
                                 flexGrow: 1,
                                 width: "100%",
                                 overflow: 'auto',
@@ -363,9 +386,15 @@ function UserChat() {
                 </Grid>
             </Grid>
 
-            <div style={{ marginTop: "5%" }}>
-                <Forme number={contact} worker={getNomeUsuario()} mobile='s' />
-            </div>
+            {
+                mobile ?
+                    <div style={{ marginTop: "5%" }}>
+                        <Forme number={contact} worker={getNomeUsuario()} mobile='s' />
+                    </div>
+                    :
+                    <></>
+            }
+
         </>
     );
 }

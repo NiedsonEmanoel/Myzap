@@ -101,6 +101,12 @@ export default function WhatsApp() {
     }
 
     useEffect(() => {
+        io.on('receiveMessages', (e) => {
+            setMessagesList(e);
+        })
+    }, []);
+
+    useEffect(() => {
         (async () => {
             const response = await api.get('/api/workers');
             let arr = [];
@@ -117,9 +123,7 @@ export default function WhatsApp() {
                     object.Type = 'Você'
                     arr.push(object)
                 }
-
             }
-
             setUsers(arr)
         })()
     }, [])
@@ -136,35 +140,61 @@ export default function WhatsApp() {
         upgrade();
 
         io.on('newAttendace', (e) => {
-            return uptodate();
+            io.emit('requestAttendance');
         });
 
         io.on('userChanged', (e) => {
-            return uptodate();
+            io.emit('requestAttendance');
+        })
+ 
+        io.on('receiveAttendance', (e)=>{
+            const arrResponse = e;
+            let listA = [];
+    
+            for (let key in arrResponse) {
+                if (getTipoUsuario() != '3') {
+                    if (arrResponse[key].WorkerAttendance == 'no-one') {
+                        listA.push(arrResponse[key]);
+                    } else {
+                        if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
+                            listA.push(arrResponse[key]);
+                        }
+                    }
+                } else {
+                    listA = arrResponse;
+                }
+            }
+    
+            setList(listA);
+    
+            if (queryText == '') {
+                setResultList(listA);
+            }
         })
     }, []);
 
     useEffect(() => {
         io.on('newMessage', (e) => {
             if (e.from == contact.chatId) {
-                getMessages();
+                io.emit('requestMessages', { "chatId": contact.chatId })
             }
-            return uptodate();
+            io.emit('requestAttendance');
         });
 
         io.on('newMessageSent', (e) => {
             if (e.from == contact.chatId) {
-                getMessages();
+                io.emit('requestMessages', { "chatId": contact.chatId })
+
             }
-            return uptodate();
+            io.emit('requestAttendance');
         });
 
         io.on('newFile', (e) => {
             if (e.from == contact.chatId) {
-                getMessages();
+                io.emit('requestMessages', { "chatId": contact.chatId })
                 setOpen(false);
             }
-            return uptodate();
+            io.emit('requestAttendance');
         });
     }, [contact]);
 
@@ -201,40 +231,10 @@ export default function WhatsApp() {
         }
     }
 
-    async function uptodate() {
-        const response = await api.get('/api/clients/attendance');
-        const arrResponse = response.data.Client;
-        let listA = [];
 
-        for (let key in arrResponse) {
-            if (getTipoUsuario() != '3') {
-                if (arrResponse[key].WorkerAttendance == 'no-one') {
-                    listA.push(arrResponse[key]);
-                } else {
-                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
-                        listA.push(arrResponse[key]);
-                    }
-                }
-            } else {
-                listA = arrResponse;
-            }
-        }
-
-        setList(listA);
-
-        if (queryText == '') {
-            setResultList(listA);
-        }
-    }
-
-    async function getMessages() {
-        if (contact.chatId !== "0") {
-            const response = await api.get('/api/messages/' + contact.chatId)
-            setMessagesList(response.data.Message);
-        }
-    }
-
-    useEffect(getMessages, [contact])
+    useEffect(() => {
+        io.emit('requestMessages', { "chatId": contact.chatId });
+    }, [contact])
 
     function isValidLast(message) {
         try {
@@ -612,14 +612,13 @@ export default function WhatsApp() {
                                                                     }
                                                                     if (contact.firstAttendace !== undefined) {
                                                                         if (contact.firstAttendace == false) {
-                                                                            let MessDATA = {
-                                                                                numbers: contact.chatId.replace('@c.us', ''),
-                                                                                worker: getNomeUsuario(),
-                                                                                messages: 'Seu atendimento foi finalizado com sucesso./:end:/Por favor nos avalie com uma nota de 0 a 10.'
-                                                                            }
                                                                             await api.put('/api/clients/' + contact._id, data);
-                                                                            await api.post('/api/whatsapp/message?id=0', MessDATA);
                                                                             setContact({})
+                                                                            io.emit('sendMessage', {
+                                                                                "numbers": contact.chatId.replace('@c.us', ''),
+                                                                                "worker": getNomeUsuario(),
+                                                                                "messages": 'Seu atendimento foi finalizado com sucesso./:end:/Por favor nos avalie com uma nota de 0 a 10.'
+                                                                            })
                                                                         } else {
                                                                             await api.patch('/api/clients/first/?_id=' + contact._id, data);
                                                                             let tempCont = contact;
@@ -679,7 +678,6 @@ export default function WhatsApp() {
                                                             let type = selectedFile.type.split('/', 1);
                                                             let ext = selectedFile.type.split('/', 2);
                                                             let port = window.location.port == '' ? '' : ':' + window.location.port;
-                                                            let proxy = `${window.location.protocol}//${window.location.hostname}${port}`
                                                             ext = ext[1];
                                                             if (type == 'aplication') {
                                                                 type = 'document'
@@ -689,11 +687,10 @@ export default function WhatsApp() {
                                                                 "type": type,
                                                                 "numbers": contact.chatId,
                                                                 "ext": ext,
-                                                                "proxy": proxy,
                                                                 "name": selectedFile.name,
                                                                 "token": getToken()
                                                             };
-
+                                
                                                             await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
                                                         })
                                                     }} color="primary">

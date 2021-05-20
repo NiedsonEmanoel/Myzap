@@ -8,7 +8,7 @@ import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
 import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario, setTipoUsuario } from '../../../services/auth'
 
-import {getPreferenceColor} from '../../../services/auth'
+import { getPreferenceColor } from '../../../services/auth'
 
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -53,17 +53,7 @@ function WhatsMobile() {
     const [list, setList] = useState([]);
     const [resultList, setResultList] = useState([]);
     const [queryText, setQueryText] = useState('');
-    const [notif, setNotif] = React.useState(getNotifPreference() == 'true');
-    let colorLink = getPreferenceColor() == 'dark' ? 'white':'black';
-    const handleNotif = () => {
-        if (notif == true) {
-            setNotifPreference('false')
-            setNotif(false)
-        } else {
-            setNotifPreference('true')
-            setNotif(true)
-        }
-    }
+    let colorLink = getPreferenceColor() == 'dark' ? 'white' : 'black';
 
     function handleOnQuery(event) {
         event.preventDefault();
@@ -74,32 +64,6 @@ function WhatsMobile() {
             results = list.filter(item => item.fullName.toLowerCase().indexOf(queryText.toLowerCase()) !== -1)
         }
         setResultList(results);
-    }
-
-    async function requestList() {
-        const response = await api.get('/api/clients/attendance');
-        const arrResponse = response.data.Client;
-        let listA = [];
-
-        for (let key in arrResponse) {
-            if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
-                if (arrResponse[key].WorkerAttendance == 'no-one') {
-                    listA.push(arrResponse[key]);
-                } else {
-                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
-                        listA.push(arrResponse[key]);
-                    }
-                }
-            } else {
-                listA = arrResponse;
-            }
-        }
-
-        setList(listA);
-
-        if (queryText == '') {
-            setResultList(listA);
-        }
     }
 
     function lastDate(message) {
@@ -145,20 +109,45 @@ function WhatsMobile() {
     useEffect(() => {
         initList();
 
+        io.on('receiveAttendance', (e) => {
+            const arrResponse = e;
+            let listA = [];
+
+            for (let key in arrResponse) {
+                if (getTipoUsuario() != '3') {
+                    if (arrResponse[key].WorkerAttendance == 'no-one') {
+                        listA.push(arrResponse[key]);
+                    } else {
+                        if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
+                            listA.push(arrResponse[key]);
+                        }
+                    }
+                } else {
+                    listA = arrResponse;
+                }
+            }
+
+            setList(listA);
+
+            if (queryText == '') {
+                setResultList(listA);
+            }
+        })
+
         io.on('newAttendace', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
         io.on('userChanged', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
         io.on('newMessage', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
         io.on('newFile', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
     }, []);
@@ -214,9 +203,9 @@ function WhatsMobile() {
 
                 <div className={classes.appBarSpacer} />
 
-                <Container maxWidth="lg" style={{paddingTop: '10px'}}>
+                <Container maxWidth="lg" style={{ paddingTop: '10px' }}>
 
-                    <Grid container style={{height: '100%'}}>
+                    <Grid container style={{ height: '100%' }}>
                         <Grid item xs={12}>
 
                             <Paper component="form"

@@ -15,6 +15,8 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
 const Routes = require('./Routes');
 const cors = require('cors');
+const WhatsAppClient = require('./Controllers/multisession.controller')
+const MessageClient = require('./Controllers/messages.controller');
 const MailerClass = require('./Controllers/Classes/Mailer');
 
 const app = express();
@@ -60,8 +62,42 @@ const WhatsApp = require('./Controllers/multisession.controller');
     app.use(Routes);
 })();
 
-io.on('connection', socket => {
-    console.log(`- Socket connected: ${socket.id}`);
+io.use(function (socket, next) {
+    const jwt = require("jsonwebtoken");
+    if (socket.handshake.query && socket.handshake.query.token) {
+        jwt.verify(socket.handshake.query.token, process.env.SECRET, function (err, decoded) {
+            if (err) return next(new Error('Authentication error'));
+            socket.decoded = decoded;
+            next();
+        });
+    }
+    else {
+        next(new Error('Authentication error'));
+    }
+}).on('connection', function (client) {
+    console.log(`- Socket connected: ${client.id}`);
+
+    client.on('sendMessage', async function (message) {
+        let { worker, numbers, messages } = message;
+        WhatsAppClient.sendMessageBySocket(worker, numbers, messages)
+    });
+
+    client.on('requestMessages', async (e) => {
+        const chatId = e.chatId
+        let Messages = await MessageClient.messagesBySocket(chatId);
+        client.emit('receiveMessages', Messages)
+    })
+
+    client.on('sendFile', async function (message) {
+        let { base64, type, numbers, ext, name } = message;
+        WhatsAppClient.sendFile64BySocket(base64, type, numbers, ext, name)
+    })
+
+    client.on('requestAttendance', async(e) => {
+        const clientsHelper = require('./Controllers/clients.controller')
+        let Attendance = await clientsHelper.getAttendanceBySocket()
+        client.emit('receiveAttendance', Attendance)
+    })
 });
 
 exports.sendEmail = (options) => {

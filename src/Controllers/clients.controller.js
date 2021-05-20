@@ -90,19 +90,45 @@ module.exports = {
         }
     },
 
+    async getAttendanceBySocket() {
+        let ClientsObject = [];
+        try {
+            let inAttendace = true;
+
+            let Client = await Clients.find({ inAttendace }).sort({ updatedAt: 1 }).lean();
+
+            for (let key in Client) {
+                let chatId = Client[key].chatId;
+
+                let lastMessage = await messageHelper.findOne({ chatId }).sort({ createdAt: -1 }).lean();
+
+                let obj = Client[key];
+
+                obj.lastMessage = lastMessage;
+
+                ClientsObject.push(obj);
+            }
+            return ClientsObject
+
+        } catch (error) {
+           ClientsObject = []
+           return ClientsObject
+        }
+    },
+
     async getAttendace(req, res, next) {
         try {
             let inAttendace = true;
 
-            let Client = await Clients.find({ inAttendace }).sort({ updatedAt: 1 });
+            let Client = await Clients.find({ inAttendace }).sort({ updatedAt: 1 }).lean();
 
             let ClientsObject = [];
             for (let key in Client) {
                 let chatId = Client[key].chatId;
 
-                let lastMessage = await messageHelper.findOne({ chatId }).sort({ createdAt: -1 });
+                let lastMessage = await messageHelper.findOne({ chatId }).sort({ createdAt: -1 }).lean();
 
-                let obj = Client[key].toObject();
+                let obj = Client[key];
 
                 obj.lastMessage = lastMessage;
 
@@ -230,8 +256,8 @@ module.exports = {
             }
 
             let Client = await Clients.findById({ _id });
-            if(Client.WithDrawCash != 0) {
-                return res.status(500).send({"message":"não é possivel apagar um client com saldo diferente de 0"});
+            if (Client.WithDrawCash != 0) {
+                return res.status(500).send({ "message": "não é possivel apagar um client com saldo diferente de 0" });
             }
             io.emit('userChanged');
             return res.status(200).send({

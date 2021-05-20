@@ -4,6 +4,7 @@ import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
 import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+import io from '../services/socket.io'
 import Grid from '@material-ui/core/Grid';
 import api from '../services/api'
 import Popover from '@material-ui/core/Popover';
@@ -11,7 +12,7 @@ import Popover from '@material-ui/core/Popover';
 const Forme = (props) => {
     const [text, setText] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
-    let spacing = props.mobile == 's' ? '5%':'0%';
+    let spacing = props.mobile == 's' ? '5%' : '0%';
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -37,14 +38,13 @@ const Forme = (props) => {
                 if (props.number.chatId) {
                     if (text) {
                         let message = `${text} `;
-                        let data = {
-                            numbers: props.number.chatId.replace('@c.us', ''),
-                            worker: props.worker,
-                            messages: message
-                        }
 
                         setText('');
-                        await api.post('/api/whatsapp/message?id=0', data);
+                        io.emit('sendMessage', {
+                            "numbers": props.number.chatId.replace('@c.us', ''),
+                            "worker": props.worker,
+                            "messages": message
+                        });
                     }
                 }
             }}>
@@ -96,7 +96,7 @@ const Forme = (props) => {
                     }
 
 
-                    {props.number.firstAttendace ? <Grid item xs={props.mobile == 's' ? 9:10} align="center">
+                    {props.number.firstAttendace ? <Grid item xs={props.mobile == 's' ? 9 : 10} align="center">
                         <TextField
                             id="outlined-basic-email"
                             variant="outlined"
@@ -121,7 +121,7 @@ const Forme = (props) => {
                         <input style={{ display: "none", marginLeft: spacing }} id="envi" type="submit" />
                         <label htmlFor="envi">
                             <Fab color="primary" aria-label="upload picture" component="span" >
-                                <SendIcon color='inherit'/>
+                                <SendIcon color='inherit' />
                             </Fab>
                         </label>
                     </Grid>

@@ -30,7 +30,7 @@ module.exports = {
             for (let index = 0; index < limit; index++) {
                 sessions[index] = new Venom(index, internalCredential, process.env.LANGUAGE_CODE, 'Credencial Interna');
             }
-        }else{
+        } else {
             sessions[0] = new Venom(0, internalCredential, process.env.LANGUAGE_CODE, 'Credencial Interna');
         }
     },
@@ -192,6 +192,37 @@ module.exports = {
         }
     },
 
+    async sendMessageBySocket(worker, numbers, messages) {
+        const id = 0;
+        numbers = numbers.replace(/\s/g, '');
+
+        let arrNumbers = numbers.split(',');
+        let arrMessages = messages.split('/:end:/');
+
+        for (let key in arrMessages) {
+            arrMessages[key] = `*${worker}:*\n\n${arrMessages[key]}`
+        }
+
+        for (let key in arrNumbers) {
+            for (let keyM in arrMessages) {
+                if (arrNumbers[key].length == 13) {
+                    let part1 = arrNumbers[key].substr(0, 4);
+                    let part2 = arrNumbers[key].substr(5, 12)
+                    arrNumbers[key] = `${part1}${part2}`
+                }
+                let from = arrNumbers[key] + '@c.us';
+                let mess = arrMessages[keyM].replace(`*${worker}:*`, '')
+
+                if (keyM == 0) {
+                    await messageHelper.createText('chat', worker, mess.trim(), arrNumbers[key] + '@c.us', true);
+                }
+
+                io.emit('newMessageSent', { "from": from });
+                sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
+            }
+        }
+
+    },
 
     async enviarMensagens(req, res, next) {
         try {
@@ -326,6 +357,51 @@ module.exports = {
             });
         } catch (error) {
             next(error);
+        }
+    },
+
+    async sendFile64BySocket(base64, type, numbers, ext, namex) {
+        const id = 0;
+        let arrNumbers = numbers.split(',');
+        let name = namex || 'file';
+        let message = ''
+
+        for (let key in arrNumbers) {
+            try {
+                
+                if (arrNumbers[key].length == 13) {
+                    let part1 = arrNumbers[key].substr(0, 4);
+                    let part2 = arrNumbers[key].substr(5, 12)
+                    arrNumbers[key] = `${part1}${part2}`
+                }
+
+                let dirF = path.resolve(__dirname, '../Uploads') + '/' + arrNumbers[key];
+
+                let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
+                let link = `/files/${arrNumbers[key]}?file=${fileName}`;
+                
+                let fileLinkDownload = `/files/${arrNumbers[key]}?file=${fileName}&download=true`;
+                let dirN = dirF + '/' + fileName;
+
+                let matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                let s = new Buffer.from(matches[2], 'base64');
+
+                fs.mkdir(dirF, { recursive: true }, () => { });
+                fs.writeFile(dirN, s, 'binary', () => { });
+
+                let from = arrNumbers[key];
+
+                await messageHelper.createMedia(type[0], fileName, link, "", arrNumbers[key], fileLinkDownload, true);
+                
+                io.emit('newFile', { "from": from });
+                
+                if (from != "attendance@c.us") {
+                    await sessions[id].Client.sendFileFromBase64(arrNumbers[key], base64, name, message);
+                }
+            
+            } catch (e) {
+                console.log(e)
+            }
         }
     },
 

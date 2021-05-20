@@ -1,10 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {getPreferenceColor} from '../../../services/auth'
+import { getPreferenceColor } from '../../../services/auth'
 
-let colorSent = getPreferenceColor() == 'dark' ? '#006161':'#DCF8C6'
-let colorReceive = getPreferenceColor() == 'dark' ? '#3c3c3e':'#FFFFFF';
-let wall = getPreferenceColor() == 'dark' ? 'wall-dark':'wall-light';
+let colorSent = getPreferenceColor() == 'dark' ? '#006161' : '#DCF8C6'
+let colorReceive = getPreferenceColor() == 'dark' ? '#3c3c3e' : '#FFFFFF';
+let wall = getPreferenceColor() == 'dark' ? 'wall-dark' : 'wall-light';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     },
     fila: {
         zIndex: 999,
-        position: "relative"
+        position: "relative" //relative
     },
     drawerPaper: {
         width: 300
@@ -126,9 +126,8 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
     },
     container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(6),
-        maxHeight: "100%"
+        marginTop: 'calc(3vh + 1vw)',
+        paddingBottom: 'calc(3vh - 1vw)',
     },
     paper: {
         padding: '0',
