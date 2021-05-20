@@ -211,20 +211,25 @@ module.exports = class {
             if (message.type == 'payment') {
                 if (message.subtype == 'send') {
                     let amount = parseFloat(message.paymentAmount1000 / 1000).toFixed(2);
+
                     let tempAmount = parseFloat(message.paymentAmount1000 / 1000); //ok
+
                     let note = message.paymentNoteMsg.body;
                     let currency = amount <= 1 ? 'REAL' : 'REAIS';
                     let author = User.fullName;
                     let chatId = message.from;
+
                     let s = User.WithDrawCash 
                     let saldo = (s+tempAmount); 
-                    console.log(saldo)
+
                     await this.Client.reply(message.from, `PAGAMENTO VIA FACEBOOK PAY\n\nPAGADOR: ${new String(User.fullName).toUpperCase()}\nNÚMERO TELEFONE: ${User.chatId.replace('@c.us', '')}\nVALOR: ${amount.replace('.', ',')} ${currency}\n\nSALDO TOTAL: ${saldo.toFixed(2)}R$`, message.id.toString())
 
                     await messageHelper.createPayment(author, note, chatId, tempAmount, currency);
                     await clientHelper.updateWithdraw(User, saldo)
+
                     await this.Client.sendText(message.from, `Obrigado pelo pagamento!`);
                     return (io.emit('newMessage', { "from": message.from }));
+
                 } else {
                     return
                 }
@@ -252,15 +257,19 @@ module.exports = class {
                         await AvController.createAvaliation(User.fullName, avaliation);
                         await clientHelper.disableGrantMode(User);
                         await this.Client.sendText(message.from, 'Obrigado pelo contato!');
+
                         return;
+
                     } else {
                         await this.Client.sendText(message.from, 'Digite um número entre 0 e 10.');
                         return;
+
                     }
                 }
                 catch (e) {
                     await this.Client.sendText(message.from, 'Digite um número entre 0 e 10.');
                     return
+                    
                 }
             }
 
@@ -285,7 +294,6 @@ module.exports = class {
                     fs.mkdir(dirF, { recursive: true }, () => { });
                     const buffer = await this.Client.decryptFile(message);
                     fs.writeFile(dirN, buffer, () => { });
-
                     await messageHelper.createMedia(type, fileName, link, author, chatId, fileLinkDownload, false);
                 }
 
