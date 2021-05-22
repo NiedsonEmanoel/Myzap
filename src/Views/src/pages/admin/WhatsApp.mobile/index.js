@@ -109,48 +109,49 @@ function WhatsMobile() {
     useEffect(() => {
         initList();
 
-        io.on('receiveAttendance', (e) => {
-            const arrResponse = e;
-            let listA = [];
-
-            for (let key in arrResponse) {
-                if (getTipoUsuario() != '3') {
-                    if (arrResponse[key].WorkerAttendance == 'no-one') {
-                        listA.push(arrResponse[key]);
-                    } else {
-                        if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
-                            listA.push(arrResponse[key]);
-                        }
-                    }
-                } else {
-                    listA = arrResponse;
-                }
-            }
-
-            setList(listA);
-
-            if (queryText == '') {
-                setResultList(listA);
-            }
-        })
-
         io.on('newAttendace', (e) => {
-            io.emit('requestAttendance');
+            return requestList();
         });
 
         io.on('userChanged', (e) => {
-            io.emit('requestAttendance');
+            return requestList();
         });
 
         io.on('newMessage', (e) => {
-            io.emit('requestAttendance');
+            return requestList();
         });
 
         io.on('newFile', (e) => {
-            io.emit('requestAttendance');
+            return requestList();
         });
 
     }, []);
+
+    async function requestList() {
+        const response = await api.get('/api/clients/attendance');
+        const arrResponse = response.data.Client;
+        let listA = [];
+
+        for (let key in arrResponse) {
+            if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
+                if (arrResponse[key].WorkerAttendance == 'no-one') {
+                    listA.push(arrResponse[key]);
+                } else {
+                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
+                        listA.push(arrResponse[key]);
+                    }
+                }
+            } else {
+                listA = arrResponse;
+            }
+        }
+
+        setList(listA);
+
+        if (queryText == '') {
+            setResultList(listA);
+        }
+    }
 
     useEffect(() => {
         async function s() {

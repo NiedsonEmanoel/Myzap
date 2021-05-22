@@ -126,8 +126,9 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
     },
     container: {
-        marginTop: 'calc(3vh + 1vw)',
-        paddingBottom: 'calc(3vh - 1vw)',
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(6),
+        maxHeight: "100%"
     },
     paper: {
         padding: '0',
