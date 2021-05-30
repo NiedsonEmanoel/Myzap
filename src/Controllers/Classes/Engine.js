@@ -156,14 +156,15 @@ module.exports = class {
         if (message.from == 'status@broadcast') {
             return;
         }
-        let intent;
+
+        let intent, parameters;
 
         try {
             let bot = new dialogflow(this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
 
-            if(process.env.MODE == 'dev'){
-                if(message.from !== '558796755665@c.us'){
-                    if(message.from !== '558791478538@c.us'){
+            if (process.env.MODE == 'dev') {
+                if (message.from !== '558796755665@c.us') {
+                    if (message.from !== '558791478538@c.us') {
                         return;
                     }
                 }
@@ -219,8 +220,8 @@ module.exports = class {
                     let author = User.fullName;
                     let chatId = message.from;
 
-                    let s = User.WithDrawCash 
-                    let saldo = (s+tempAmount); 
+                    let s = User.WithDrawCash
+                    let saldo = (s + tempAmount);
 
                     await this.Client.reply(message.from, `PAGAMENTO VIA FACEBOOK PAY\n\nPAGADOR: ${new String(User.fullName).toUpperCase()}\nNÚMERO TELEFONE: ${User.chatId.replace('@c.us', '')}\nVALOR: ${amount.replace('.', ',')} ${currency}\n\nSALDO TOTAL: ${saldo.toFixed(2)}R$`, message.id.toString())
 
@@ -269,7 +270,7 @@ module.exports = class {
                 catch (e) {
                     await this.Client.sendText(message.from, 'Digite um número entre 0 e 10.');
                     return
-                    
+
                 }
             }
 
@@ -311,11 +312,11 @@ module.exports = class {
             if (message.type === 'chat') {
 
                 let response = await bot.sendText(message.body);
-
                 if (response.fulfillmentText) {
                     this.processPayload(response.fulfillmentMessages, User.fullName, message);
 
                     intent = response.intent.displayName;
+                    parameters = response.parameters;
                 } else {
                     await this.Client.reply(message.from, auxFunctions.Fallback(), message.id.toString());
                 }
@@ -335,6 +336,7 @@ module.exports = class {
                     if (response.queryResult.fulfillmentText) {
                         this.processPayload(response.queryResult.fulfillmentMessages, User.fullName, message);
                         intent = response.queryResult.intent.displayName;
+                        parameters = response.queryResult.parameters
                     }
 
                 } catch (e) {
@@ -344,7 +346,9 @@ module.exports = class {
             }
 
             if (intent === process.env.INTENT_SAC) {
-                await clientHelper.switchFirst(User);
+                let Sector = parameters.fields['setores'].stringValue
+                console.log(Sector)
+                await clientHelper.switchFirst(User, Sector);
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
                 io.emit('newNotification', {
                     'type': "info",

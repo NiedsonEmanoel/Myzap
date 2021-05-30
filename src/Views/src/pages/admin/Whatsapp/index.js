@@ -4,6 +4,11 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import PanToolIcon from '@material-ui/icons/PanTool';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import Copyright from '../../../components/footer';
 import DoneIcon from '@material-ui/icons/Done';
 import getTipo from '../../../functions/getTipo';
@@ -59,6 +64,7 @@ export default function WhatsApp() {
     const [resultList, setResultList] = useState([]);
     const [queryText, setQueryText] = useState('');
     const [messagesList, setMessagesList] = useState([]);
+    const [sector, setSector] = useState('Todos')
     const [selectedFile, setSelectedFile] = useState(null);
     const [open, setOpen] = useState(false);
     const [openExclude, setOpenExclude] = useState(false);
@@ -146,11 +152,11 @@ export default function WhatsApp() {
         io.on('userChanged', (e) => {
             io.emit('requestAttendance');
         })
- 
-        io.on('receiveAttendance', (e)=>{
+
+        io.on('receiveAttendance', (e) => {
             const arrResponse = e;
             let listA = [];
-    
+
             for (let key in arrResponse) {
                 if (getTipoUsuario() != '3') {
                     if (arrResponse[key].WorkerAttendance == 'no-one') {
@@ -164,9 +170,9 @@ export default function WhatsApp() {
                     listA = arrResponse;
                 }
             }
-    
+
             setList(listA);
-    
+
             if (queryText == '') {
                 setResultList(listA);
             }
@@ -524,12 +530,22 @@ export default function WhatsApp() {
                                             </Dialog>
 
                                             <Paper elevation={3} style={{ marginBottom: "1%" }}>
-                                                <CardHeader
-                                                    className={classes.rightBorder}
-                                                    avatar={
-                                                        <Avatar aria-label="Recipe" className={classes.avatar} src={getProfileLinkUsuario()}></Avatar>
-                                                    }
-                                                />
+                                                <Grid item xs={12} sm={12}>
+                                                    <FormControl style={{ width: '100%' }}>
+                                                        <InputLabel id="labelTipo">Setor</InputLabel>
+                                                        <Select
+                                                            labelId="labelTipo"
+                                                            id="tipo"
+                                                            variant="outlined"
+                                                            value={sector}
+                                                            onChange={e => setSector(e.target.value)}
+                                                        >
+                                                            <MenuItem value={'Todos'}>Todos</MenuItem>
+                                                            <MenuItem value={'Rh'}>Rh</MenuItem>
+
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
                                             </Paper>
 
                                             <Paper component="form"
@@ -612,13 +628,15 @@ export default function WhatsApp() {
                                                                     }
                                                                     if (contact.firstAttendace !== undefined) {
                                                                         if (contact.firstAttendace == false) {
-                                                                            await api.put('/api/clients/' + contact._id, data);
                                                                             setContact({})
+
                                                                             io.emit('sendMessage', {
                                                                                 "numbers": contact.chatId.replace('@c.us', ''),
                                                                                 "worker": getNomeUsuario(),
-                                                                                "messages": 'Seu atendimento foi finalizado com sucesso./:end:/Por favor nos avalie com uma nota de 0 a 10.'
+                                                                                "messages": 'ffat'
                                                                             })
+
+                                                                            await api.put('/api/clients/' + contact._id, data);
                                                                         } else {
                                                                             await api.patch('/api/clients/first/?_id=' + contact._id, data);
                                                                             let tempCont = contact;
@@ -690,7 +708,7 @@ export default function WhatsApp() {
                                                                 "name": selectedFile.name,
                                                                 "token": getToken()
                                                             };
-                                
+
                                                             await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
                                                         })
                                                     }} color="primary">

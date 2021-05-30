@@ -196,6 +196,12 @@ module.exports = {
         const id = 0;
         numbers = numbers.replace(/\s/g, '');
 
+        let ff = false;
+
+        if (messages == 'ffat') {
+            ff = true
+        }
+
         let arrNumbers = numbers.split(',');
         let arrMessages = messages.split('/:end:/');
 
@@ -213,12 +219,16 @@ module.exports = {
                 let from = arrNumbers[key] + '@c.us';
                 let mess = arrMessages[keyM].replace(`*${worker}:*`, '')
 
-                if (keyM == 0) {
-                    await messageHelper.createText('chat', worker, mess.trim(), arrNumbers[key] + '@c.us', true);
+                if (ff == false) {
+                    if (keyM == 0) {
+                        await messageHelper.createText('chat', worker, mess.trim(), arrNumbers[key] + '@c.us', true);
+                    }
+                    io.emit('newMessageSent', { "from": from });
+                    sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
+                }else{
+                    await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', 'Seu atendimento foi finalizado com sucesso.');
+                    await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', 'Por favor nos avalie com uma nota de 0 a 10.');
                 }
-
-                io.emit('newMessageSent', { "from": from });
-                sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
             }
         }
 
@@ -368,7 +378,7 @@ module.exports = {
 
         for (let key in arrNumbers) {
             try {
-                
+
                 if (arrNumbers[key].length == 13) {
                     let part1 = arrNumbers[key].substr(0, 4);
                     let part2 = arrNumbers[key].substr(5, 12)
@@ -379,7 +389,7 @@ module.exports = {
 
                 let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
                 let link = `/files/${arrNumbers[key]}?file=${fileName}`;
-                
+
                 let fileLinkDownload = `/files/${arrNumbers[key]}?file=${fileName}&download=true`;
                 let dirN = dirF + '/' + fileName;
 
@@ -392,13 +402,13 @@ module.exports = {
                 let from = arrNumbers[key];
 
                 await messageHelper.createMedia(type[0], fileName, link, "", arrNumbers[key], fileLinkDownload, true);
-                
+
                 io.emit('newFile', { "from": from });
-                
+
                 if (from != "attendance@c.us") {
                     await sessions[id].Client.sendFileFromBase64(arrNumbers[key], base64, name, message);
                 }
-            
+
             } catch (e) {
                 console.log(e)
             }

@@ -21,6 +21,7 @@ export const AudioMessage = (props) => {
                     width="100%"
                     variation="default"
                     spacing={3}
+                    preload
                     src={props.src}
                 />
             </CardContent>

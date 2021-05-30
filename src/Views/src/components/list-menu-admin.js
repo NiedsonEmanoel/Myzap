@@ -31,7 +31,14 @@ export const MainListItems = () => {
 
   return (
     <div>
+      {getTipoUsuario() == '3' ?
       <ListButton link="/admin" name="Dashboard" icon={<DashboardIcon />} />
+      :
+        getTipoUsuario() == '2' ?
+        <ListButton link="/admin" name="Dashboard" icon={<DashboardIcon />} />
+        :
+          <></>
+      }
       <ListButton link="/admin/pedidos" name="Pedidos" icon={<BusinessCenterIcon />} />
 
       {getTipoUsuario() == '3' ?

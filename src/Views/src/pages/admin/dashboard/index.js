@@ -13,7 +13,8 @@ import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import api from '../../../services/api'
 import io from '../../../services/socket.io'
-import { Grid, Paper, TextField, MenuItem, Button } from '@material-ui/core';
+import { useHistory } from 'react-router-dom'
+import { Grid, Paper } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -107,6 +108,18 @@ export default function Dashboard() {
   const [Media, setMedia] = useState({})
   const [usersInFirstAttendance, setUsersInFirstAttendance] = useState([]);
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  let history = useHistory()
+
+  useEffect(() => {
+    async function s() {
+      let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+      setTipoUsuario(`${res}`);
+      if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
+        history.push('/admin/whatsapp')
+      }
+    }
+    s();
+  }, [])
 
   async function getUsers() {
     const response = await (await api.get('/api/clients/attendance')).data.Client;
@@ -126,14 +139,6 @@ export default function Dashboard() {
       let Medias = { "m30": med30.toFixed(1) }
       setMedia(Medias)
     })()
-  }, [])
-
-  useEffect(() => {
-    async function s() {
-      let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
-      setTipoUsuario(`${res}`);
-    }
-    s();
   }, [])
 
   useEffect(() => {

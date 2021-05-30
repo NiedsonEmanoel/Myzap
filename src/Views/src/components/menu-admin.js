@@ -12,7 +12,9 @@ import logo from '../assets/img/logo-empresa.png';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
-import Brightness7Icon from '@material-ui/icons/Brightness7'; // quando ta no dark
+import { useSnackbar } from 'notistack';
+
+import Brightness7Icon from '@material-ui/icons/Brightness7'; 
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
@@ -126,15 +128,18 @@ export default function MenuAdmin(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(getMenuPreference() == 'true');
   const [dopen, setDOpen] = React.useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [notif, setNotif] = React.useState(getNotifPreference() == 'true');
 
   const handleNotif = () => {
     if (notif == true) {
       setNotifPreference('false')
       setNotif(false)
+      return (enqueueSnackbar('Som das notificações desativado', { variant: "warning", autoHideDuration: 900 }))
     } else {
       setNotifPreference('true')
       setNotif(true)
+      return (enqueueSnackbar('Som das notificações ativado', { variant: "success", autoHideDuration: 900 }))
     }
   }
 

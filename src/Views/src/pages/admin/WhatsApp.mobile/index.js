@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import api from '../../../services/api';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import { Link } from 'react-router-dom';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-import { getTipoUsuario, getNotifPreference, setNotifPreference, getIdUsuario, setTipoUsuario } from '../../../services/auth'
+import {
+    getTipoUsuario,
+    getMenuPreference,
+    getPreferenceColor,
+    getIdUsuario,
+    setTipoUsuario
+} from '../../../services/auth'
 
-import { getPreferenceColor } from '../../../services/auth'
 
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -51,6 +59,8 @@ const useStyles = makeStyles((theme) => ({
 function WhatsMobile() {
     const classes = useStyles();
     const [list, setList] = useState([]);
+    const [sector, setSector] = useState('Todos')
+
     const [resultList, setResultList] = useState([]);
     const [queryText, setQueryText] = useState('');
     let colorLink = getPreferenceColor() == 'dark' ? 'white' : 'black';
@@ -109,49 +119,53 @@ function WhatsMobile() {
     useEffect(() => {
         initList();
 
+        io.on('receiveAttendance', (e) => {
+            const arrResponse = e;
+            let listA = [];
+
+            for (let key in arrResponse) {
+                if (getTipoUsuario() != '3') {
+                    if (arrResponse[key].WorkerAttendance == 'no-one') {
+                        listA.push(arrResponse[key]);
+                    } else {
+                        if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
+                            listA.push(arrResponse[key]);
+                        }
+                    }
+                } else {
+                    listA = arrResponse;
+                }
+            }
+
+            setList(listA);
+
+            if (queryText == '') {
+                setResultList(listA);
+            }
+        })
+
         io.on('newAttendace', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
         io.on('userChanged', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
         io.on('newMessage', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
+        io.on('newMessageSent', (e) => {
+            io.emit('requestAttendance');
+        });
+
+
         io.on('newFile', (e) => {
-            return requestList();
+            io.emit('requestAttendance');
         });
 
     }, []);
-
-    async function requestList() {
-        const response = await api.get('/api/clients/attendance');
-        const arrResponse = response.data.Client;
-        let listA = [];
-
-        for (let key in arrResponse) {
-            if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
-                if (arrResponse[key].WorkerAttendance == 'no-one') {
-                    listA.push(arrResponse[key]);
-                } else {
-                    if (arrResponse[key].WorkerAttendance == getIdUsuario()) {
-                        listA.push(arrResponse[key]);
-                    }
-                }
-            } else {
-                listA = arrResponse;
-            }
-        }
-
-        setList(listA);
-
-        if (queryText == '') {
-            setResultList(listA);
-        }
-    }
 
     useEffect(() => {
         async function s() {
@@ -186,7 +200,15 @@ function WhatsMobile() {
                             width: '100%',
                             paddingLeft: 15
                         }} primary={item.fullName} secondary={isValidLast(item)} />
-                        {item.firstAttendace ? <PanToolIcon /> : <>{lastDate(item)}</>}
+                        {
+                            getMenuPreference() == 'true' ?
+                                <></>
+                                :
+                                item.firstAttendace ?
+                                    <PanToolIcon />
+                                    :
+                                    <>{lastDate(item)}</>
+                        }
                     </ListItem>
                     <Divider variant="inset" component="li" />
                 </Link>
@@ -207,6 +229,22 @@ function WhatsMobile() {
                 <Container maxWidth="lg" style={{ paddingTop: '10px' }}>
 
                     <Grid container style={{ height: '100%' }}>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl style={{ width: '100%' }}>
+                                <InputLabel id="labelTipo">Setor</InputLabel>
+                                <Select
+                                    labelId="labelTipo"
+                                    id="tipo"
+                                    variant="outlined"
+                                    value={sector}
+                                    onChange={e => setSector(e.target.value)}
+                                >
+                                    <MenuItem value={'Todos'}>Todos</MenuItem>
+                                    <MenuItem value={'Rh'}>Rh</MenuItem>
+
+                                </Select>
+                            </FormControl>
+                        </Grid>
                         <Grid item xs={12}>
 
                             <Paper component="form"
@@ -247,7 +285,7 @@ function WhatsMobile() {
                                 <GridList style={{
                                     width: '100%',
                                     display: "flex",
-                                    height: "75vh",
+                                    height: "68vh",
                                     flexWrap: 'normal'
                                 }} cols={1}>
                                     <List >

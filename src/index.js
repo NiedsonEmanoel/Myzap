@@ -62,7 +62,7 @@ const WhatsApp = require('./Controllers/multisession.controller');
     app.use(Routes);
 })();
 
-io.use(function (socket, next) {
+io/*.use(function (socket, next) {
     const jwt = require("jsonwebtoken");
     if (socket.handshake.query && socket.handshake.query.token) {
         jwt.verify(socket.handshake.query.token, process.env.SECRET, function (err, decoded) {
@@ -74,7 +74,7 @@ io.use(function (socket, next) {
     else {
         next(new Error('Authentication error'));
     }
-}).on('connection', function (client) {
+})*/.on('connection', function (client) {
     console.log(`- Socket connected: ${client.id}`);
 
     client.on('sendMessage', async function (message) {
