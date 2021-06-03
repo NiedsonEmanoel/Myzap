@@ -3,10 +3,10 @@ import useStyles from './theme';
 import MenuAdmin from '../../../components/menu-admin';
 import Copyright from '../../../components/footer';
 import io from '../../../services/socket.io';
-import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
-import { useSnackbar } from 'notistack';
+import { getIdUsuario, getTipoUsuario, setTipoUsuario } from '../../../services/auth';
+import BackupIcon from '@material-ui/icons/Backup';
 import api from '../../../services/api'
-
+import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 import {
     Grid,
     Container,
@@ -17,6 +17,8 @@ import {
     Table,
     Dialog,
     DialogContent,
+    DialogTitle,
+    DialogActions,
     TableBody,
     TableCell,
     TableContainer,
@@ -27,22 +29,38 @@ import {
 } from '@material-ui/core';
 
 import DoneIcon from '@material-ui/icons/Done';
-import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import ClearIcon from '@material-ui/icons/Clear';
 
+
 export default function Sessions() {
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
     const classes = useStyles();
 
     const [id, setId] = useState(0);
     const [sessions, setSessions] = useState([]);
-    const [open, setOpen] = React.useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [openQR, setOpenQR] = React.useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const handleClickQROpen = () => {
+        setOpenQR(true);
+    };
+
     const handleClose = () => {
-        setOpen(false);
+        setOpenQR(false);
+        setOpen(false)
     };
 
     function switchSessions(s) {
@@ -82,16 +100,16 @@ export default function Sessions() {
         });
     }, []);
 
-    useEffect(()=>{
-        async function s(){
-          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
-          setTipoUsuario(`${res}`);
-          if((getTipoUsuario() != '3')){
-            window.location.href='/admin'
-          }
+    useEffect(() => {
+        async function s() {
+            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            setTipoUsuario(`${res}`);
+            if ((getTipoUsuario() != '3')) {
+                window.location.href = '/admin'
+            }
         }
         s();
-      }, [])
+    }, [])
 
     useEffect(() => {
         (async () => {
@@ -102,20 +120,16 @@ export default function Sessions() {
             for (let i = 0; i < numberOfSessions; i++) {
                 let active = await (await api.get('/api/whatsapp/sessions.details/' + i)).data.started;
                 let phone
-                let alias
                 try {
                     phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
-                    //  alias = active == true ? await (await api.get('/api/whatsapp/alias?id=' + i)).data.alias : '-'
                 }
                 catch (e) {
                     phone = 'Aguardando...';
-                    //alias = '-';
                 }
                 let tempAux = {
                     "Session": i,
                     "active": active,
                     "device": phone,
-                    "alias": "Credencial Interna" // alias
                 }
                 sessionsTemp.push(tempAux);
             }
@@ -149,7 +163,17 @@ export default function Sessions() {
                         </TableCell>
 
                         <TableCell align="center">
-                            {value.alias == "" ? "Credencial Interna" : value.alias}
+                            <ButtonGroup >
+                                <Button onClick={() => {
+                                    switchID(value.Session);
+                                    handleClickOpen();
+                                }}>
+                                    <BackupIcon />
+                                </Button>
+                                <Button onClick={(e)=>{window.location.href = "/dialogflow.json/" + value.Session}}>
+                                    <VisibilityRoundedIcon />
+                                </Button>
+                            </ButtonGroup>
                         </TableCell>
 
                         <TableCell align="right">
@@ -179,7 +203,7 @@ export default function Sessions() {
                                 {value.active ?
                                     <Button onClick={() => {
                                         switchID(value.Session);
-                                        handleClickOpen();
+                                        handleClickQROpen();
                                     }}>
                                         QRCode
                                         <img style={{ height: "100%", paddingLeft: '3px' }} src={'/qrcode.svg'}></img>
@@ -210,8 +234,42 @@ export default function Sessions() {
 
                 <Container maxWidth="lg" className={classes.container}>
 
+                    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Enviar Arquivo</DialogTitle>
+                        <DialogContent>
+                            <form>
+                                <input
+                                    id="forme"
+                                    type="file"
+                                    accept=".json"
+                                    multiple={false}
+                                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                                />
+                            </form>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                Cancelar
+                            </Button>
+                            <Button onClick={() => {
+
+                                getBase64(selectedFile).then(async (data) => {
+                                    let dados = {
+                                        "id": id,
+                                        "base64": data,
+                                        "name": 'dialogflow' + id + '.json'
+                                    };
+
+                                    await api.post('/api/credentials', dados).then(() => handleClose);
+                                })
+                            }} color="primary">
+                                Enviar
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
                     <Dialog
-                        open={open}
+                        open={openQR}
                         onClose={handleClose}
                     >
                         <DialogContent>
@@ -245,7 +303,7 @@ export default function Sessions() {
                                                     <TableCell>ID</TableCell>
                                                     <TableCell align="center">Status</TableCell>
                                                     <TableCell align="center">Aparelho</TableCell>
-                                                    <TableCell align="center">Sessão DialogFlow</TableCell>
+                                                    <TableCell align="center">Credencial DialogFlow</TableCell>
                                                     <TableCell align="right">Opções</TableCell>
                                                 </TableRow>
 

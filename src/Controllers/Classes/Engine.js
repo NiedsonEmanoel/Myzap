@@ -160,11 +160,11 @@ module.exports = class {
         let intent, parameters;
 
         try {
-            let bot = new dialogflow(this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
-
+            let bot = new dialogflow(__dirname+'/../../tokens/'+this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
             if (process.env.MODE == 'dev') {
                 if (message.from !== '558796755665@c.us') {
                     if (message.from !== '558791478538@c.us') {
+                        console.log('Another')
                         return;
                     }
                 }
@@ -239,7 +239,7 @@ module.exports = class {
             let lastUpdateDate = parseInt(`${new Date(User.updatedAt).getTime()}`);
             let dateNow = parseInt(`${new Date().getTime()}`)
 
-            if (((dateNow - lastUpdateDate) >= 2 * 86400000)) {
+            if (((dateNow - lastUpdateDate) >= 21600000)) {
                 console.log('\nAtualizando foto de perfil de ' + User.fullName)
                 await clientHelper.updateProfilePicInternal(User, message.sender.profilePicThumbObj.eurl);
             }

@@ -1,12 +1,26 @@
 const express = require('express');
 const path = require('path');
+const {JwtVerify} = require('../Middlewares')
+
 const baseDir = path.resolve(__dirname, '..', 'Views', 'build');
 const app = express.Router();
 
 app.use('/webhook', require('./webhooks/webhooks'));
 app.use('/api', require('./apis/api'));
 
-app.get('/files/:id', (req, res, next) => { // localhost:3000/files/8796755665?file=a.html
+app.get('/dialogflow.json/:id', JwtVerify,(req, res, next) => { // localhost:3000/files/8796755665?file=a.html
+    try {
+        let { id } = req.params;
+        const file = path.resolve(__dirname, '../tokens/', 'dialogflow'+id+'.json');
+
+        res.sendFile(file);
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/files/:id', JwtVerify, (req, res, next) => { // localhost:3000/files/8796755665?file=a.html
     try {
         let { id } = req.params;
         let fileQuery = req.query.file;
@@ -19,13 +33,13 @@ app.get('/files/:id', (req, res, next) => { // localhost:3000/files/8796755665?f
             case 'true':
                 res.download(file);
                 break;
-        
+
             default:
                 res.sendFile(file);
                 break;
         }
 
-        
+
     } catch (error) {
         next(error);
     }

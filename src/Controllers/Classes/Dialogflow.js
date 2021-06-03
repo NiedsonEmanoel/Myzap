@@ -6,15 +6,13 @@ const fs = require('fs');
 
 module.exports = class {
     #sessionClient;
+    #path
     #projectID;
     #languageCode;
     #sessionID;
 
     constructor(Credentials, languageCode, session) {
-        this.#sessionClient = new dialogflow.SessionsClient({
-            credentials: Credentials
-        });
-        this.#projectID = Credentials.project_id;
+        this.#path = Credentials
         this.#languageCode = languageCode;
         this.#sessionID = session;
     }
@@ -36,6 +34,11 @@ module.exports = class {
     }
 
     async detectIntentwAudio(query, contexts) {
+        this.#sessionClient = new dialogflow.SessionsClient({
+            keyFilename: this.#path
+        });
+        this.#projectID = require(this.#path).project_id;
+
         const sessionPath = this.#sessionClient.projectAgentSessionPath(
             this.#projectID,
             this.#sessionID
@@ -65,6 +68,11 @@ module.exports = class {
     }
 
     async detectIntent(query, contexts) {
+        this.#sessionClient = new dialogflow.SessionsClient({
+            keyFilename: this.#path
+        });
+        this.#projectID = require(this.#path).project_id;
+
         const sessionPath = this.#sessionClient.projectAgentSessionPath(
             this.#projectID,
             this.#sessionID
@@ -119,6 +127,11 @@ module.exports = class {
     }
 
     async detectAudio(dir, deleteAtEnd) {
+        this.#sessionClient = new dialogflow.SessionsClient({
+            keyFilename: this.#path
+        });
+        this.#projectID = require(this.#path).project_id;
+
         const readFile = util.promisify(fs.readFile);
         const sessionPath = this.#sessionClient.projectAgentSessionPath(this.#projectID, this.#sessionID);
         const inputAudio = await readFile(dir, 'base64');

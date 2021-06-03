@@ -10,8 +10,9 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        overflow: 'hidden',
-        width: '100vw'
+        overflow: 'none',
+        width: '100%',
+        maxHeight: "100vh"
     },
     fila: {
         zIndex: 999,
@@ -126,9 +127,10 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
     },
     container: {
-        marginTop: theme.spacing(5),
-        paddingBottom: theme.spacing(6),
-        maxHeight: "100%"
+        paddingTop: '5vh',
+        paddingBottom: '6vh',
+        maxHeight: "100%",
+        maxWidth: '100%'
     },
     paper: {
         padding: '0',

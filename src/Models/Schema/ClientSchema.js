@@ -44,6 +44,11 @@ const ClientSchema = new mongoose.Schema({
         default: "no-one"
     },
 
+    Sector: {
+      type: String, 
+      default: "all"  
+    },
+
     WithDrawCash: {
         type: Number,
         default: 0

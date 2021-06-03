@@ -111,8 +111,8 @@ module.exports = {
             return ClientsObject
 
         } catch (error) {
-           ClientsObject = []
-           return ClientsObject
+            ClientsObject = []
+            return ClientsObject
         }
     },
 
@@ -329,13 +329,13 @@ module.exports = {
         }
     },
 
-    async switchFirst(user) {
+    async switchFirst(user, Sector) {
         try {
             let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             inAttendace = true;
             firstAttendace = true;
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
-            let Client = await Clients.findOneAndUpdate({ _id }, data, { new: false });
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace, Sector };
+            let Client = await Clients.findByIdAndUpdate(_id, data);
             io.emit('userChanged');
             return firstAttendace;
         } catch (e) {
