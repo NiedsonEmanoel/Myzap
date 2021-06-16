@@ -346,9 +346,7 @@ module.exports = class {
             }
 
             if (intent === process.env.INTENT_SAC) {
-                let Sector = parameters.fields['setores'].stringValue
-                console.log(Sector)
-                await clientHelper.switchFirst(User, Sector);
+                await clientHelper.switchFirst(User);
                 io.emit('newAttendace', { "name": User.fullName, "chatId": message.from });
                 io.emit('newNotification', {
                     'type': "info",

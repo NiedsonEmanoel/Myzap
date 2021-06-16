@@ -39,7 +39,7 @@ export const MainListItems = () => {
         :
           <></>
       }
-      <ListButton link="/admin/pedidos" name="Pedidos" icon={<BusinessCenterIcon />} />
+     {/* <ListButton link="/admin/pedidos" name="Pedidos" icon={<BusinessCenterIcon />} />*/}
 
       {getTipoUsuario() == '3' ?
         <ListButton link="/admin/contatos" name="Contatos" icon={<EmojiPeopleIcon />} />

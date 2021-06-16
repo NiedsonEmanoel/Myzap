@@ -329,12 +329,12 @@ module.exports = {
         }
     },
 
-    async switchFirst(user, Sector) {
+    async switchFirst(user) {
         try {
             let { _id, fullName, profileUrl, chatId, inAttendace, firstAttendace } = user;
             inAttendace = true;
             firstAttendace = true;
-            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace, Sector };
+            data = { fullName, profileUrl, chatId, inAttendace, firstAttendace };
             let Client = await Clients.findByIdAndUpdate(_id, data);
             io.emit('userChanged');
             return firstAttendace;
