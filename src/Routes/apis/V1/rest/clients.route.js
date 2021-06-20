@@ -1,7 +1,7 @@
 const express = require('express');
 const Router = express.Router();
-const Clients = require('../../../Controllers/clients.controller');
-const Avaliations = require('../../../Controllers/avaliations.controller')
+const Clients = require('../../../../Controllers/clients.controller');
+const Avaliations = require('../../../../Controllers/avaliations.controller')
 
 Router.get('/', Clients.index);
 Router.get('/attendance', Clients.getAttendace);

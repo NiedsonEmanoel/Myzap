@@ -11,8 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Copyright from '../../../components/footer';
-
+import Privacy from '../../../components/privacy';
 import Dialog from '@material-ui/core/Dialog';
+import TermsOfUse from '../../../components/termsOfUse';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -63,6 +64,7 @@ export default function SignInSide() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [open, setOpen] = useState(false);
+  const [openPrivacy, setOpenPrivacy] = useState(false);
   const [title, setTitle] = useState("");
   const [isRecovery, setRecovery] = useState(false);
   const [message, setMessage] = useState("");
@@ -76,6 +78,7 @@ export default function SignInSide() {
     Draw();
     setEmail('');
     setSenha('');
+    setOpenPrivacy(false)
     setRecovery(false);
   };
 
@@ -83,7 +86,7 @@ export default function SignInSide() {
 
   async function requestLogin() {
     try {
-      const response = await api.post('/api/login', { email, senha });
+      const response = await api.post('/api/v1/login', { email, senha });
       if (response.data.status == 1) {
         login(response.data.token);
         setIdUsuario(response.data.user._id);
@@ -93,7 +96,7 @@ export default function SignInSide() {
         if (!getMenuPreference()) {
           setMenuPreference('true');
         }
-        if(!getAttendanceCount){
+        if (!getAttendanceCount) {
           setToZeroAttendanceCount();
         }
         setNotifPreference('true')
@@ -116,7 +119,7 @@ export default function SignInSide() {
 
     let proxy = `${window.location.protocol}//${window.location.hostname}${port}`
 
-    const response = await api.post('/api/login/create.recovery', { email_usuario: email, server_location: proxy });
+    const response = await api.post('/api/v1/login/create.recovery', { email_usuario: email, server_location: proxy });
     setTitle("Verifique seu email!");
     setMessage("Se o seu e-mail estiver cadastrado no sistema você receberá um link válido por 5 minutos para redefinir a senha.");
     handleClickOpen();
@@ -233,6 +236,28 @@ export default function SignInSide() {
             </form>
             <Box mt={5}>
               <Copyright />
+              <Typography variant="body2" color="textSecondary" align="center" style={{ marginTop: '1%' }}>
+
+                <Link target='_blank' color='inherit' onClick={(e) => {
+                  setTitle('Termos de Uso')
+                  setMessage(<TermsOfUse Name={window.document.title.toUpperCase()} />)
+                  handleClickOpen();
+                }}>
+                  {'Termos de Uso'}
+                </Link>
+                {' - '}
+                <Link target='_blank' color='inherit' onClick={(e) => {
+                  setTitle('Política de Privacidade')
+                  setMessage(<Privacy Link={window.location.href} Name={window.document.title.toUpperCase()} Title='' />)
+                  handleClickOpen();
+                }}>
+                  {'Políticas de Privacidade'}
+                </Link>
+                {' - '}
+                <Link target='_blank' color='inherit' href='https://www.niedsonemanoel.com.br'>
+                  {'Contato'}
+                </Link>
+              </Typography>
             </Box>
 
 

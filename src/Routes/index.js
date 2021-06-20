@@ -6,7 +6,7 @@ const baseDir = path.resolve(__dirname, '..', 'Views', 'build');
 const app = express.Router();
 
 app.use('/webhook', require('./webhooks/webhooks'));
-app.use('/api', require('./apis/api'));
+app.use('/api', require('./apis'));
 
 app.get('/dialogflow.json/:id', JwtVerify,(req, res, next) => { // localhost:3000/files/8796755665?file=a.html
     try {

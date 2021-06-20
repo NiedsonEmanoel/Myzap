@@ -104,7 +104,7 @@ export default function Dashboard() {
 
   useEffect(()=>{
     async function s(){
-      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      let res = await (await api.get('/api/v1/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
       if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
         window.location.href='/admin'
@@ -121,7 +121,7 @@ export default function Dashboard() {
         return (alert('Prencha todos os campos'));
       }
 
-      const response = await api.post('/api/clients', data);
+      const response = await api.post('/api/v1/clients', data);
       console.log(response);
 
       if (response.status == 200) {

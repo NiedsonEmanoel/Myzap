@@ -1,13 +1,12 @@
 const express = require('express');
-const Venom = require('../../../Controllers/multisession.controller');
+const Venom = require('../../../../Controllers/multisession.controller');
 const Router = express.Router();
 
-const {JwtVerify, SessionValid, SessionVerify} = require('../../../Middlewares')
+const {JwtVerify, SessionValid, SessionVerify} = require('../../../../Middlewares')
 
 Router.get('/qrcode', JwtVerify, SessionVerify, Venom.qrCode); // /qrcode?id=1
 
 Router.get('/sessions', JwtVerify, Venom.getMax); // []
-Router.get('/alias', SessionVerify, JwtVerify, Venom.getAlias)
 Router.get('/sessions.details/:id', JwtVerify, Venom.verifySession);// sessions.details/1
 Router.post('/sessions', JwtVerify, SessionValid, Venom.initializeSession); // /sessions?id=1
 Router.delete('/sessions', JwtVerify, SessionValid, Venom.closeSession); // /sessions?id=1

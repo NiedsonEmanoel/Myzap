@@ -71,7 +71,7 @@ export default function SignIn() {
     async function Recovery(event) {
         event.preventDefault();
         try {
-            const response = await api.post('/api/login/change.recovery', {
+            const response = await api.post('/api/v1/login/change.recovery', {
                 "token": tokenUser,
                 "password": password
             });

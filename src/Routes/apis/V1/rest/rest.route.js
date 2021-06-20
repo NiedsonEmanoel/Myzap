@@ -1,6 +1,6 @@
 const express = require('express');
 const Router = express.Router();
-const {JwtVerify} = require('../../../Middlewares/')
+const {JwtVerify} = require('../../../../Middlewares')
 
 Router.use(JwtVerify)
 Router.use('/workers', require('./workers.route'));

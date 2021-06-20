@@ -28,7 +28,7 @@ export default function WAuth({ component: Component, ...rest }) {
 
 
         (async () => {
-            let res = await api.get('/api/login/checktoken/' + getToken());
+            let res = await api.get('/api/v1/login/checktoken/' + getToken());
             if (res.data.status == 200) {
                 try{
                 setLoading(false);

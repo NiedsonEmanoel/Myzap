@@ -1,7 +1,7 @@
 const express = require('express');
 const Router = express.Router();
-const Workers = require('../../../Controllers/worker.controller');
-const jwtPasser = require('../../../Middlewares/verify')
+const Workers = require('../../../../Controllers/worker.controller');
+const jwtPasser = require('../../../../Middlewares/verify')
 
 Router.post('/', Workers.create);
 Router.get('/', Workers.index);

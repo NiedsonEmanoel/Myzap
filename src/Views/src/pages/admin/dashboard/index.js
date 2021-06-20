@@ -112,7 +112,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function s() {
-      let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+      let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
       if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
         history.push('/admin/whatsapp')
@@ -122,7 +122,7 @@ export default function Dashboard() {
   }, [])
 
   async function getUsers() {
-    const response = await (await api.get('/api/clients/attendance')).data.Client;
+    const response = await (await api.get('/api/v1/clients/attendance')).data.Client;
     let first = [];
     for (let key in response) {
       if (response[key].firstAttendace == true) {
@@ -135,7 +135,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      let med30 = await (await api.get('/api/clients/avaliations?days=30')).data.Media;
+      let med30 = await (await api.get('/api/v1/clients/avaliations?days=30')).data.Media;
       let Medias = { "m30": med30.toFixed(1) }
       setMedia(Medias)
     })()
@@ -143,7 +143,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      let res = await (await api.get('/api/clients/avaliations.graph?days=15')).data;
+      let res = await (await api.get('/api/v1/clients/avaliations.graph?days=15')).data;
       setData(res)
       setGraphicData(res);
     })()

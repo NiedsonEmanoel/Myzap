@@ -87,7 +87,7 @@ function UserChat() {
         async function loadClient() {
             let response
             try{
-                response = await api.get('/api/clients/details/' + idChat);
+                response = await api.get('/api/v1/clients/details/' + idChat);
             }catch(e){
                 history.push('/admin/whatsapp');
             }
@@ -296,7 +296,7 @@ function UserChat() {
                                 "token": getToken()
                             };
 
-                            await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
+                            await api.post('/api/v1/whatsapp/message.doc?id=0', dados).then(() => handleClose);
                         })
                     }} color="primary">
                         Enviar
@@ -331,7 +331,7 @@ function UserChat() {
                                         }
                                         if (contact.firstAttendace !== undefined) {
                                             if (contact.firstAttendace == false) {
-                                                await api.put('/api/clients/' + contact._id, data);
+                                                await api.put('/api/v1/clients/' + contact._id, data);
 
                                                 io.emit('sendMessage', {
                                                     "numbers": contact.chatId.replace('@c.us', ''),
@@ -341,7 +341,7 @@ function UserChat() {
                                                                                              
                                                 window.location.href = '/admin/whatsapp';
                                             } else {
-                                                await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                                                await api.patch('/api/v1/clients/first/?_id=' + contact._id, data);
                                                 window.location.reload();
                                             }
                                         }

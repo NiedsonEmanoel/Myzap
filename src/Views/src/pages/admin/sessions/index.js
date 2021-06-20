@@ -21,6 +21,7 @@ import {
     DialogActions,
     TableBody,
     TableCell,
+    Typography,
     TableContainer,
     Button,
     ButtonGroup,
@@ -74,15 +75,15 @@ export default function Sessions() {
     useEffect(() => {
         io.on('sessionChanged', (e) => {
             (async () => {
-                const handler = await api.get('/api/whatsapp/sessions');
+                const handler = await api.get('/api/v1/whatsapp/sessions');
                 const numberOfSessions = handler.data.numberOfSessions;
                 let sessionsTemp = [];
 
                 for (let i = 0; i < numberOfSessions; i++) {
-                    let active = await (await api.get('/api/whatsapp/sessions.details/' + i)).data.started;
+                    let active = await (await api.get('/api/v1/whatsapp/sessions.details/' + i)).data.started;
                     let phone
                     try {
-                        phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
+                        phone = active == true ? await (await api.get('/api/v1/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
                     }
                     catch (e) {
                         phone = 'Aguardando...'
@@ -102,7 +103,7 @@ export default function Sessions() {
 
     useEffect(() => {
         async function s() {
-            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
             setTipoUsuario(`${res}`);
             if ((getTipoUsuario() != '3')) {
                 window.location.href = '/admin'
@@ -113,15 +114,15 @@ export default function Sessions() {
 
     useEffect(() => {
         (async () => {
-            const handler = await api.get('/api/whatsapp/sessions');
+            const handler = await api.get('/api/v1/whatsapp/sessions');
             const numberOfSessions = handler.data.numberOfSessions;
             let sessionsTemp = [];
 
             for (let i = 0; i < numberOfSessions; i++) {
-                let active = await (await api.get('/api/whatsapp/sessions.details/' + i)).data.started;
+                let active = await (await api.get('/api/v1/whatsapp/sessions.details/' + i)).data.started;
                 let phone
                 try {
-                    phone = active == true ? await (await api.get('/api/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
+                    phone = active == true ? await (await api.get('/api/v1/whatsapp/device?id=' + i)).data.device.phone.device_model : "-";
                 }
                 catch (e) {
                     phone = 'Aguardando...';
@@ -170,7 +171,7 @@ export default function Sessions() {
                                 }}>
                                     <BackupIcon />
                                 </Button>
-                                <Button onClick={(e)=>{window.location.href = "/dialogflow.json/" + value.Session}}>
+                                <Button onClick={(e) => { window.open("/dialogflow.json/" + value.Session, '_blank').focus() }}>
                                     <VisibilityRoundedIcon />
                                 </Button>
                             </ButtonGroup>
@@ -181,7 +182,7 @@ export default function Sessions() {
                                 {value.active ?
                                     <Button onClick={async () => {
 
-                                        const r = await api.delete('/api/whatsapp/sessions?id=' + value.Session);
+                                        const r = await api.delete('/api/v1/whatsapp/sessions?id=' + value.Session);
                                         return ('');
 
                                     }}>
@@ -192,7 +193,7 @@ export default function Sessions() {
                                     :
 
                                     <Button onClick={async () => {
-                                        const r = await api.post('/api/whatsapp/sessions?id=' + value.Session);
+                                        const r = await api.post('/api/v1/whatsapp/sessions?id=' + value.Session);
                                         return ('');
                                     }}>
                                         Habilitar
@@ -235,17 +236,25 @@ export default function Sessions() {
                 <Container maxWidth="lg" className={classes.container}>
 
                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title">Enviar Arquivo</DialogTitle>
                         <DialogContent>
-                            <form>
-                                <input
-                                    id="forme"
-                                    type="file"
-                                    accept=".json"
-                                    multiple={false}
-                                    onChange={(e) => setSelectedFile(e.target.files[0])}
-                                />
-                            </form>
+                            <>
+                            <Typography variant="button" display="block" color='secondary' gutterBottom>
+                                Prossiga com atenção!
+                            </Typography>
+                            <Typography variant="caption" display="block" gutterBottom>
+                                Ao enviar o novo arquivo JSON a sessão ficará instável até o sistema ser reiniciado.
+                            </Typography>
+                            <hr></hr>
+                                <form>
+                                    <input
+                                        id="forme"
+                                        type="file"
+                                        accept=".json"
+                                        multiple={false}
+                                        onChange={(e) => setSelectedFile(e.target.files[0])}
+                                    />
+                                </form>
+                            </>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
@@ -260,7 +269,8 @@ export default function Sessions() {
                                         "name": 'dialogflow' + id + '.json'
                                     };
 
-                                    await api.post('/api/credentials', dados).then(() => handleClose);
+                                    await api.post('/api/v1/credentials', dados);
+                                    handleClose();
                                 })
                             }} color="primary">
                                 Enviar
@@ -273,7 +283,7 @@ export default function Sessions() {
                         onClose={handleClose}
                     >
                         <DialogContent>
-                            <iframe style={{ height: '269px', width: '269px' }} src={`/api/whatsapp/qrcode?id=${id}`}></iframe>
+                            <iframe style={{ height: '269px', width: '269px' }} src={`/api/v1/whatsapp/qrcode?id=${id}`}></iframe>
                         </DialogContent>
                     </Dialog>
 

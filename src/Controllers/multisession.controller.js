@@ -30,17 +30,119 @@ module.exports = {
         return sessions.length;
     },
 
-    setCredential(credential, id, alias) {
-        sessions[id].setCredential(credential, alias);
+
+    async newBase64(req, res, next) {
+        try {
+            let { Email, Password, Base64, Name, Message, To } = req.body
+
+            if (!Name) {
+                Name = 'file'
+            }
+
+            if (!To) {
+                next('Number not defined')
+            }
+
+            if (!Message) {
+                Message = ''
+            }
+
+            To.replace('@c.us', '')
+
+            if (To.length == 13) {
+                let part1 = To.substr(0, 4);
+                let part2 = To.substr(5, 12)
+                arrNumbers[key] = `${part1}${part2}`
+            }
+
+            To = To + '@c.us';
+
+            if (!Email) {
+                next('Access denied')
+            }
+
+            if (!Password) {
+                next('Access denied')
+            }
+
+            const Workers = require('../Models/worker.model');
+
+            Workers.findOne({ email_usuario: Email }, (err, user) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ "error": err });
+                } else if (!user) {
+                    res.status(500).json({ "error": 'Access denied' });
+                } else {
+                    user.isCorrectPassword(Password, async (err, same) => {
+                        if (err) {
+                            next(err)
+                        } else if (!same) {
+                            res.status(500).json({ error: "Access denied" });
+                        } else {
+                            await sessions[0].Client.sendFileFromBase64(To, Base64, Name, Message);
+                            res.status(200).send({ 'Message': 'Message sent' });
+                        }
+                    })
+                }
+            })
+        } catch (e) {
+            next(e)
+        }
     },
 
-    getAlias(req, res, next) {
+    async newMessage(req, res, next) {
         try {
-            let id = req.query.id;
-            const alias = sessions[id].getAlias();
-            return res.status(200).send({ "alias": alias });
-        } catch (e) {
+            let { Email, Password, Message, To } = req.body
 
+            if (!To) {
+                next('Number not defined')
+            }
+
+            To.replace('@c.us', '')
+
+            if (To.length == 13) {
+                let part1 = To.substr(0, 4);
+                let part2 = To.substr(5, 12)
+                arrNumbers[key] = `${part1}${part2}`
+            }
+
+            To = To + '@c.us';
+            if (!Email) {
+                next('Access denied')
+            }
+
+            if (!Password) {
+                next('Access denied')
+            }
+
+            if (!Message) {
+                next('The message is null')
+            }
+
+            const Workers = require('../Models/worker.model');
+
+            Workers.findOne({ email_usuario: Email }, (err, user) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ "error": err });
+                } else if (!user) {
+                    res.status(500).json({ "error": 'Access denied' });
+                } else {
+                    user.isCorrectPassword(Password, async (err, same) => {
+                        if (err) {
+                            next(err)
+                        } else if (!same) {
+                            res.status(500).json({ error: "Access denied" });
+                        } else {
+                            await sessions[0].Client.sendText(To, Message);
+                            res.status(200).send({ 'Message': 'Message sent' });
+                        }
+                    })
+                }
+            })
+        } catch (e) {
+            next(e)
         }
     },
 
@@ -212,7 +314,7 @@ module.exports = {
                     }
                     io.emit('newMessageSent', { "from": from });
                     sessions[id].Client.sendText(arrNumbers[key] + '@c.us', arrMessages[keyM]);
-                }else{
+                } else {
                     await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', 'Seu atendimento foi finalizado com sucesso.');
                     await sessions[id].Client.sendText(arrNumbers[key] + '@c.us', 'Por favor nos avalie com uma nota de 0 a 10.');
                 }
@@ -354,51 +456,6 @@ module.exports = {
             });
         } catch (error) {
             next(error);
-        }
-    },
-
-    async sendFile64BySocket(base64, type, numbers, ext, namex) {
-        const id = 0;
-        let arrNumbers = numbers.split(',');
-        let name = namex || 'file';
-        let message = ''
-
-        for (let key in arrNumbers) {
-            try {
-
-                if (arrNumbers[key].length == 13) {
-                    let part1 = arrNumbers[key].substr(0, 4);
-                    let part2 = arrNumbers[key].substr(5, 12)
-                    arrNumbers[key] = `${part1}${part2}`
-                }
-
-                let dirF = path.resolve(__dirname, '../Uploads') + '/' + arrNumbers[key];
-
-                let fileName = auxFunctions.WriteFileEXT(arrNumbers[key], ext)
-                let link = `/files/${arrNumbers[key]}?file=${fileName}`;
-
-                let fileLinkDownload = `/files/${arrNumbers[key]}?file=${fileName}&download=true`;
-                let dirN = dirF + '/' + fileName;
-
-                let matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-                let s = new Buffer.from(matches[2], 'base64');
-
-                fs.mkdir(dirF, { recursive: true }, () => { });
-                fs.writeFile(dirN, s, 'binary', () => { });
-
-                let from = arrNumbers[key];
-
-                await messageHelper.createMedia(type[0], fileName, link, "", arrNumbers[key], fileLinkDownload, true);
-
-                io.emit('newFile', { "from": from });
-
-                if (from != "attendance@c.us") {
-                    await sessions[id].Client.sendFileFromBase64(arrNumbers[key], base64, name, message);
-                }
-
-            } catch (e) {
-                console.log(e)
-            }
         }
     },
 

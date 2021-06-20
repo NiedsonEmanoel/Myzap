@@ -46,7 +46,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function S() {
-            let response = await api.get('/api/workers/details/' + idFuncionario);
+            let response = await api.get('/api/v1/workers/details/' + idFuncionario);
             let client = response.data.Worker[0];
             console.log(client)
             setNome(client.nome_usuario);
@@ -61,7 +61,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function s() {
-            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
             setTipoUsuario(`${res}`);
             if ((getTipoUsuario() != '3')) {
                 window.location.href = '/admin'
@@ -84,7 +84,7 @@ export default function Dashboard() {
             foto_perfil: foto
         }
 
-        await api.put('/api/workers/' + idFuncionario, data, { timeout: 3000 }).then(() => {
+        await api.put('/api/v1/workers/' + idFuncionario, data, { timeout: 3000 }).then(() => {
             enqueueSnackbar('Atualização efetuada com sucesso!', { variant: "success" });
         }).catch(() => {
             return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "error" }))

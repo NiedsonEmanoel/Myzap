@@ -108,7 +108,7 @@ export default function Dashboard() {
   const { idUsuario } = useParams();
 
   useEffect(async () => {
-    let response = await api.get('/api/clients/details/' + idUsuario);
+    let response = await api.get('/api/v1/clients/details/' + idUsuario);
     let client = response.data.Client[0];
     client.chatId = new Number(client.chatId.replace('@c.us', ''));
 
@@ -119,7 +119,7 @@ export default function Dashboard() {
 
   useEffect(()=>{
     async function s(){
-      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      let res = await (await api.get('/api/v1/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
       if((getTipoUsuario() != '3')&&(getTipoUsuario()!= '2')){
         window.location.href='/admin'
@@ -136,7 +136,7 @@ export default function Dashboard() {
         return (enqueueSnackbar('Prencha todos os campos!', { variant: "warning" }));
       }
 
-      const response = await api.put('/api/clients/update/' + idUsuario, data);
+      const response = await api.put('/api/v1/clients/update/' + idUsuario, data);
       console.log(response);
 
       if (response.status == 200) {

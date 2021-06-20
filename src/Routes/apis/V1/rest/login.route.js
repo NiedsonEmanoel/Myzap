@@ -1,6 +1,6 @@
 const express = require('express');
 const Router = express.Router();
-const Workers = require('../../../Controllers/worker.controller');
+const Workers = require('../../../../Controllers/worker.controller');
 
 Router.post('/create.recovery', Workers.createTokenToRecover);
 Router.post('/change.recovery', Workers.changePasswordByToken);

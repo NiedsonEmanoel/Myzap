@@ -64,7 +64,7 @@ export default function Dashboard() {
                 foto_perfil: foto
             }
             console.log(data)
-            const response = await api.post('/api/workers', data);
+            const response = await api.post('/api/v1/workers', data);
 
             if (response.status == 200) {
                 clear();
@@ -83,7 +83,7 @@ export default function Dashboard() {
     
     useEffect(()=>{
         async function s(){
-          let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+          let res = await (await api.get('/api/v1/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
           setTipoUsuario(`${res}`);
           if((getTipoUsuario() != '3')){
             window.location.href='/admin'

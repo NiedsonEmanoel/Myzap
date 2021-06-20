@@ -94,7 +94,7 @@ function WhatsMobile() {
     }
 
     async function initList() {
-        const response = await api.get('/api/clients/attendance');
+        const response = await api.get('/api/v1/clients/attendance');
         const arrResponse = response.data.Client;
         let listA = [];
 
@@ -169,7 +169,7 @@ function WhatsMobile() {
 
     useEffect(() => {
         async function s() {
-            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
             setTipoUsuario(`${res}`);
         }
         s();

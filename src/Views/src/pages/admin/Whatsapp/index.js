@@ -114,7 +114,7 @@ export default function WhatsApp() {
 
     useEffect(() => {
         (async () => {
-            const response = await api.get('/api/workers');
+            const response = await api.get('/api/v1/workers');
             let arr = [];
             for (let key in response.data.Workers) {
                 let object = {
@@ -136,7 +136,7 @@ export default function WhatsApp() {
 
     useEffect(() => {
         async function s() {
-            let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
             setTipoUsuario(`${res}`);
         }
         s();
@@ -206,7 +206,7 @@ export default function WhatsApp() {
 
     async function upgrade() {
         setWorker(getNomeUsuario());
-        const response = await api.get('/api/clients/attendance');
+        const response = await api.get('/api/v1/clients/attendance');
         const arrResponse = response.data.Client;
         let listA = [];
 
@@ -293,7 +293,7 @@ export default function WhatsApp() {
                         "worker": item.Id,
                         "name": item.Name
                     }
-                    const response = await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                    const response = await api.patch('/api/v1/clients/first/?_id=' + contact._id, data);
                     setContact({});
                     handleClose();
                 }}>
@@ -496,8 +496,8 @@ export default function WhatsApp() {
 
                                                     <Button onClick={async () => {
                                                         if (contact.chatId) {
-                                                            await api.delete('/api/messages/' + contact.chatId);
-                                                            await api.delete('/api/whatsapp/chats/' + contact.chatId + '?id=0');
+                                                            await api.delete('/api/v1/messages/' + contact.chatId);
+                                                            await api.delete('/api/v1/whatsapp/chats/' + contact.chatId + '?id=0');
                                                             handleClose();
                                                         }
                                                     }} color="primary" autoFocus>
@@ -636,9 +636,9 @@ export default function WhatsApp() {
                                                                                 "messages": 'ffat'
                                                                             })
 
-                                                                            await api.put('/api/clients/' + contact._id, data);
+                                                                            await api.put('/api/v1/clients/' + contact._id, data);
                                                                         } else {
-                                                                            await api.patch('/api/clients/first/?_id=' + contact._id, data);
+                                                                            await api.patch('/api/v1/clients/first/?_id=' + contact._id, data);
                                                                             let tempCont = contact;
                                                                             tempCont.firstAttendace = !tempCont.firstAttendace;
                                                                             setContact(tempCont)
@@ -709,7 +709,7 @@ export default function WhatsApp() {
                                                                 "token": getToken()
                                                             };
 
-                                                            await api.post('/api/whatsapp/message.doc?id=0', dados).then(() => handleClose);
+                                                            await api.post('/api/v1/whatsapp/message.doc?id=0', dados).then(() => handleClose);
                                                         })
                                                     }} color="primary">
                                                         Enviar

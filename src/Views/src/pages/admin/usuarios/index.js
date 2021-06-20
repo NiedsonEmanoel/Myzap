@@ -141,7 +141,7 @@ export default function UsuariosListagem() {
 
   useEffect(() => {
     async function s() {
-      let res = await (await api.get('/api/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+      let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
       if ((getTipoUsuario() != '3') && (getTipoUsuario() != '2')) {
         history.push('/admin')
@@ -160,7 +160,7 @@ export default function UsuariosListagem() {
   }, [])
 
   async function loadUsuarios() {
-    const response = await api.get('/api/clients');
+    const response = await api.get('/api/v1/clients');
     setUsuarios(response.data.Clients);
   }
 
@@ -187,9 +187,9 @@ export default function UsuariosListagem() {
 
               <Button onClick={async () => {
                 try {
-                  const response = await api.delete('/api/clients/' + row._id);
-                  await api.delete('/api/messages/' + row.chatId);
-                  await api.delete('/api/whatsapp/chats/' + row.chatId + '?id=0');
+                  const response = await api.delete('/api/v1/clients/' + row._id);
+                  await api.delete('/api/v1/messages/' + row.chatId);
+                  await api.delete('/api/v1/whatsapp/chats/' + row.chatId + '?id=0');
                   handleClose();
                 } catch (e) {
                   console.log(e);
@@ -218,7 +218,7 @@ export default function UsuariosListagem() {
                     _id: row._id,
                     worker: "no-one",
                   }
-                  await api.patch('/api/clients/', data);
+                  await api.patch('/api/v1/clients/', data);
                 }}>{Attendace(row.inAttendace)}</Button>
 
                 <Button onClick={(e) => { history.push('/admin/whatsapp/' + row._id) }}>

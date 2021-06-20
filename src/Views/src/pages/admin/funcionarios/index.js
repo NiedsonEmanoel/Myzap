@@ -132,7 +132,7 @@ export default function UsuariosListagem() {
 
   useEffect(() => {
     async function loadUsuarios() {
-      const response = await api.get('/api/workers');
+      const response = await api.get('/api/v1/workers');
       setUsuarios(response.data.Workers);
     }
     loadUsuarios();
@@ -140,7 +140,7 @@ export default function UsuariosListagem() {
 
   useEffect(()=>{
     async function s(){
-      let res = await (await api.get('/api/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
+      let res = await (await api.get('/api/v1/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
       setTipoUsuario(`${res}`);
       if((getTipoUsuario() != '3')){
         window.location.href='/admin'
@@ -221,7 +221,7 @@ export default function UsuariosListagem() {
 
                                 <Button onClick={async () => {
                                   try {
-                                    const response = await api.delete('/api/workers/' + row._id);
+                                    const response = await api.delete('/api/v1/workers/' + row._id);
                                     window.location.reload(true);
                                   } catch (e) {
                                     console.log(e);

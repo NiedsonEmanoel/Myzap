@@ -1,6 +1,5 @@
 const Workers = require('../Models/worker.model');
 const jwt = require("jsonwebtoken");
-const index = require('../index');
 const secret = process.env.SECRET;
 
 module.exports = {
