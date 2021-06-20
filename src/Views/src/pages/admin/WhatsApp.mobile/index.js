@@ -34,7 +34,8 @@ import {
     Avatar,
     Paper,
     GridList,
-    List
+    List,
+    Typography
 } from '@material-ui/core';
 
 const drawerWidth = 240;
@@ -191,29 +192,102 @@ function WhatsMobile() {
     }
 
     function getLeftList() {
-        return (resultList.map(item => (
-            <>
-                <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none", color: colorLink }}>
-                    <ListItem button={false} >
-                        <Avatar src={item.profileUrl}></Avatar>
-                        <ListItemText style={{
-                            width: '100%',
-                            paddingLeft: 15
-                        }} primary={item.fullName} secondary={isValidLast(item)} />
-                        {
-                            getMenuPreference() == 'true' ?
-                                <></>
-                                :
-                                item.firstAttendace ?
-                                    <PanToolIcon />
+        return (resultList.map(item => {
+
+            switch (sector) {
+                case 'Todos':
+                    return (function () {
+                        return (
+                            <>
+                                <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none", color: colorLink }}>
+                                    <ListItem button={false} >
+                                        <Avatar src={item.profileUrl}></Avatar>
+                                        <ListItemText style={{
+                                            width: '100%',
+                                            paddingLeft: 15
+                                        }} primary={item.fullName} secondary={isValidLast(item)} />
+                                        {
+                                            getMenuPreference() == 'true' ?
+                                                <></>
+                                                :
+                                                item.firstAttendace ?
+                                                    <PanToolIcon />
+                                                    :
+                                                    <>{lastDate(item)}</>
+                                        }
+                                    </ListItem>
+                                    <Divider variant="inset" component="li" />
+                                </Link>
+                            </>
+                        );
+                    }());
+                case 'Em atendimento':
+                    return (function () {
+                        return (
+                            <>
+                                {item.firstAttendace == true ?
+                                    <></>
                                     :
-                                    <>{lastDate(item)}</>
-                        }
-                    </ListItem>
-                    <Divider variant="inset" component="li" />
-                </Link>
-            </>
-        )));
+                                    <>
+                                        <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none", color: colorLink }}>
+                                            <ListItem button={false} >
+                                                <Avatar src={item.profileUrl}></Avatar>
+                                                <ListItemText style={{
+                                                    width: '100%',
+                                                    paddingLeft: 15
+                                                }} primary={item.fullName} secondary={isValidLast(item)} />
+                                                {
+                                                    getMenuPreference() == 'true' ?
+                                                        <></>
+                                                        :
+                                                        item.firstAttendace ?
+                                                            <PanToolIcon />
+                                                            :
+                                                            <>{lastDate(item)}</>
+                                                }
+                                            </ListItem>
+                                            <Divider variant="inset" component="li" />
+                                        </Link>
+                                    </>
+                                }
+                            </>
+                        );
+                    }());
+
+                case 'Em espera':
+                    return (function () {
+                        return (
+                            <>
+                                {item.firstAttendace == false ?
+                                    <></>
+                                    :
+                                    <>
+                                        <Link to={'/admin/whatsapp/' + item._id} style={{ textDecoration: "none", color: colorLink }}>
+                                            <ListItem button={false} >
+                                                <Avatar src={item.profileUrl}></Avatar>
+                                                <ListItemText style={{
+                                                    width: '100%',
+                                                    paddingLeft: 15
+                                                }} primary={item.fullName} secondary={isValidLast(item)} />
+                                                {
+                                                    getMenuPreference() == 'true' ?
+                                                        <></>
+                                                        :
+                                                        item.firstAttendace ?
+                                                            <PanToolIcon />
+                                                            :
+                                                            <>{lastDate(item)}</>
+                                                }
+                                            </ListItem>
+                                            <Divider variant="inset" component="li" />
+                                        </Link>
+                                    </>
+                                }
+                            </>
+                        );
+                    }());
+            }
+        }));
     }
 
     return (
@@ -231,7 +305,6 @@ function WhatsMobile() {
                     <Grid container style={{ height: '100%' }}>
                         <Grid item xs={12} sm={12}>
                             <FormControl style={{ width: '100%' }}>
-                                <InputLabel id="labelTipo">Setor</InputLabel>
                                 <Select
                                     labelId="labelTipo"
                                     id="tipo"
@@ -240,7 +313,8 @@ function WhatsMobile() {
                                     onChange={e => setSector(e.target.value)}
                                 >
                                     <MenuItem value={'Todos'}>Todos</MenuItem>
-                                    <MenuItem value={'Rh'}>Rh</MenuItem>
+                                    <MenuItem value={'Em atendimento'}>Em atendimento</MenuItem>
+                                    <MenuItem value={'Em espera'}>Em espera</MenuItem>
 
                                 </Select>
                             </FormControl>

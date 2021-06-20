@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -169,6 +169,10 @@ export default function MenuAdmin(props) {
     }
     window.location.reload();
   }
+
+  useEffect(()=>{
+    window.document.title = `${props.name} - MYZAP`
+  }, [])
 
   return (
     <>

@@ -307,22 +307,80 @@ export default function WhatsApp() {
     }
 
     function getLeftList() {
-        return (resultList.map(item => (
-            <>
-                <ListItem button={true} onClick={(e) => { setContact(item) }}>
-                    <Avatar src={item.profileUrl}></Avatar>
-                    <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
-                    {
-                        item.firstAttendace ?
-                            <PanToolIcon />
-                            :
-                            <>{lastDate(item)}</>
-                    }
+        return (resultList.map(item => {
+            switch (sector) {
+                case 'Todos':
+                    return (function () {
+                        return (
+                            <>
+                                <ListItem button={true} onClick={(e) => { setContact(item) }}>
+                                    <Avatar src={item.profileUrl}></Avatar>
+                                    <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
+                                    {
+                                        item.firstAttendace ?
+                                            <PanToolIcon />
+                                            :
+                                            <>{lastDate(item)}</>
+                                    }
 
-                </ListItem>
-                <Divider variant="inset" component="li" />
-            </>
-        )));
+                                </ListItem>
+                                <Divider variant="inset" component="li" />
+                            </>
+                        );
+                    }());
+                case 'Em atendimento':
+                    return (function () {
+                        return (
+                            <>
+                                {item.firstAttendace == true ?
+                                    <></>
+                                    :
+                                    <>
+                                        <ListItem button={true} onClick={(e) => { setContact(item) }}>
+                                            <Avatar src={item.profileUrl}></Avatar>
+                                            <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
+                                            {
+                                                item.firstAttendace ?
+                                                    <PanToolIcon />
+                                                    :
+                                                    <>{lastDate(item)}</>
+                                            }
+
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                    </>
+                                }
+                            </>
+                        );
+                    }());
+
+                case 'Em espera':
+                    return (function () {
+                        return (
+                            <>
+                                {item.firstAttendace == false ?
+                                    <></>
+                                    :
+                                    <>
+                                        <ListItem button={true} onClick={(e) => { setContact(item) }}>
+                                            <Avatar src={item.profileUrl}></Avatar>
+                                            <ListItemText className={classes.list} primary={item.fullName} secondary={isValidLast(item)} />
+                                            {
+                                                item.firstAttendace ?
+                                                    <PanToolIcon />
+                                                    :
+                                                    <>{lastDate(item)}</>
+                                            }
+
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                    </>
+                                }
+                            </>
+                        );
+                    }());
+            }
+        }));
     }
 
     function getRightList() {
@@ -532,7 +590,6 @@ export default function WhatsApp() {
                                             <Paper elevation={3} style={{ marginBottom: "1%" }}>
                                                 <Grid item xs={12} sm={12}>
                                                     <FormControl style={{ width: '100%' }}>
-                                                        <InputLabel id="labelTipo">Setor</InputLabel>
                                                         <Select
                                                             labelId="labelTipo"
                                                             id="tipo"
@@ -541,7 +598,8 @@ export default function WhatsApp() {
                                                             onChange={e => setSector(e.target.value)}
                                                         >
                                                             <MenuItem value={'Todos'}>Todos</MenuItem>
-                                                            <MenuItem value={'Rh'}>Rh</MenuItem>
+                                                            <MenuItem value={'Em atendimento'}>Em atendimento</MenuItem>
+                                                            <MenuItem value={'Em espera'}>Em espera</MenuItem>
 
                                                         </Select>
                                                     </FormControl>

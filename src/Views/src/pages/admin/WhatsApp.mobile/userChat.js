@@ -86,9 +86,9 @@ function UserChat() {
     useEffect(() => {
         async function loadClient() {
             let response
-            try{
+            try {
                 response = await api.get('/api/v1/clients/details/' + idChat);
-            }catch(e){
+            } catch (e) {
                 history.push('/admin/whatsapp');
             }
 
@@ -331,14 +331,14 @@ function UserChat() {
                                         }
                                         if (contact.firstAttendace !== undefined) {
                                             if (contact.firstAttendace == false) {
-                                                await api.put('/api/v1/clients/' + contact._id, data);
-
                                                 io.emit('sendMessage', {
                                                     "numbers": contact.chatId.replace('@c.us', ''),
                                                     "worker": getNomeUsuario(),
                                                     "messages": 'ffat'
-                                                })   
-                                                                                             
+                                                })
+                                                
+                                                await api.put('/api/v1/clients/' + contact._id, data);
+
                                                 window.location.href = '/admin/whatsapp';
                                             } else {
                                                 await api.patch('/api/v1/clients/first/?_id=' + contact._id, data);
