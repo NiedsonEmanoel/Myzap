@@ -161,10 +161,10 @@ module.exports = class {
 
         try {
             let bot = new dialogflow(__dirname+'/../../tokens/'+this.#CREDENTIALS_DFLOW, this.#LANGUAGE_CODE, message.from);
+            
             if (process.env.MODE == 'dev') {
                 if (message.from !== '558796755665@c.us') {
                     if (message.from !== '558791478538@c.us') {
-                        console.log('Another')
                         return;
                     }
                 }
