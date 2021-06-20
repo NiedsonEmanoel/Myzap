@@ -10,7 +10,7 @@
 </p>
 <h1></h1>
 
-<h1>Instalação: </h1>
+<h1>Instalação:</h1>
 
 <p><strong>Para esse projeto é recomendado que se utilize o Node v14, pois se trata de uma versão nova e estável, garantindo a execução do código sem maiores problemas.</strong></p>
 
