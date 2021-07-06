@@ -4,7 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
-import {getIdUsuario, getTipoUsuario, setTipoUsuario} from '../../../services/auth';
+import { getIdUsuario, getTipoUsuario, setTipoUsuario } from '../../../services/auth';
 import MenuAdmin from '../../../components/menu-admin';
 import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
@@ -17,6 +17,9 @@ import Copyright from '../../../components/footer';
 import { Grid } from '@material-ui/core';
 import api from '../../../services/api';
 import { useSnackbar } from 'notistack';
+
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 const drawerWidth = 240;
 
@@ -39,6 +42,15 @@ export default function Dashboard() {
     const [tipo, setTipo] = useState('');
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [foto, setFoto] = useState('');
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
 
     function clear() {
         setNome('');
@@ -63,7 +75,6 @@ export default function Dashboard() {
                 tipo_usuario: tipo,
                 foto_perfil: foto
             }
-            console.log(data)
             const response = await api.post('/api/v1/workers', data);
 
             if (response.status == 200) {
@@ -76,21 +87,21 @@ export default function Dashboard() {
                 clear();
                 return (enqueueSnackbar('O cadastro já existe!', { variant: "warning" }))
             } else {
-                return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "error" }))
+                return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "warning" }))
             }
         }
     }
-    
-    useEffect(()=>{
-        async function s(){
-          let res = await (await api.get('/api/v1/workers/details/'+getIdUsuario())).data.Worker[0].tipo_usuario;
-          setTipoUsuario(`${res}`);
-          if((getTipoUsuario() != '3')){
-            window.location.href='/admin'
-          }
+
+    useEffect(() => {
+        async function s() {
+            let res = await (await api.get('/api/v1/workers/details/' + getIdUsuario())).data.Worker[0].tipo_usuario;
+            setTipoUsuario(`${res}`);
+            if ((getTipoUsuario() != '3')) {
+                window.location.href = '/admin'
+            }
         }
         s();
-      }, [])
+    }, [])
 
     const classes = useStyles();
     return (
@@ -127,7 +138,7 @@ export default function Dashboard() {
                                         />
                                     </Grid>
                                     <img src={foto} style={{ maxHeight: "100px", marginLeft: "4%", maxWidth: "100px", height: "100px", width: "100px" }}></img>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={7}>
                                         <TextField
                                             required
                                             id="email"
@@ -158,7 +169,28 @@ export default function Dashboard() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={12} sm={3}>
+
+                                    <Grid item xs={12} sm={2}>
+                                        <input
+                                            type='file'
+                                            accept="image/*"
+                                            id="icon-button-file"
+                                            style={{ display: 'none' }}
+                                            multiple={false}
+                                            onChange={async (e) => {
+                                                let file = e.target.files[0];
+                                                let s = await getBase64(file)
+                                                setFoto(s);
+                                            }}
+                                        />
+                                        <label htmlFor="icon-button-file">
+                                            <IconButton color="primary" aria-label="upload picture" component="span" style={{ marginLeft: '35%' }}>
+                                                <PhotoCamera />
+                                            </IconButton>
+                                        </label>
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={12}>
                                         <TextField
                                             type="password"
                                             required
@@ -170,21 +202,6 @@ export default function Dashboard() {
                                             autoComplete="senha"
                                             value={senha}
                                             onChange={e => setSenha(e.target.value)}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={12}>
-                                        <TextField
-                                            required
-                                            id="foto"
-                                            name="foto"
-                                            label="Foto de perfil"
-                                            fullWidth
-                                            variant="outlined"
-
-                                            autoComplete="foto"
-                                            value={foto}
-                                            onChange={e => setFoto(e.target.value)}
                                         />
                                     </Grid>
 

@@ -3,7 +3,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
@@ -39,20 +39,23 @@ export const MainListItems = () => {
           :
           <></>
       }
-      <ListButton link="/admin/pedidos" name="Pedidos" icon={<BusinessCenterIcon />} />
+
+      <ListButton link="/admin/pedidos" name="Agendamentos" icon={<EventNoteIcon />} />
+
+      {/*<ListButton link="/admin/pedidos" name="Pedidos" icon={<BusinessCenterIcon />} />*/}
+      
+      {
+        getTipoUsuario() == '3' ?
+          <ListButton link="/admin/funcionarios" name="Funcionários" icon={<PeopleIcon />} />
+          :
+          <></>
+      }
 
       {getTipoUsuario() == '3' ?
         <ListButton link="/admin/contatos" name="Contatos" icon={<EmojiPeopleIcon />} />
         :
         getTipoUsuario() == '2' ?
           <ListButton link="/admin/contatos" name="Contatos" icon={<EmojiPeopleIcon />} />
-          :
-          <></>
-      }
-
-      {
-        getTipoUsuario() == '3' ?
-          <ListButton link="/admin/funcionarios" name="Funcionários" icon={<PeopleIcon />} />
           :
           <></>
       }

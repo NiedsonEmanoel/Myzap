@@ -5,10 +5,9 @@ import Container from '@material-ui/core/Container';
 import MenuAdmin from '../../../components/menu-admin';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import Copyright from '../../../components/footer';
 import DoneIcon from '@material-ui/icons/Done';
 import getTipo from '../../../functions/getTipo';
@@ -71,8 +70,10 @@ export default function WhatsApp() {
     const [openChange, setOpenChange] = useState(false);
     const [openQR, setQR] = useState(false);
     const [count, setCount] = useState(parseInt(getAttendanceCount()));
-
+    const [errorAudio, setErrorAudio] = useState(false)
     const [users, setUsers] = useState([])
+
+    const [mediaRecorder, setMediaRecorder] = useState([]);
 
     function countPlus() {
         setAttendanceCountOnePlus();
@@ -667,10 +668,15 @@ export default function WhatsApp() {
                                                                 <SwapHorizontalCircleIcon />
                                                             </IconButton>
 
+                                                            <IconButton onClick={() => { setOpenChange(true) }}>
+                                                                <MonetizationOnIcon />
+                                                            </IconButton>
+
                                                             {contact.firstAttendace ? <></> : <IconButton onClick={handleClickOpen}>
                                                                 <AttachFileIcon />
 
                                                             </IconButton>}
+
 
                                                             {contact.firstAttendace ? <></> : getTipoUsuario() == '3' ? <IconButton onClick={() => { setOpenExclude(true) }}>
                                                                 <DeleteIcon />

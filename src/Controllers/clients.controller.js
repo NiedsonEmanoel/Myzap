@@ -233,6 +233,24 @@ module.exports = {
         })
     },
 
+    async updateMoney(req, res, next) {
+        try {
+            const {Amount, _id} = req.body;
+            const User = await Clients.findById(_id).lean();
+            User.WithDrawCash = Amount;
+
+            let update = Clients.findByIdAndUpdate(User._id, User, (err, data)=>{
+                if(err){
+                    next(err)
+                }else{
+                    res.status(200).send({"message": "ok"})
+                }
+            })
+        } catch (e) {
+            next(e)
+        }
+    },
+
     async updateWithdraw(User, amount) {
         User.WithDrawCash = amount;
         let update = Clients.findByIdAndUpdate(User._id, User, (err, data) => {
@@ -255,7 +273,7 @@ module.exports = {
                 next(error);
             }
 
-            let Client = await Clients.findById({ _id });
+            let Client = await Clients.findByIdAndDelete({ _id });
             if (Client.WithDrawCash != 0) {
                 return res.status(500).send({ "message": "não é possivel apagar um client com saldo diferente de 0" });
             }

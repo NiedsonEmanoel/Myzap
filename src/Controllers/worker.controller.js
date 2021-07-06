@@ -39,7 +39,7 @@ module.exports = {
     async createTokenToRecover(req, res, next) {
         try {
             const { email_usuario, server_location } = req.body;
-
+            const index = require('../index')
             let Worker = await Workers.findOne({ email_usuario }, (err, user) => {
                 if (err) {
                     console.log(err);
@@ -60,7 +60,7 @@ module.exports = {
                         "from": process.env.USER_MAIL,
                         "to": email_usuario,
                         "subject": "Recuperação de senha - MYZAP",
-                        "text": `Olá ${user.nome_usuario}, esse é um e-mail para recuperação de sua senha no MYZAP e válido por 5 minutos.\nPara prosseguir clique no link abaixo:\n\n${server_location}/recovery.pass/${token}\nCaso você não tenha solicitado uma alteração de senha ignore esse e-mail.\n\nCopyright © Niedson Emanoel & Apoastro ${new Date().getFullYear()}`
+                        "text": `Olá ${user.nome_usuario}, esse é um e-mail para recuperação de sua senha no MYZAP e válido por 5 minutos.\nPara prosseguir clique no link abaixo:\n\n${server_location}/recovery.pass/${token}\nCaso você não tenha solicitado uma alteração de senha ignore esse e-mail.\n\nCopyright © NMSOFT ${new Date().getFullYear()}`
                     });
                     res.status(200).json({ "message": "success" });
                 }
@@ -97,7 +97,7 @@ module.exports = {
 
                 Worker.senha_usuario = password;
 
-                const response = await Workers.findByIdAndUpdate(decoded.id, Worker);
+                const response = await Workers.findOneAndUpdate({ _id: decoded.id }, Worker);
 
                 res.status(200).send({
                     "message": "success",
@@ -165,13 +165,21 @@ module.exports = {
 
             let data = { nome_usuario, email_usuario, tipo_usuario, senha_usuario, foto_perfil };
 
-            const Worker = await Workers.findByIdAndUpdate(_id, data);
-
-            res.status(200).send({
-                Worker,
-                "message": "success"
+            const Worker = await Workers.findOneAndUpdate({ _id }, data, (err, s) => {
+                if (err) {
+                    let error = new Error(err)
+                    console.log(error)
+                    next(error)
+                }
+                res.status(200).send({
+                    s,
+                    "message": "success"
+                });
             });
+
+
         } catch (error) {
+            console.log(error)
             next(error);
         }
     },

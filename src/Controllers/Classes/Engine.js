@@ -129,6 +129,7 @@ module.exports = class {
                 }
 
                 if (responses.payload) {
+
                     if (responses.payload.fields.mediaUrl) {
                         let link = responses.payload.fields.mediaUrl.stringValue;
                         let name = responses.payload.fields.mediaName.stringValue ? responses.payload.fields.mediaName.stringValue : "file";

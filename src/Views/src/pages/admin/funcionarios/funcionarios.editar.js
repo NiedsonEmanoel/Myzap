@@ -20,6 +20,9 @@ import api from '../../../services/api';
 import { useSnackbar } from 'notistack';
 import io from '../../../services/socket.io'
 
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -44,11 +47,19 @@ export default function Dashboard() {
 
     const { idFuncionario } = useParams();
 
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
     useEffect(() => {
         async function S() {
             let response = await api.get('/api/v1/workers/details/' + idFuncionario);
             let client = response.data.Worker[0];
-            console.log(client)
             setNome(client.nome_usuario);
             setEmail(client.email_usuario);
             setSenha(client.senha_usuario);
@@ -84,9 +95,10 @@ export default function Dashboard() {
             foto_perfil: foto
         }
 
-        await api.put('/api/v1/workers/' + idFuncionario, data, { timeout: 3000 }).then(() => {
+        await api.put('/api/v1/workers/' + idFuncionario, data).then(() => {
             enqueueSnackbar('Atualização efetuada com sucesso!', { variant: "success" });
-        }).catch(() => {
+        }).catch((e) => {
+            console.log(e)
             return (enqueueSnackbar('Erro, tente novamente mais tarde!', { variant: "error" }))
         })
 
@@ -127,7 +139,7 @@ export default function Dashboard() {
                                         />
                                     </Grid>
                                     <img src={foto} style={{ maxHeight: "100px", marginLeft: "4%", maxWidth: "100px", height: "100px", width: "100px" }}></img>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={7}>
                                         <TextField
                                             required
                                             id="email"
@@ -158,7 +170,28 @@ export default function Dashboard() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={12} sm={3}>
+
+                                    <Grid item xs={12} sm={2}>
+                                        <input
+                                            type='file'
+                                            accept="image/*"
+                                            id="icon-button-file"
+                                            style={{ display: 'none' }}
+                                            multiple={false}
+                                            onChange={async (e) => {
+                                                let file = e.target.files[0];
+                                                let s = await getBase64(file)
+                                                setFoto(s);
+                                            }}
+                                        />
+                                        <label htmlFor="icon-button-file">
+                                            <IconButton color="primary" aria-label="upload picture" component="span" style={{ marginLeft: '35%' }}>
+                                                <PhotoCamera />
+                                            </IconButton>
+                                        </label>
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={12}>
                                         <TextField
                                             type="password"
                                             required
@@ -170,21 +203,6 @@ export default function Dashboard() {
                                             autoComplete="senha"
                                             value={senha}
                                             onChange={e => setSenha(e.target.value)}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={12}>
-                                        <TextField
-                                            required
-                                            id="foto"
-                                            name="foto"
-                                            label="Foto de perfil"
-                                            fullWidth
-                                            variant="outlined"
-
-                                            autoComplete="foto"
-                                            value={foto}
-                                            onChange={e => setFoto(e.target.value)}
                                         />
                                     </Grid>
 

@@ -7,7 +7,7 @@ module.exports = {
             useFindAndModify: false,
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            useCreateIndex: true
+            useCreateIndex: true,
         }, (err) => {
             if (err) {
                 console.error('- Connection error on MongoDB');

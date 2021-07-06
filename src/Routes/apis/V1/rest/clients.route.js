@@ -15,6 +15,7 @@ Router.post('/avaliations', Avaliations.createByRoute);
 Router.post('/', Clients.create);
 Router.put('/update/:_id', Clients.update)
 Router.put('/:_id', Clients.switchAt);
+Router.put('/money', Clients.updateMoney)
 Router.patch('/first', Clients.SwitchFist);
 
 Router.patch('/', Clients.togle);
